@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+
+<!-- <script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script>  -->
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 账户管理</td>
+  </tr>
+</table>
+<table class="table_noline2">
+  <tr>
+    <td class="fl">
+    	<input type="button" value="新增" class="button3" onclick="location.href='/manage/acct/added.html#/manage/acct/index.html'" />
+        <!-- <input type="button" value="停用" class="button3" onclick="modify('stop')" />
+        <input type="button" value="注销" class="button3" onclick="modify('log_out')" /> -->
+    </td>
+    <td class="fr" id="find">
+    	<input name="" type="text" class="text4" />
+        <select name="" class="text4">
+            <option value="">状态</option>
+            <option value="2">正常</option>
+            <option value="1">停用</option>
+            <option value="3">注销</option>
+        </select>
+        <input name="" type="submit" value="查询" class="search" onclick="finddate()"/>
+    </td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>账户列表</td>
+  </tr>
+</table>
+<table class="table_list" id='pageChange'>
+    <!-- 数据 -->	
+</table>
+<!-- 空数据展示 -->
+<div id="none-data"></div>
+<!-- 分页 -->
+<table class="page">
+  <tr>
+    <td>
+    	每页显示记录
+        <select name="select" class="text1" onchange="pageNumChange(this)">
+          <option value="15" selected="selected">15</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        &nbsp;&nbsp;共<span id="allNum"> -- </span>条
+    </td>
+    <td class="tr">
+    	<a href="javascript:void(0)" class="button8" onclick="firstPage()" id="firstPage">首页</a>
+        <a href="javascript:void(0)" class="button8" onclick="oncePage()" id="oncePage">上一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="afterPage()" id="afterPage">下一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="endPage()" id="endPage">末页</a>  
+    	到第
+        <input name="" type="text" class="text1" size="2" id="pageCause"/> 页
+        &nbsp;&nbsp;当前第<span id="numPage">--</span>页&nbsp;&nbsp;共<span id="allPage">--</span>页&nbsp;&nbsp;
+        <input name="input3" type="submit" value="转到" class="button8" onclick="pageUpdate()"/>
+    </td>
+  </tr>
+</table>
+<!-- 弹框 -->
+<div id="modal-form" class="modal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header-color-blue">
+                <button type="button" class="modal-close white" onclick="pupclose()">&times;</button>
+                <h5>复核授权</h5>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>账号：<strong>1000001</strong> &nbsp;&nbsp;  账号名称：<strong>北京自来水公司</strong></p>
+                <p>授权编号 <input name="Input2" type="text" class="text3"   id="modal-body-1"/></p>
+                <p>授权密码 <input name="Input2" type="password" class="text3"   id="modal-body-2"/></p>
+            </div>
+            <div class="modal-footer">
+                <button class="button5" onclick="nonNullDetection()">
+                    	确定
+                </button>
+                <button class="button5" onclick="pupclose()">
+                	取消
+                </button>
+            </div><!--/.modal-footer-->
+        </div><!--/.modal-content-->
+    </div><!--/.modal-dialog-->
+</div><!--/.modal-->
+
+<div class="pop-success" id="pop-success">
+	<a href="javascript:void(0);" class="pop-close" onclick="successclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-ok.png" /></p>
+    <h3>操作成功</h3>
+</div>
+
+<div class="pop-success" id="pop-fail">
+	<a href="javascript:void(0);" class="pop-close" onclick="failclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-error.png" /></p>
+    <h3>操作失败</h3>
+</div>
+		
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+
+<script type="text/javascript">
+
+
+//成功提示  打开
+function successopen(){
+	document.getElementById("pop-success").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};
+//成功提示 关闭
+function successclose(){
+	document.getElementById("pop-success").style.display="none" ;
+};
+//错误提示 打开
+function failopen(){
+	document.getElementById("pop-fail").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};
+//错误提示 关闭
+function failclose(){
+	document.getElementById("pop-fail").style.display="none" ;
+};
+
+$(document).ready(function(){
+	var urlData = getParam();
+	if(urlData){
+		pageNum = JSON.parse(decodeURIComponent(urlData.global_data)).strtLoDataval;
+		EACH_PA_NUM = JSON.parse(decodeURIComponent(urlData.global_data)).eachPaNum;
+		//$("#numPage")[0].innerHTML = JSON.parse(decodeURIComponent(urlData.global_data)).strtLoDataval;
+		$(".page select")[0].value = JSON.parse(decodeURIComponent(urlData.global_data)).eachPaNum;
+		if(JSON.parse(decodeURIComponent(urlData.global_data)).accno || JSON.parse(decodeURIComponent(urlData.global_data)).accSt){
+			$("#find input")[0].value = JSON.parse(decodeURIComponent(urlData.global_data)).accno;
+			$("#find select")[0].value = JSON.parse(decodeURIComponent(urlData.global_data)).accSt
+			gobalAjaxSearch(JSON.parse(decodeURIComponent(urlData.global_data)))
+		}else{
+			gobalAjaxNullSearch(JSON.parse(decodeURIComponent(urlData.global_data)))
+		}
+	}else{
+		pageDate(1,15);	
+	}
+	
+});
+// search 分割取值
+function getParam() {
+	if (typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if (str) {
+		str = str.slice(1);
+	} else if (!str) {
+		return '';
+	} else {
+		str = decodeURIComponent(str);
+	};
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+	arr1 = str.split("&");
+	if (arr1.length) {
+		for (var i = 0; i < arr1.length; i++) {
+			arr2 = arr1[i].split("=")
+			if (arr2.length == 2) {
+				result[arr2[0]] = arr2[1]
+			}
+		}
+	};
+	return result;
+};
+
+//状态保存无条件查询
+var gobalAjaxNullSearch = function(globalDate){
+	loading(true)
+	jQuery.ajax({
+		url :"/manage/acct/changepage",
+		type : "post",
+		data : globalDate,
+		dataType : 'json',
+	        success : function(data) {
+	        	loading(false);
+	 			TYPE = "pageDate";
+	 			GLOBLE_LIST = data.oboList;
+	 			RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 			pageChange(data.oboList);
+	 			pageStart(data.obo.rcrdTotNum);			 		
+	        },
+	        error : function(errorDate) {
+	        	loading(false);
+				var message = JSON.parse(errorDate.responseText).message;
+				errorMessage(true,message);
+	        }
+	 });
+}
+//状态保存有条件查询
+var gobalAjaxSearch = function (globalDate){
+		loading(true)
+		jQuery.ajax({
+			url :"/manage/acct/find",
+			type : "post",
+			data : globalDate,
+			dataType : 'json',
+	         success : function(data) {
+	        	 loading(false)
+	 				TYPE = "find";
+	 				//数据列表
+	 				GLOBLE_LIST = data.oboList;
+	 				//数据总数
+	 				RCRD_TOT_NUM = data.obo.thsRcrdNum;
+	 				pageChange(data.oboList);	 				
+		 			pageStart(data.obo.thsRcrdNum);
+
+	         },
+	         error : function(errorDate) {
+	        	 loading(false)
+					var message = JSON.parse(errorDate.responseText).message;
+	        	 	errorMessage(true,message);
+	         }
+	     });
+};
+//全局数据列表
+var GLOBLE_LIST;
+//全局请求方式
+var TYPE;
+//获取分页数据
+function pageDate(curr,eachPaNum){	
+	loading(true)
+	var data = {"strtLoDataval":curr,"eachPaNum":eachPaNum};
+	jQuery.ajax({
+		url :"/manage/acct/changepage",
+		type : "post",
+		data : data,
+		dataType : 'json',
+	        success : function(data) {
+	        	loading(false);
+	 			TYPE = "pageDate";
+	 			GLOBLE_LIST = data.oboList;
+	 			RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 			pageChange(data.oboList);
+	 			pageStart(data.obo.rcrdTotNum);			 		
+	        },
+	        error : function(errorDate) {
+	        	loading(false);
+				var message = JSON.parse(errorDate.responseText).message;
+				errorMessage(true,message);
+	        }
+	 }); 
+};
+function finddate(){
+	 var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+	$("#pageCause")[0].value = "";
+	pageNum = 1;
+	EACH_PA_NUM = eachPaNum;
+	//$(".page select")[0].value = EACH_PA_NUM;
+	find(1,eachPaNum);
+};
+//按条件查询
+function find(curr,eachPaNum){
+	loading(true)
+	var data = {accno:$("#find input")[0].value,accSt:$("#find select")[0].value,"strtLoDataval":curr,"eachPaNum":eachPaNum};
+	if($("#find input")[0].value || $("#find select")[0].value){
+		jQuery.ajax({
+			url :"/manage/acct/find",
+			type : "post",
+			data : data,
+			dataType : 'json',
+	         success : function(data) {
+	        	 loading(false)
+	 				TYPE = "find";
+	 				//数据列表
+	 				GLOBLE_LIST = data.oboList;
+	 				//数据总数
+	 				RCRD_TOT_NUM = data.obo.thsRcrdNum;
+	 				pageChange(data.oboList);	 				
+		 			pageStart(data.obo.thsRcrdNum);
+
+	         },
+	         error : function(errorDate) {
+	        	 loading(false)
+					var message = JSON.parse(errorDate.responseText).message;
+	        	 	errorMessage(true,message);
+	         }
+	     });
+	}else{
+		//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+		$(".page select")[0].value = EACH_PA_NUM;
+		pageDate(1,EACH_PA_NUM);
+	}
+};
+//分页逻辑 
+var pageNum = 1; //起始页
+var RCRD_TOT_NUM; // 总条数
+var EACH_PA_NUM = 15; //每页显示条数
+function pageStart (rcrdTotNum){
+	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+	//总条数
+	$("#allNum")[0].innerHTML = rcrdTotNum;
+	//总页数
+	$("#allPage")[0].innerHTML = Math.ceil(rcrdTotNum/eachPaNum);
+	//当前页数
+	$("#numPage")[0].innerHTML = pageNum;	
+	//首页按钮控制
+	if(pageNum == 1){
+		$("#firstPage")[0].setAttribute("onclick","return false;");
+		$("#firstPage")[0].style.cursor = 'default';
+	}else{
+		$("#firstPage")[0].setAttribute("onclick","firstPage()");
+		$("#firstPage")[0].style.cursor = 'pointer';
+	};
+	//上一页按钮控制
+	if(pageNum == 1){
+		$("#oncePage")[0].setAttribute("onclick","return false;");
+		$("#oncePage")[0].style.cursor = 'default';
+	}else{
+		$("#oncePage")[0].setAttribute("onclick","oncePage()");
+		$("#oncePage")[0].style.cursor = 'pointer';
+	};
+	//下一页按钮控制
+	if(pageNum == Math.ceil(rcrdTotNum/EACH_PA_NUM)){
+		$("#afterPage")[0].setAttribute("onclick","return false;");
+		$("#afterPage")[0].style.cursor = 'default';
+	}else{
+		$("#afterPage")[0].setAttribute("onclick","afterPage()");
+		$("#afterPage")[0].style.cursor = 'pointer';
+	};
+	//末页按钮状态控制
+	if(pageNum == Math.ceil(rcrdTotNum/EACH_PA_NUM)){
+		$("#endPage")[0].setAttribute("onclick","return false;");
+		$("#endPage")[0].style.cursor = 'default';
+	}else{
+		$("#endPage")[0].setAttribute("onclick","endPage()");
+		$("#endPage")[0].style.cursor = 'pointer';
+	};
+};
+//首页
+function firstPage(){	
+	var curr = 1;
+	pageNum = 1
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}
+	$("#pageCause")[0].value = "";
+};
+//上一页
+function oncePage(){
+		var curr = Number(pageNum) - 1;
+		//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;	
+		$(".page select")[0].value = EACH_PA_NUM
+		if(TYPE == "pageDate"){
+			pageDate(curr,EACH_PA_NUM);
+		}else if(TYPE == "find"){
+			find(curr,EACH_PA_NUM)
+		}else{
+			return false;
+		}
+		pageNum--;	
+		$("#pageCause")[0].value = "";
+};
+//下一页
+function afterPage(){
+	var curr = Number(pageNum) + 1;
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}	
+	pageNum++;	
+	$("#pageCause")[0].value = "";
+};
+//末页
+function endPage(){
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	var curr = Math.ceil(RCRD_TOT_NUM/EACH_PA_NUM);	
+	pageNum = curr;
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}		
+	$("#pageCause")[0].value = "";
+};
+//转到
+function pageUpdate(){
+	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	var curr = $("#pageCause")[0].value ?$("#pageCause")[0].value : 1;
+	EACH_PA_NUM = eachPaNum;
+	if(curr>0 && curr <= Math.ceil(RCRD_TOT_NUM/eachPaNum)){
+		pageNum = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else if(Number(curr) <= 0){
+		curr = 1;
+		pageNum = curr;
+		$("#pageCause")[0].value = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else if(curr > Math.ceil(RCRD_TOT_NUM/eachPaNum)){
+		curr = Math.ceil(RCRD_TOT_NUM/eachPaNum);
+		pageNum = curr;
+		$("#pageCause")[0].value = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else{
+		$("#pageCause")[0].value = "";
+		alert('请输入一个正确的页数')
+		return false;
+	}			
+};
+// 每页条数改变
+function pageNumChange(_this){
+	var curr = 1;
+	pageNum = 1
+	var eachPaNum = _this.value ? _this.value: 15;
+	EACH_PA_NUM = eachPaNum;	
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}
+	$("#pageCause")[0].value = "";
+}
+//分页数据返回修改
+function pageChange (oboList,eachPaNum,type){
+	deleate_none_data();
+/* 	var domParent = document.getElementById("pageChange");	
+	// 删除dom节点
+	var domParentChilds = domParent.childNodes;
+	for (var i = domParentChilds[1].children.length -1 ; i >= 0; i--){
+		if(i != 0){
+			domParentChilds[1].removeChild(domParentChilds[1].children[i])
+		}	
+	}; */
+	$("#pageChange").empty();
+	$("#pageChange").append(
+			'<tr>' +
+		      // '<th></th>' +
+		      '<th width=37%>账号</th>' +
+		      '<th width=10%>账户类型</th>' +
+		      '<th width=28%>账户名称</th>' +
+		      '<th width=10%>账户状态</th>' +
+		      '<th width=15%>操作</th>' +
+		    '</tr>'
+	);
+	if(oboList.length !=0){
+		var accnoTp;
+		var accSt;
+		var list;
+		for(var i=0; i<oboList.length; i++){
+			if(oboList[i].accnoTp == 1){
+				accnoTp = "对公"
+			}else if(oboList[i].accnoTp == 2){
+				accnoTp = "对私"
+			}else if(oboList[i].accnoTp == 3){
+				accnoTp = "内部"
+			}else if(oboList[i].accnoTp == 4){
+				accnoTp = "电子帐户"
+			}else{
+				accnoTp = "类型错误"
+			};
+			if(oboList[i].accSt == 2){
+				accSt = "正常"
+			}else if(oboList[i].accSt == 1){
+				accSt = "停用"
+			}else if(oboList[i].accSt == 3){
+				accSt = "注销"
+			}else{
+				accSt = "状态错误"
+			};
+			var stop = i +",'stop'";
+			var log_out = i + ",'log_out'";
+			$("#pageChange tbody").append(
+					
+					'<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '" >' +
+					  // '<td><input type="radio" name="radiobutton" value="" onclick="radioDate('+ i +')" /></td>' +
+				      '<td>'+ oboList[i].accno +'</td>' +
+				      '<td>'+ accnoTp +'</td>' +
+				      '<td>'+ oboList[i].accnoNm +'</td>' +
+				      '<td>'+ accSt +'</td>' +
+				      '<td style="width:200px;">' +
+				      	'<a href="javaScript:void(0);" class="blue" onclick="details(' + i + ')">查看详情</a>&nbsp&nbsp' +
+				        '<a href="javaScript:void(0);" class="blue" onclick="added('+  i + ')">修改</a>&nbsp&nbsp' +
+				        //'<a href="javaScript:void(0);" class="blue" onclick="pupopen('+ stop +')">停用</a>&nbsp&nbsp' +
+				        //'<a href="javaScript:void(0);" class="blue" onclick="pupopen('+ log_out +')">注销</a>' +
+				     '</td>' +
+				   '</tr>'
+			)
+		};
+		tdHover();
+	}else{
+		var text = "未查询到符合条件的记录"
+		none_data(text);
+	};		
+};
+//hover
+function tdHover(){
+	$("#pageChange tbody tr").each(function(i){
+		$(this).hover(function(){
+			$(this).css({"background":"#188bcd"})
+		},function(){
+			if(i%2 == 0){
+				$(this).css({"background":"#fff"})
+			}else{
+				$(this).css({"background":"rgb(226, 236, 240)"})
+			}
+		})
+	})
+}
+//空数据展示
+function none_data(text){	
+	var div = document.createElement("div");
+	if(document.getElementById("none-data").childNodes.length == 0){
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}else{
+		deleate_none_data();
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}
+};
+// 消除非空数据提示
+function deleate_none_data(){
+	if(document.getElementById("none-data").childNodes.length != 0){
+		//var parent = document.getElementById("none-data");
+		//parent.removeChild(parent.childNodes[0]);
+		$("#none-data").empty();
+	}else{
+		return;
+	}	
+};
+//跳转查看详情
+function details (details){
+	var global_data = {accno:$("#find input")[0].value,accSt:$("#find select")[0].value,"strtLoDataval":$("#numPage").text(),"eachPaNum":$(".page select")[0].value};
+	var url_hash = GLOBLE_LIST[details];
+	window.location.href = "/manage/acct/detailspage.html?data=" + encodeURIComponent(JSON.stringify(url_hash)) + "&&global_data=" + encodeURIComponent(JSON.stringify(global_data)) +  "#/manage/acct/index.html";
+};
+//跳转修改页面
+function added (i){
+	var global_data = {accno:$("#find input")[0].value,accSt:$("#find select")[0].value,"strtLoDataval":$("#numPage").text(),"eachPaNum":$(".page select")[0].value};
+	var url_hash = GLOBLE_LIST[i];
+	window.location.href = "/manage/acct/modify.html?data=" + encodeURIComponent(JSON.stringify(url_hash)) + "&&global_data=" + encodeURIComponent(JSON.stringify(global_data)) +  "#/manage/acct/index.html";
+};
+//radio数据存储
+var RADIO_DATE;
+function radioDate(i){
+	 RADIO_DATE = GLOBLE_LIST[i];	 
+};
+var CHANGE_TYPE;
+//确定  停用 注销
+function modify (type){
+	if(RADIO_DATE){
+		CHANGE_TYPE = type;
+		pupopen();
+	}else{
+		alert("请选择一条数据操作")
+	}	
+};
+//弹框非空检测
+function nonNullDetection(){
+	if(!$("#modal-body-1")[0].value || !$("#modal-body-2")[0].value){
+		if(!$("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid red";
+		}else if($("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid #AAC5D8";
+		}
+		if(!$("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid red";
+		}else if($("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid #AAC5D8";
+		}
+	}else if($("#modal-body-1")[0].value != "ABC" || $("#modal-body-2")[0].value != "000000"){
+		alert("用户名或密码错误")
+	}else{
+		var postVal
+		if(CHANGE_TYPE == "stop"){
+			postVal = {"accno":RADIO_DATE.accno,"accSt":"2"};
+		}else if(CHANGE_TYPE == "log_out"){
+			postVal = {"accno":RADIO_DATE.accno,"accSt":"3"};
+		}		
+		postUpdate(postVal)
+	}	
+};
+//打开弹窗
+function pupopen(){
+	document.getElementById("modal-form").style.display="block" ;
+	$("#modal-body strong")[0].innerHTML = RADIO_DATE.accno;
+	$("#modal-body strong")[1].innerHTML = RADIO_DATE.accnoNm;
+};
+//关闭弹窗
+function pupclose(){
+	document.getElementById("modal-form").style.display="none" ;
+	$("#modal-body strong")[0].innerHTML = '';
+	$("#modal-body strong")[1].innerHTML = '';
+};
+//停用 注销 数据提交
+function postUpdate (data){
+	jQuery.ajax({
+		url :"/manage/acct/change",
+		type : "post",
+		data : data,
+		dataType : 'json',
+		success:function(data){
+				successopen();
+				window.location.href = "/manage/acct/index.html"
+		},
+		error : function(data){
+			errorMessage(true,message);
+		}
+	
+	});
+};
+</script>
+
+
+</body>
+</html>

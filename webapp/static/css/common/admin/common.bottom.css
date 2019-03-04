@@ -1,0 +1,6 @@
+﻿/**公共的底部css/根据业务而定**/
+
+.cm-footer {border-top: 2px solid #aee6fd; height: 140px; background: #f3f3f3;}
+.cm-footer .foot-center{width: 1200px;margin: 0 auto;}
+.copyright{padding-top: 30px;}
+.copyright .crrow{text-align: center;font-size: 12px;line-height: 25px;color: #666;}

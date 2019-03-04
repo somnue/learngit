@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+
+
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<!-- <link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/laypage.css"/> -->
+
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script> 
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+	<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 对账管理 >> 收单对账明细</td>
+ </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>收单对账明细详情</td>
+  </tr>
+</table>
+<table class="table_submit">
+   <tr>
+    <th>商户号</th>
+    <td><input name="" id="mrchcd" type="text" class="gray_text" size="38"  readonly="readonly"/></td>
+    <th>对账批次号</th>
+    <td><input name="" id="rcnclBtno" type="text" class="gray_text" size="38"  readonly="readonly"  /></td>
+  </tr>
+  <tr>
+    <th>记账日期</th>
+    <td><input name="" id="bookentrdt" type="text" class="gray_text" size="38"  readonly="readonly" /></td>
+    <th>交易时间</th>
+    <td><input name="" id="txnTm" type="text" class="gray_text" size="38"  readonly="readonly"/></td>
+  </tr>
+  <tr>
+    <th>银行交易流水号</th>
+    <td><input name="" id="bnkTxnsrlno" type="text" size="38"  class="gray_text" readonly="readonly"  /></td>
+    <th>商户流水号</th>
+    <td><input name="" id="mrchJrnlNo"  type="text" size="38"  class="gray_text" readonly="readonly"  /></td>
+  </tr>
+  <tr>
+    <th>订单号</th>
+    <td><input type="text" id="ordrNo" class="gray_text" size="38"  readonly="readonly" /></td>
+    <th>订单状态</th>
+    <td><input type="text" id="ordrStcd" class="gray_text" size="38"  readonly="readonly"/></td>
+  </tr>
+  <tr>
+    <th>付款方账号</th>
+    <td><input type="text" id="pyrAccno" class="gray_text"  size="38"  readonly="readonly" /></td>
+    <th>付款方名称</th>
+    <td><input type="text" id="pyrNm" class="gray_text" size="38"  readonly="readonly"  /></td>
+  </tr>
+  <tr>
+    <th>订单金额 </th>
+    <td><input type="text" id="ordrAmt" class="gray_text" size="38"  readonly="readonly"/></td>
+    <th>交易金额</th>
+    <td><input type="text" id="txnamt" class="gray_text" size="38"  readonly="readonly" /></td>
+  </tr>
+  <tr>
+    <th>手续费</th>
+    <td><input type="text" id="hdcg" class="gray_text" size="38"  readonly="readonly" /></td>
+    <th>结算金额</th>
+    <td><input type="text" id="setamt" class="gray_text" size="38"  readonly="readonly" /></td>
+  </tr>
+  <tr>
+    <th>柜台代码</th>
+    <td><input type="text" id="cnterCd" class="gray_text" size="38"  readonly="readonly" /></td>
+    <th>发卡行机构编号</th>
+    <td><input type="text" id="issubnkInsid" class="gray_text" size="38"  readonly="readonly" /></td>
+  </tr>
+  <tr>
+    <th> 支持卡种代码</th>
+    <td><input type="text" id="sprtCrdtpCd" class="gray_text" size="38"  readonly="readonly"/></td>
+    <th>交易类型</th>
+    <td><input type="text" id="txnTp" class="gray_text" size="38"  readonly="readonly"/></td>
+  </tr>
+  <tr>
+    <th>期数</th>
+    <td><input type="text" id="prdNum" class="gray_text" size="38"  readonly="readonly" /></td>
+    <th>授权号</th>
+    <td><input type="text" id="ahnNo" class="gray_text" size="38"  readonly="readonly"/></td>
+  </tr>
+  <tr>
+    <th> 项目编号</th>
+    <td><input type="text" id="prjId" class="gray_text" size="38"  readonly="readonly"  /></td>
+    <th>基本户号</th>
+    <td><input type="text" id="bscaccNo" class="gray_text" size="38"  readonly="readonly"
+   /></td>
+  </tr>
+  <tr>
+    <th>订单类型</th>
+    <td><input type="text" id="ordrTpcd" class="gray_text" size="38"  readonly="readonly"
+    /></td>
+    <th>对账结果</th>
+    <td><input type="text" id="rcnclRsltStcd" class="gray_text" size="38"  readonly="readonly"  /></td>
+  </tr>
+   <tr>
+    <th>对账日期</th>
+    <td>
+      <input type="text" id="oprgdayPrd" class="gray_text" size="38"  readonly="readonly"
+    /></td>
+   </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+<input type="button" value="返回" class="button3" onclick="returns()" />
+    </td>
+  </tr>
+</table>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+
+<script type="text/javascript">
+var sn='${sn}'
+jQuery(function(){
+	
+	jQuery.ajax({
+			url :"/manage/chkDetail/data",
+			type : "post",
+			data :{"sn":sn},
+			dataType : 'json',
+	         success : function(data) {
+	         var items=data.oboList;
+	 		 jQuery("#mrchcd").val(items.mrchcd);
+	 		 jQuery("#rcnclBtno").val(items.rcnclBtno);
+	 		 jQuery("#bookentrdt").val(items.bookentrdt);
+	 		 jQuery("#txnTm").val(items.txnTm);
+	 		 jQuery("#bnkTxnsrlno").val(items.bnkTxnsrlno);
+	 		 jQuery("#mrchJrnlNo").val(items.mrchJrnlNo);
+	 		 jQuery("#ordrNo").val(items.ordrNo);
+	 		 jQuery("#ordrStcd").val(statOrdr(items.ordrStcd));
+	 		 jQuery("#pyrAccno").val(items.pyrAccno);
+	 		 jQuery("#pyrNm").val(items.pyrNm);
+	 		 jQuery("#ordrAmt").val(items.ordrAmt);
+	 		 jQuery("#txnamt").val(items.txnamt);
+	 		 jQuery("#hdcg").val(items.hdcg);
+	 		 jQuery("#setamt").val(items.setamt);
+	 		 jQuery("#cnterCd").val(items.cnterCd);
+	 		 jQuery("#issubnkInsid").val(items.issubnkInsid);
+	 		 jQuery("#sprtCrdtpCd").val(items.sprtCrdtpCd);
+	 		 jQuery("#txnTp").val(items.txnTp);
+	 		 jQuery("#prdNum").val(items.prdNum);
+	 		 jQuery("#ahnNo").val(items.ahnNo);
+	 		 jQuery("#prjId").val(items.prjId);
+	 		 jQuery("#bscaccNo").val(items.bscaccNo);
+	 		  jQuery("#ordrTpcd").val(statCSS(items.ordrTpcd));
+	 		   jQuery("#rcnclRsltStcd").val(statCh(items.rcnclRsltStcd));
+	 		   jQuery("#oprgdayPrd").val(items.oprgdayPrd);
+	         },
+	         error : function(q) {
+	            
+	         }
+	     }); 
+})
+
+	function statOrdr(value){
+		var stat = '';
+		if(value == '2'){
+		 stat = '成功';
+		}	
+		else	if(value == '3'){
+		 stat = '失败';
+		}
+		return stat;
+	}
+
+     function statCSS(value){
+ 		var stat='';
+        if(value=='1'){
+         stat='支付';
+         
+        }else if(value=='2'){
+           stat='退款';
+        }
+        return stat;
+    }   
+
+//返回
+function returns(){
+	window.location.href = "/manage/chkDetail/index.html";
+}
+
+ 
+ function statCh(value){
+ 		var stat='';
+        if(value=='00'){
+         stat='初始化';
+         
+        }else if(value=='01'){
+           stat='平';
+        }else if(value=='02'){
+           stat='不平';
+          
+        }else if(value=='03'){
+           stat='交易信息不一致';
+        }else if(value=='04'){
+           stat='平台多';
+        }else if(value=='05'){
+           stat='收单多';
+        } else{
+           stat='';
+        }
+        return stat;
+    }   
+    
+
+</script>
+
+
+</body>
+</html>

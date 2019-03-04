@@ -1,0 +1,47 @@
+<div class="pages">
+    <div id="pages" style="display: inline-block;"></div>
+	<div id="page_controller" class="page_controller">
+		<div class="page_showNum"><span id="page_total" class="page_total">共 0 条</span></div>
+	   	<div class="page_showNum">
+	       <label for="pageSizeIpt">每页</label>
+	       <input type="text" class="pageSizeIpt" id="pageSizeIpt" value = "10">
+	       <label for="pageSizeIpt">条</label>
+	   	</div>
+	   	<div class="page_showNum">
+	       <label for="pageNumIpt">跳至</label>
+	       <input type="text" class="pageSizeIpt" id="pageNumIpt">
+	       <label for="pageNumIpt">页</label>
+	   	</div>
+	   	<button id="page_submit" class="page_submit btn btn-primary">跳转</button>
+	</div>
+    <link rel="stylesheet" href="/static/css/bootstrap-pager.css">
+    <script src="/static/js/bootstrap-pager.js"></script>
+    <script>
+        $(function () {
+            $("#pages").page({
+                count: 10,
+                maxPage: 10,
+                pageSize: 10,
+                theme: "normal",
+                pageNum: 1
+            });
+            $("#pageSizeIpt").on('keyup', function () {
+                if (this.value.length == 1) {
+                    this.value = this.value.replace(/[^1-9]/g, '');
+                } else {
+                    this.value = this.value.replace(/\D/g, '');
+                }
+            });
+            $("#pageNumIpt").keyup(function(){
+                if (this.value.length == 1) {
+                    this.value = this.value.replace(/[^1-9]/g, '');
+                } else {
+                    this.value = this.value.replace(/\D/g, '');
+                }
+				if(this.value>gMaxPage){
+					this.value=gMaxPage;
+				}
+            });
+        })
+    </script>
+</div>

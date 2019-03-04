@@ -1,0 +1,808 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm"> <#include
+"/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet"
+	href="${RootPath}static/gzf/css/form.css" />
+<script src="${RootPath}static/gzf/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/localdata.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/loading1.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/errorMessage.js"></script>
+
+
+<script language="javascript" type="text/javascript">
+	//全局数据列表
+	var GLOBLE_LIST;
+	//全局请求方式
+	var TYPE;
+	//获取分页数据strtLoDataval
+	function pageDate(curr, eachPaNum) {
+		loading(true)
+		var txstart = $('#txnStDt').val();
+		var txend = $('#txnEdDt').val()
+		var data = {
+			"strtLoDataval" : curr,
+			"eachPaNum" : parseInt(eachPaNum),
+			"txnStDt" : txstart,
+			"txnEdDt" : txend
+		};
+
+		jQuery.ajax({
+			url : "${RootPath}manage/queryorder/orderList",
+			type : "post",
+			data : data,
+			dataType : 'json',
+			success : function(data) {
+				loading(false);
+			
+
+				if (data.code == '0') {
+
+					TYPE = "pageDate";
+					GLOBLE_LIST = data.oboList;
+					RCRD_TOT_NUM = data.obo.rcrdTotData;
+					pageChange(data.oboList);
+					pageStart(data.obo.rcrdTotData, 'all');
+				} else {
+					$("#show").empty();
+					var text = "没有订单信息";
+  		            none_data(text);
+				}
+			},
+			error : function(errorData) {
+
+				$("#show").empty();
+				loading(false);
+				var message = JSON.parse(errorData.responseText).message;
+				errorMessage(true, message);
+
+			}
+		});
+	};
+
+	var dateFormat = function(date, mask) {
+
+		var d = date;
+		if (!date) {
+	
+			return '';
+		}
+		if (!d.toUTCString) {
+			d = new Date(date);
+		}
+		if (Object.prototype.toString.call(d) != '[object Date]') {
+		
+			return '';
+		}
+		if (d.toString() == 'Invalid Date') {
+		
+			return '';
+		}
+		if (!mask) {
+		
+			return '';
+		}
+		var zeroize = function(value, length) {
+
+			if (!length)
+				length = 2;
+
+			value = String(value);
+
+			for (var i = 0, zeros = ''; i < (length - value.length); i++) {
+
+				zeros += '0';
+
+			}
+
+			return zeros + value;
+
+		};
+
+		return mask
+				.replace(
+						/"[^"]*"|'[^']*'|\b(?:d{1,4}|M{1,4}|yy(?:yy)?|([hHmstT])\1?|[lLZ])\b/g,
+						function($0) {
+
+							switch ($0) {
+
+							case 'd':
+								return d.getDate();
+
+							case 'dd':
+								return zeroize(d.getDate(), 2);
+
+							case 'ddd':
+								return [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thr',
+										'Fri', 'Sat' ][d.getDay()];
+
+							case 'dddd':
+								return [ 'Sunday', 'Monday', 'Tuesday',
+										'Wednesday', 'Thursday', 'Friday',
+										'Saturday' ][d.getDay()];
+
+							case 'M':
+								return d.getMonth() + 1;
+
+							case 'MM':
+								return zeroize(d.getMonth() + 1, 2);
+
+							case 'MMM':
+								return [ 'Jan', 'Feb', 'Mar', 'Apr', 'May',
+										'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
+										'Nov', 'Dec' ][d.getMonth()];
+
+							case 'MMMM':
+								return [ 'January', 'February', 'March',
+										'April', 'May', 'June', 'July',
+										'August', 'September', 'October',
+										'November', 'December' ][d.getMonth()];
+
+							case 'yy':
+								return String(d.getFullYear()).substr(2);
+
+							case 'yyyy':
+								return d.getFullYear();
+
+							case 'h':
+								return d.getHours() % 12 || 12;
+
+							case 'hh':
+								return zeroize(d.getHours() % 12 || 12, 2);
+
+							case 'H':
+								return d.getHours();
+
+							case 'HH':
+								return zeroize(d.getHours(), 2);
+
+							case 'm':
+								return d.getMinutes();
+
+							case 'mm':
+								return zeroize(d.getMinutes(), 2);
+
+							case 's':
+								return d.getSeconds();
+
+							case 'ss':
+								return zeroize(d.getSeconds(), 2);
+
+							case 'l':
+								return zeroize(d.getMilliseconds(), 3);
+
+							case 'L':
+								var m = d.getMilliseconds();
+
+								if (m > 99)
+									m = Math.round(m / 10);
+
+								return zeroize(m, 3);
+
+							case 'tt':
+								return d.getHours() < 12 ? 'am' : 'pm';
+
+							case 'TT':
+								return d.getHours() < 12 ? 'AM' : 'PM';
+
+							case 'Z':
+								return d.toUTCString().match(/[A-Z]+$/);
+
+								// Return quoted strings with the surrounding quotes removed
+
+							default:
+								return $0.substr(1, $0.length - 2);
+
+							}
+
+						});
+	};
+
+	$(document).ready(
+			function() {
+				var date = new Date();
+
+				document.getElementById("txnStDt").value = dateFormat(date,
+						"yyyy-MM-dd");
+				document.getElementById("txnEdDt").value = dateFormat(date,
+						"yyyy-MM-dd");
+			
+
+				pageDate(1, 15);
+			});
+	function finddata(){
+		// var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+		$("#pageCause")[0].value = "";
+		pageNum = 1;
+		$(".page select")[0].value = EACH_PA_NUM;
+		find(1,EACH_PA_NUM);
+	};
+	//按条件查询
+	function find(curr, eachPaNum) {
+		loading(true);
+	
+		if ($('#pyOrdrNo').val() || $('#pySubOrdrNo').val()
+				|| $('#txnStDt').val() || $('#txnEdDt').val()
+				|| $('#subOrdrStCd').val()) {
+
+			jQuery.ajax({
+				url : "/manage/queryorder/linkQueryOrder",
+				type : "post",
+				data : {
+					"pyOrdrNo" : $('#pyOrdrNo').val(),
+					"pySubOrdrNo" : $('#pySubOrdrNo').val(),
+					"txnStDt" : $('#txnStDt').val(),
+					"txnEdDt" : $('#txnEdDt').val(),
+					"subOrdrStCd" : $('#subOrdrStCd').val(),
+					"eachPaNum" : eachPaNum,
+					"strtLoDataval" : curr
+				},
+				dataType : 'json',
+				success : function(data) {
+					loading(false);
+				
+					if (data.code == '0') {
+						TYPE = "find";
+						//数据列表
+						GLOBLE_LIST = data.oboList;
+						//数据总数
+						RCRD_TOT_NUM = data.obo.rcrdTotData;
+						pageChange(data.oboList);
+						pageStart(data.obo.rcrdTotData);
+					} else {
+						$("#show").empty();
+						var text = "没有订单信息";
+  		                none_data(text);
+					}
+				},
+				error : function(errorData) {
+
+					$("#show").empty();
+					loading(false);
+					var message = JSON.parse(errorData.responseText).message;
+					errorMessage(true, message);
+					failopen();
+
+				}
+			});
+		} else {
+			var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value
+					: 15;
+			pageDate(1, EACH_PA_NUM);
+		}
+	};
+	//分页逻辑 
+	var pageNum = 1;
+	var RCRD_TOT_NUM;
+var EACH_PA_NUM = 15; //每页显示条数
+	function pageStart(rcrdTotData) {
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value
+				: 15;
+		//总条数
+
+		$("#allNum")[0].innerHTML = rcrdTotData;
+		//总页数
+		$("#allPage")[0].innerHTML = Math.ceil(rcrdTotData / eachPaNum);
+	//当前页数
+	$("#numPage")[0].innerHTML = pageNum;
+		//首页按钮控制
+		if (pageNum == 1) {
+			$("#firstPage")[0].setAttribute("onclick", "return false;");
+			$("#firstPage")[0].style.cursor = 'default';
+		} else {
+			$("#firstPage")[0].setAttribute("onclick", "firstPage()");
+			$("#firstPage")[0].style.cursor = 'pointer';
+		}
+		;
+		//上一页按钮控制
+		if (pageNum == 1) {
+			$("#oncePage")[0].setAttribute("onclick", "return false;");
+			$("#oncePage")[0].style.cursor = 'default';
+		} else {
+			$("#oncePage")[0].setAttribute("onclick", "oncePage()");
+			$("#oncePage")[0].style.cursor = 'pointer';
+		}
+		;
+		//下一页按钮控制
+		if (pageNum == Math.ceil(rcrdTotData / eachPaNum)) {
+			$("#afterPage")[0].setAttribute("onclick", "return false;");
+			$("#afterPage")[0].style.cursor = 'default';
+		} else {
+			$("#afterPage")[0].setAttribute("onclick", "afterPage()");
+			$("#afterPage")[0].style.cursor = 'pointer';
+		}
+		;
+		//末页按钮状态控制
+		if (pageNum == Math.ceil(rcrdTotData / eachPaNum)) {
+			$("#endPage")[0].setAttribute("onclick", "return false;");
+			$("#endPage")[0].style.cursor = 'default';
+		} else {
+			$("#endPage")[0].setAttribute("onclick", "endPage()");
+			$("#endPage")[0].style.cursor = 'pointer';
+		}
+		;
+	};
+	//首页
+	function firstPage() {
+		var curr = 1;
+		pageNum = 1
+	//	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+$(".page select")[0].value = EACH_PA_NUM
+		if (TYPE == "pageDate") {
+			pageDate(curr, EACH_PA_NUM);
+		} else if (TYPE == "find") {
+			find(curr, EACH_PA_NUM)
+		} else {
+			return false;
+		}
+		$("#pageCause")[0].value = "";
+	};
+	//上一页
+	function oncePage() {
+		var curr = Number(pageNum) - 1;
+		//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value	: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+		if (TYPE == "pageDate") {
+			pageDate(curr, EACH_PA_NUM);
+		} else if (TYPE == "find") {
+			find(curr, EACH_PA_NUM)
+		} else {
+			return false;
+		}
+		pageNum--;
+		$("#pageCause")[0].value = "";
+	};
+	//下一页
+	function afterPage() {
+		var curr = Number(pageNum) + 1;
+		//var curr = pageNum + 1;
+		//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value	: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+		if (TYPE == "pageDate") {        
+			pageDate(curr, EACH_PA_NUM);
+		} else if (TYPE == "find") {
+			find(curr, EACH_PA_NUM)
+		} else {
+			return false;
+		}
+		pageNum++;
+		$("#pageCause")[0].value = "";
+	};
+	//末页
+	function endPage() {
+	//	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value	: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+		var curr = Math.ceil(RCRD_TOT_NUM / EACH_PA_NUM);
+		pageNum = curr;
+		if (TYPE == "pageDate") {
+			pageDate(curr, EACH_PA_NUM);
+
+		} else if (TYPE == "find") {
+
+			find(curr, EACH_PA_NUM)
+		} else {
+			return false;
+		}
+		$("#pageCause")[0].value = "";
+	};
+	//转到
+	function pageUpdate() {
+
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value	: 15;
+		var curr = $("#pageCause")[0].value ? $("#pageCause")[0].value : 1;
+EACH_PA_NUM = eachPaNum;
+		if (curr > 0 && curr <= Math.ceil(RCRD_TOT_NUM / eachPaNum)) {
+			pageNum = curr;
+			if (TYPE == "pageDate") {
+				pageDate(curr, eachPaNum)
+			} else if (TYPE == "find") {
+				find(curr, eachPaNum)
+			} else {
+				alert('TYPE错误')
+				return false;
+			}
+		} else if (Number(curr) <= 0) {
+			curr = 1;
+			pageNum = curr;
+			$("#pageCause")[0].value = curr;
+			if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+			}else if(TYPE == "find"){
+				find(curr,eachPaNum)
+			}else{
+				alert('TYPE错误')
+				return false;
+			}
+	}else if(curr > Math.ceil(RCRD_TOT_NUM/eachPaNum)){
+		curr = Math.ceil(RCRD_TOT_NUM/eachPaNum);
+		pageNum = curr;
+		$("#pageCause")[0].value = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+	}
+	}else{
+		$("#pageCause")[0].value = "";
+		alert('请输入一个正确的页数')
+		return false;
+		}
+	};
+	function pageNumChange(_this){
+		var curr = 1;
+		pageNum = 1
+		var eachPaNum = _this.value ? _this.value: 15;
+		EACH_PA_NUM = eachPaNum;	
+		if(TYPE == "pageDate"){
+			pageDate(curr,EACH_PA_NUM);
+		}else if(TYPE == "find"){
+			find(curr,EACH_PA_NUM)
+		}else{
+			return false;
+		}
+		$("#pageCause")[0].value = "";
+	}
+	//分页数据返回修改
+	function pageChange(oboList, eachPaNum, type) {
+		deleate_none_data();
+		if (oboList.length > 0) {
+			var htmlStr = '';
+			for (var i = 0; i < oboList.length; i++) {
+				htmlStr += '<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '">';
+				htmlStr += '<td>'
+						+ (oboList[i].pySubOrdrNo ? oboList[i].pySubOrdrNo : "")
+						+ '</td>';
+				htmlStr += '<td>'
+						+ (oboList[i].feeItmPrjAmt ? oboList[i].feeItmPrjAmt
+								: "") + '</td>';
+				htmlStr += '<td>'
+						+ (oboList[i].feeItmPrjUsrNo ? oboList[i].feeItmPrjUsrNo
+								: "") + '</td>';
+				htmlStr += '<td>'
+						+ (oboList[i].rvPyUntNm ? oboList[i].rvPyUntNm : "")
+						+ '</td>';
+				htmlStr += '<td >' + (oboList[i].stmDt ? oboList[i].stmDt : "")+" "+ (oboList[i].stmTm ? oboList[i].stmTm : "")
+						+ '</td>';
+				htmlStr += '<td>'
+						+ (oboList[i].feeItmPrjNm ? oboList[i].feeItmPrjNm : "")
+						+ '</td>';
+				//htmlStr += '<td>'
+				//		+ (oboList[i].ordrNo ? oboList[i].ordrNo : "")
+				//		+ '</td>';
+				if (oboList[i].subOrdrStCd == "1") {
+					htmlStr += '<td>待缴费</td>';
+				} else if (oboList[i].subOrdrStCd == "2") {
+					htmlStr += '<td>缴费成功</td>';
+				} else if (oboList[i].subOrdrStCd == "3") {
+					htmlStr += '<td>缴费失败</td>';
+				} else if (oboList[i].subOrdrStCd == "4") {
+					htmlStr += '<td>待退费</td>';
+				} else if (oboList[i].subOrdrStCd == "6") {
+					htmlStr += '<td>失效</td>';
+				} else if (oboList[i].subOrdrStCd == "7") {
+					htmlStr += '<td>已部分退费</td>';
+				} else if (oboList[i].subOrdrStCd == "8") {
+					htmlStr += '<td>已全额退费</td>';
+				} else if (oboList[i].subOrdrStCd == "9") {
+					htmlStr += '<td>取消</td>';
+				} else if (oboList[i].subOrdrStCd == "0") {
+					htmlStr += '<td>退费失败</td>';
+				}else if (oboList[i].subOrdrStCd == "a") {
+					htmlStr += '<td>' + "处理中" + '</td>';
+				}else if (oboList[i].subOrdrStCd == "b") {
+					htmlStr += '<td>' + "待冲正" + '</td>';
+				}else {
+					htmlStr += '<td></td>';
+				}
+				htmlStr += '<td>';
+				htmlStr += '<a href="${RootPath}manage/queryorder/orderdetail?pySubOrdrNo='
+						+ oboList[i].pySubOrdrNo + '&&pyOrdrNo=' + oboList[i].pyOrdrNo
+						+ '#/manage/queryorder/queryorder.html" class="blue">查看明细</a>';
+				htmlStr += '</td>';
+				htmlStr += '</tr>';
+			}
+			jQuery('#show').html(htmlStr);
+		} else {
+			jQuery('#show').html('');
+			var text = "未查询到符合条件记录";
+  		    none_data(text);
+
+
+		}
+
+	};
+
+	//空数据展示
+	function none_data(text) {
+		var div = document.createElement("div");
+		if (document.getElementById("none-data").childNodes.length == 0) {
+			div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+			div.innerHTML = text;
+			document.getElementById("none-data").appendChild(div);
+		} else {
+			deleate_none_data();
+			div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+			div.innerHTML = text;
+			document.getElementById("none-data").appendChild(div);
+		}
+	};
+	// 消除非空数据提示
+	function deleate_none_data() {
+		if (document.getElementById("none-data").childNodes.length != 0) {
+			//var parent = document.getElementById("none-data");
+			//parent.removeChild(parent.childNodes[0]);
+			$("#none-data").empty();
+		} else {
+			return;
+		}
+	};
+	function likeQueryOrder() {
+		$.ajax({
+					url : '/manage/queryorder/linkQueryOrder',
+					type : "post",
+					data : {
+						"pyOrdrNo" : $('#pyOrdrNo').val(),
+						"pySubOrdrNo" : $('#pySubOrdrNo').val(),
+						"txnStDt" : jQuery('#txnStDt').val(),
+						"txnEdDt" : jQuery('#txnEdDt').val(),
+						"subOrdrStCd" : jQuery('#subOrdrStCd').val()
+					},
+					dataType : 'json',
+					success : function(data) {
+						var items = data.list;
+						$("#show").empty();
+						
+						for (var i = 0; i < items.length; i++) {
+							var tr = '<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '">';
+
+							tr += '<td>'
+									+ (items[i].pySubOrdrNo ? items[i].pySubOrdrNo
+											: "") + '</td>';
+							tr += '<td>'
+									+ (items[i].feeItmPrjAmt ? items[i].feeItmPrjAmt
+											: "") + '</td>';
+							tr += '<td>'
+									+ (items[i].feeItmPrjUsrNo ? items[i].feeItmPrjUsrNo
+											: "") + '</td>';
+
+							tr += '<td>'
+									+ (items[i].rvPyUntNm ? items[i].rvPyUntNm
+											: "") + '</td>';
+							tr += '<td>'
+									+ (items[i].stmDt ? items[i].stmDt : "")+" "+ (items[i].stmTm ? items[i].stmTm : "")
+									+ '</td>';
+							tr += '<td>'
+									+ (items[i].feeItmPrjNm ? items[i].feeItmPrjNm
+											: "") + '</td>';
+							//htmlStr += '<td>'
+							//			+ (oboList[i].ordrNo ? oboList[i].ordrNo : "")
+							//		+ '</td>';
+							if (items[i].subOrdrStCd == "1") {
+								tr += '<td>' + "待缴费" + '</td>';
+							} else if (items[i].subOrdrStCd == "2") {
+								tr += '<td>' + "缴费成功" + '</td>';
+							} else if (items[i].subOrdrStCd == "3") {
+								tr += '<td>' + "缴费失败" + '</td>';
+							} else if (items[i].subOrdrStCd == "4") {
+								tr += '<td>' + "待退费" + '</td>';
+							}else if (items[i].subOrdrStCd == "6") {
+								tr += '<td>' + "失效" + '</td>';
+							} else if (items[i].subOrdrStCd == "7") {
+								tr += '<td>' + "已部分退费" + '</td>';
+							} else if (items[i].subOrdrStCd == "8") {
+								tr += '<td>' + "已全额退费" + '</td>';
+							} else if (items[i].subOrdrStCd == "9") {
+								tr += '<td>' + "取消" + '</td>';
+							} else if (items[i].subOrdrStCd == "a") {
+								tr += '<td>' + "处理中" + '</td>';
+							}else if (items[i].subOrdrStCd == "b") {
+								tr += '<td>' + "待冲正" + '</td>';
+							}else {
+								tr += '<td></td>';
+							}
+
+							tr += '<td><a href="/manage/queryorder/orderdetail?pySubOrdrNo='
+									+ items[i].pySubOrdrNo
+									+ '#/manage/queryorder/querorder.html" class="blue">查看明细</a></td>';
+							tr += '</tr>';
+
+							$("#show").append(tr);
+						}
+					},
+					error : function(data) {
+						errorMessage(true,message);
+					}
+				});
+	};
+	
+	
+	function abc() {  
+		var jsonStr = '{"Itt_Chnl_ID":"1","Itt_Party_Stm_ID":"00001","Pgfc_Ret_URL_Adr":"http://baidu.com","Usr_ID":"987654","ccy":"159","cmdtyOrdrNo":"2018060113191468832699","feeItmCd":"bmjf-sf","feeItmPrjAmt":2,"feeItmPrjNm":"水费","feeItmPrjUsrNo":"123","ittPartyJrnlNo":"1233000","ittPartyTms":"20183801033816718","onLnOflnIndCd":"1","oprNo":"00001","pyChnlCd":"1","rvPyUntCd":"24FBECAC12064A4A8700428D8C1C4E97","rvPyUntNm":"水务公司","sIGN_INF":"cYmuUnKi5QdBsoZEAbMXVMmRWjsuUj+y48A2DvWAVVBuYkiBj13CFDHu2vZQvmOfkjE0YqCUQE04kqm9Xg3tIX8tPeIGIFtsIyp/M45w1ZsDOiduBbduGfRo1XRsvAyVAv2hCrBLLrDI5Vi7uZZ77Lo5J0PpUUWwyQGt0M4cj8g=","vNo":134567}';
+
+		jQuery.ajax({
+			url : '/online/ordr',
+			type : "post",
+			data : {
+				jsonStr : jsonStr,
+			},
+			dataType : 'json',
+			success : function(d) {
+				
+			},
+			error : function(d) {
+				//selectStat();
+			}
+		});
+	}
+    	
+        
+	
+	
+</script>
+</head>
+<body>
+	<#include "/common/admin/headinfo.htm">
+	
+	<div class="cm-wrapper">
+		<div class="cm-center">
+			<!--
+			<div class="cm-sitemap">
+				<div class="fl navinfo">
+					<span>您现在的位置：</span> <span><a href="${SysSite}">我的管理首页</a></span> <span>&nbsp;&gt;&nbsp;</span>
+					<span>功能菜单</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			-->
+			<div class="cm-center">
+				<div class="cm-pagebody">
+					<div class="fl leftbody">
+						<div class="titlediv">
+							<div class="tname">功能菜单</div>
+						</div>
+						<div class="menusdiv">
+							<div class="menus padding">${MenuHtml!}</div>
+						</div>
+					</div>
+					<div class="rightbody">
+						<table class="path">
+							<tr>
+								<td class="path_icon">&nbsp;</td>
+								<td>您的位置: 首页 >> 支付订单管理 >> 订单查询</td>
+							</tr>
+						</table>
+						<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>订单查询</td>
+							</tr>
+						</table>
+						<form action="" method="post">
+
+							<table class="table_search">
+
+								<tr>
+									<td>
+										<form id="J_form">
+											<table>
+												<tr>
+													<th>支付流水号</th>
+													<td><input type="text" class="text4" id="pySubOrdrNo"
+														name="pySubOrdrNo" /></td>
+													<th>支付订单号</th>
+													<td><input id="pyOrdrNo" name="pyOrdrNo" type="text"
+														class="text4" /></td>
+
+													<th>状态</th>
+													<td><select id="subOrdrStCd" class="select4">
+															<option selected="selected" value="">请选择</option>
+															<option value="1">待缴费</option>
+															<option value="2">缴费成功</option>
+															<option value="3">缴费失败</option>
+
+															<option value="4">待退费</option>
+															<option value="6">失效</option>
+															<option value="7">已部分退费</option>
+															<option value="8">已全额退费</option>
+															<option value="9">取消</option>
+															<option value="0">退费失败</option>
+															<option value="a">处理中</option>
+															<option value="b">待冲正</option>
+													</select></td>
+												</tr>
+												<tr>
+													<th>开始日期</th>
+													<td><input name="txnStDt" id="txnStDt" type="text"
+														onClick="WdatePicker();" class="date" class="Wdate" /></td>
+													<th>结束日期</th>
+													<td><input name="txnEdDt" id="txnEdDt" type="text"
+														onClick="WdatePicker();" class="date" /></td>
+													<th>&nbsp;</th>
+													<td><input onclick="finddata(0,15);" type="button"
+														value="查询" class="search" /></td>
+<!-- <h1><a onclick="abc();">来呀，点我</a></h1> -->
+												</tr>
+
+											</table>
+										</form>
+									</td>
+								</tr>
+							</table>
+						</form>
+						<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>订单列表</td>
+							</tr>
+						</table>
+						<table class="table_list">
+							<thead id="head"></thead>
+							<tr>
+
+								<th width=17%>支付流水号</th>
+
+								<th width=10%>缴费金额</th>
+								<th width=10%>缴费户号</th>
+								<th width=14%>缴费单位</th>
+								<th width=11%>缴费时间</th>
+								<th width=10%>缴费事项</th>
+								<!--  <th>订单号</th> -->
+								<th width=10%>订单状态</th>
+								<th width=8%>操作</th>
+							</tr>
+							<tbody id="show">
+
+							</tbody>
+						</table>
+
+
+						<!-- 空数据展示 -->
+						<div id="none-data"></div>
+						<!-- 分页 -->
+						<table class="page">
+							<tr>
+								<td>每页显示记录 <select name="select" onchange="pageNumChange(this)" class="text1" >
+										
+										<option value="15" selected>15</option>
+										<option value="30">30</option>
+										<option value="50">50</option>
+										<option value="100">100</option>
+								</select> &nbsp;&nbsp;共<span id="allNum"> -- </span>条
+								</td>
+								<td class="tr">
+								<a href="javascript:void(0)" class="button8" onclick="firstPage()" id="firstPage">首页</a>
+								<a href="javascript:void(0)" class="button8" onclick="oncePage()" id="oncePage">上一页</a>
+			              		 <a href="javascript:void(0)" class="button8" onclick="afterPage()" id="afterPage">下一页</a>
+			              		 <a href="javascript:void(0)" class="button8" onclick="endPage()" id="endPage">末页</a> 
+			              		 到第 <input name="" type="text" class="text1" size="2" id="pageCause" /> 页
+			              		  &nbsp;&nbsp;当前第<span id="numPage">--</span>页 &nbsp;&nbsp;共<span id="allPage">--</span>页&nbsp;&nbsp;
+									<input name="input3" value="转到" class="button8" onclick="pageUpdate()" /></td>
+							</tr>
+						</table>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "/common/admin/bottom.htm">
+</body>
+</html>

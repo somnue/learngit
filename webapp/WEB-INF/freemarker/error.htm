@@ -1,0 +1,56 @@
+<style>
+.error404{
+	margin:30px auto;
+	min-height:400px;
+}
+.error404 .left{
+	width:200px;
+	text-align:center;
+}
+.error404 h2{
+	font-size:26px;
+	line-height:1.5;
+	color:#333;
+	font-weight:100;
+}
+.error404 h5{
+	font-size:16px;
+	line-height:1.5;
+	color:#ff0033;
+	margin-left:0;
+	font-weight:100;
+}
+.error404 h6{
+	font-size:14px;
+	line-height:1.5;
+	color:#999;
+	margin-top:20px;
+	font-weight:100;
+	margin-bottom:6px;
+}
+.error404 p{
+	font-size:14px;
+	line-height:1.5;
+	color:#666;
+}
+.error404 a{
+	color: #09F;
+	margin-left:8px;
+}
+.error404 img{
+	margin-left:8px;
+	margin-right:8px;
+}
+</style>
+<table class="error404">
+  <tr>
+    <td class="left"><img src="/static/gzf/images/sys-error.jpg" /></td>
+    <td>
+    	<h2>您访问的页面出错了！</h2>
+        <h5>可能的原因：${message!}</h5>
+        <h6>继续进行操作：</h6>
+        <p>1、您可以<a href="javascript:void(0);" onclick="javascript:history.go(-1);return false;">返回上一个页面</a></p>
+        <p>2、您可以<a href="/logout.html">返回首页</a></p>
+    </td>
+  </tr>
+</table>

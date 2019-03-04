@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/operatorAdmin.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>操作员管理</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="operatorNum">操作员编号:</label>
+                        <input type="text" class="form-control" id="operatorNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="operatorName">操作员姓名:</label>
+                        <input type="text" class="form-control" id="operatorName">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+                <div class="btn-group operateBtns" role="group">
+                    <a id="addOperator" href="./operateWeb" class="btn btn-default">
+                        新增
+                    </a>
+                    <button id="changeOperator" type="button" class="btn btn-default">修改</button>
+                    <button id="writeOn" type="button" class="btn btn-default">启用</button>
+                    <button id="writeOff" type="button" class="btn btn-default">注销</button>
+                    <button id="operatorAllotRoleBtn" type="button" class="btn btn-default">角色分配</button>
+                    <button id="resetPsw" type="button" class="btn btn-default">密码重置</button>
+                </div>
+            </div>
+            <div class="infTable noButtons">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="operateRadiosBox">选择</th>
+                        <th>序号</th>
+                        <th>操作员编号</th>
+                        <th>操作员姓名</th>
+                        <th>证件号码</th>
+                        <th>所属机构</th>
+                        <th>操作员状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide" id="pages_pageHide">
+            	<#include "./common/pages.html">
+            </div>
+        </div>
+    </div>
+</div>
+<#include "./common/footer.htm">
+
+<div class="modal fade backModal" id="radioAlertModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                请选择一名操作员！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade backModal" id="writeOffModal" tabindex="-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="writeOffBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="writeOffOk">确定</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade backModal" id="writeOnModal" tabindex="-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="writeOnBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="writeOnOk">确定</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade backModal" id="resetPswModal" tabindex="-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="resetPswBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="resetPswOk">确定</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td class="operateRadiosBox">
+            <input type="radio" data-unm="{{value.userName}}" name="operateRadios" value="{{value.userId}}">
+        </td>
+        <td>{{(pageNum-1) * pageSize + i + 1}}</td>
+        <td>{{value.userName}}</td>
+        <td>{{value.name}}</td>
+        <td>{{value.crdtId}}</td>
+        <td>{{value.blngInsNo}}</td>
+        {{if value.state==0}}
+        <td>已启用</td>
+        {{else if value.state==1}}
+        <td>已注销</td>
+        {{/if}}
+        <td>{{value.remark}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

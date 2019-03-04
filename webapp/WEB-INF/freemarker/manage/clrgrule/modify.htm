@@ -1,0 +1,497 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+
+</head>
+
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 清算管理 >> 清算规则管理</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>修改</td>
+  </tr>
+</table>
+<table class="table_submit">
+    <tr>
+      <th>清算计费代码</th>
+      <td><input name="" type="text" class="text3" value="001" /></td>
+      <th>清算计费名称</th>
+      <td><input name="" type="text" class="text3" value="000" /></td>
+    </tr>
+    <tr>
+      <th>清算日期</th>
+      <td>T + <input name="" type="text" class="text3" size="16" value="1" /></td>
+      <th>清算次数</th>
+      <td>
+          <select name="" class="text3" id="typeIDD">
+              <option value="0">请选择</option>
+              <option dataidd="#1m" value="1" selected="selected">1日1次</option>
+              <option dataidd="#2m" value="2">1日2次</option>
+              <option dataidd="#3m" value="3">1日3次</option>
+              <!--<option value="4">实时</option>-->
+          </select>
+      </td>
+    </tr>
+    <tr id="tdTT" style="">
+      <td colspan="4" class="hidden2">
+          <!--1日1次-->
+            <table class="form_tab_content" id="1m" style="">
+              <tr>
+                <th>时间点</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+            <!--1日2次-->
+            <table class="form_tab_content" id="2m" style="display:none;">
+              <tr>
+                <th>时间点1</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+                <th>时间点2</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+            <!--1日3次-->
+            <table class="form_tab_content" id="3m" style="display:none;">
+              <tr>
+                <th>时间点1</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+                <th>时间点2</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+                <th>时间点3</th>
+                <td>
+                  <select name="" class="text3">
+                      <option value="0">00:00</option>
+                      <option value="0">01:00</option>
+                      <option value="0">02:00</option>
+                      <option value="0">03:00</option>
+                      <option value="0">04:00</option>
+                      <option value="0">05:00</option>
+                      <option value="0">06:00</option>
+                      <option value="0">07:00</option>
+                      <option value="0">08:00</option>
+                      <option value="0">09:00</option>
+                      <option value="0">11:00</option>
+                      <option value="0">12:00</option>
+                      <option value="0">13:00</option>
+                      <option value="0">14:00</option>
+                      <option value="0">15:00</option>
+                      <option value="0">16:00</option>
+                      <option value="0">17:00</option>
+                      <option value="0">18:00</option>
+                      <option value="0">19:00</option>
+                      <option value="0">20:00</option>
+                      <option value="0">21:00</option>
+                      <option value="0">22:00</option>
+                      <option value="0">23:00</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+      </td>
+    </tr>
+    <tr>
+      <th>清算方式</th>
+      <td>
+      	<select name="select" class="text3" id="typeID">
+            <option value="1">全额</option>
+            <option dataid="#1t" value="2">固定金额</option>
+            <option dataid="#2t" value="3" selected="selected">固定比例</option>
+            <option dataid="#3t" value="4">混合模式</option>
+        </select>
+
+      </td>
+      <th></th>
+      <td></td>
+    </tr>
+    <tr id="tdT" style="">
+      <td colspan="4" class="hidden2">
+          <!--固定金额-->
+          <table class="form_tab_content" id="1t" style="display:none;">
+            <tr>
+              <th>金额</th>
+              <td><input name="" type="text" class="text3" value="" /> 元</td>
+              <th>收款账户</th>
+              <td>
+                <select name="" class="text3">
+                    <option value="1">账号1</option>
+                    <option value="2">账号2</option>
+                    <option value="3">账号3</option>
+                    <option value="4">账号4</option>
+                    <option value="5">账号5</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>剩余金额</th>
+              <td><input name="" type="text" class="text3" value="" /> 元</td>
+              <th>收款账户</th>
+              <td>
+                <select name="" class="text3">
+                    <option value="1">账号1</option>
+                    <option value="2">账号2</option>
+                    <option value="3">账号3</option>
+                    <option value="4">账号4</option>
+                    <option value="5">账号5</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          <!--固定比例-->
+          <table class="form_tab_content" id="2t" style="">
+            <tr>
+              <th>比例</th>
+              <td><input name="" type="text" class="text3" value="" /> %</td>
+              <th>收款账户</th>
+              <td>
+                <select name="" class="text3">
+                    <option value="1">账号1</option>
+                    <option value="2">账号2</option>
+                    <option value="3">账号3</option>
+                    <option value="4">账号4</option>
+                    <option value="5">账号5</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>剩余比例</th>
+              <td><input name="" type="text" class="text3" value="" /> %</td>
+              <th>收款账户</th>
+              <td>
+                <select name="" class="text3">
+                    <option value="1">账号1</option>
+                    <option value="2">账号2</option>
+                    <option value="3">账号3</option>
+                    <option value="4">账号4</option>
+                    <option value="5">账号5</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+          <!--混合模式-->
+          <div id="3t" style="display:none;">
+            <div class="title">
+            	<h5 class="fl">账户1</h5>
+                <div class="fr"><input name="" type="button" value="新增账户" class="button7" /></div>
+            </div>
+            <table class="form_tab_content">
+              <tr>
+                <th>收款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>收款账户</th>
+                <td>
+                	<input type="text" class="text3" value="6226 **** **** ****">
+                </td>
+              </tr>
+              <tr>
+                <th>退款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>退款账户</th>
+                <td><input type="text" class="text3" value="6226 **** **** ****"></td>
+              </tr>
+              <tr>
+                <th>收款方式</th>
+                <td>
+                	<!--<p class="mb"><label for="a"><input id="a" type="radio" name="1" /> 全额</label></p>-->
+                    <!--<p class="mb"><label for="b"><input id="b" type="radio" name="1" />  剩余全额</label></p>-->
+                    <p class="mb"><label for="c"><input id="c" type="radio" name="1" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                    <p class="mb"><label for="d"><input id="d" type="radio" name="1"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="10" />  %</p>
+                </td>
+                <th></th>
+                <td></td>
+              </tr>
+            </table>
+            <div class="title">
+            	<h5 class="fl">账户2</h5>
+                <div class="fr"><input name="" type="button" value="删除账户" class="button7" /></div>
+            </div>
+            <table class="form_tab_content">
+              <tr>
+                <th>收款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>收款账户</th>
+                <td>
+                	<input type="text" class="text3" value="6226 **** **** ****">
+                </td>
+              </tr>
+              <tr>
+                <th>退款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>退款账户</th>
+                <td><input type="text" class="text3" value="6226 **** **** ****"></td>
+              </tr>
+              <tr>
+                <th>收款方式</th>
+                <td>
+                	<!--<p class="mb"><label for="a"><input id="a" type="radio" name="2" /> 全额</label></p>-->
+                    <p class="mb"><label for="b"><input id="b" type="radio" name="2" />  剩余金额</label></p>
+                    <p class="mb"><label for="c"><input id="c" type="radio" name="2" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                    <p class="mb"><label for="d"><input id="d" type="radio" name="2"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="90" />  %</p>
+                </td>
+                <th></th>
+                <td></td>
+              </tr>
+            </table>
+            <div class="title">
+                <h5 class="fl">账户3</h5>
+                <div class="fr"><input name="" type="button" value="删除账户" class="button7" /></div>
+            </div>
+            <table class="form_tab_content">
+              <tr>
+                <th>收款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>收款账户</th>
+                <td>
+                	<input type="text" class="text3" value="6226 **** **** ****">
+                </td>
+              </tr>
+              <tr>
+                <th>退款银行</th>
+                <td>
+                	<select name="select" class="text3">
+                      <option value="1" selected="selected">中国建设银行</option>
+                      <option value="2">000</option>
+                      <option value="3">000</option>
+                    </select>
+                </td>
+                <th>退款账户</th>
+                <td><input type="text" class="text3" value="6226 **** **** ****"></td>
+              </tr>
+              <tr>
+                <th>收款方式</th>
+                <td>
+                	<!--<p class="mb"><label for="a"><input id="a" type="radio" name="2" /> 全额</label></p>-->
+                    <p class="mb"><label for="b"><input id="b" type="radio" name="2" />  剩余金额</label></p>
+                    <p class="mb"><label for="c"><input id="c" type="radio" name="2" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                    <p class="mb"><label for="d"><input id="d" type="radio" name="2"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="" />  %</p>
+                </td>
+                <th></th>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+      </td>
+    </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="确定" class="button3" onclick="location.href='6-9.html'" />
+    <input name="" type="button" value="取消" class="button3" onclick="javascript:history.go(-1);return false;" />
+    </td>
+  </tr>
+</table>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+</body>
+</html>
+
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm"> <#include
+"/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet"
+	href="${RootPath}static/gzf/css/form.css" />
+
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/localdata.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script> 
+
+<script language="javascript" type="text/javascript">
+
+
+	function update(){
+		window.location.href = "/manage/pltorder/updatepltorder.html?stmCd=${oboList.stmCd!}#/manage/pltorder/queryplt.html";
+	}
+
+function likeQueryPlt(){
+	var systemcode = $('#stmCd').val();
+	$.ajax({
+		url :'/manage/queryplt/linkQueryPlt.html',
+		type : "post",
+		data :{"stmCd":systemcode},
+		dataType: 'json',
+		success : function(data) {
+			
+			$("#show").empty();
+			   var tr='<tr>';
+			      tr+='<td>'+data.stmCd+'</td>';
+			      tr+='<td>'+data.stmNm+'</td>';
+	    		  tr+='<td>'+data.pltfrmDt+'</td>';
+   			      tr+='<td>'+data.stmStcd+'</td>';
+   			   	  tr+='<td>'+data.acgDt+'</td>';
+   				  tr+='<td>'+data.clrgDt+'</td>';
+   				  tr+='<td>'+data.mtitId+'</td>';
+      			  tr+='</tr>';
+   				$("#show").append(tr);
+		}
+	});
+};
+jQuery(function(){
+	toChinese();
+});
+function toChinese(){
+	var J_stmStcd=jQuery('#J_stmStcd');
+	if('${oboList.stmStcd!}'=="1"){
+		J_stmStcd.html("正常");
+	}else if('${oboList.stmStcd!}'=="2"){
+		J_stmStcd.html("关闭");
+	}else if('${oboList.stmStcd!}'=="3"){
+		J_stmStcd.html("日终处理");
+	}else if('${oboList.stmStcd!}'=="4"){
+		J_stmStcd.html("维护");
+	}else{
+		J_stmStcd.html("");
+	}
+}
+</script>
+</head>
+<body>
+	<#include "/common/admin/headinfo.htm">
+	<div class="cm-wrapper">
+		<div class="cm-center">
+			
+			<div class="cm-center">
+				<div class="cm-pagebody">
+					<div class="fl leftbody">
+						<div class="titlediv">
+							<div class="tname">功能菜单</div>
+						</div>
+						<div class="menusdiv">
+							<div class="menus padding">${MenuHtml!}</div>
+						</div>
+					</div>
+					<div class="rightbody">
+						<table class="path">
+						  <tr>
+						    <td class="path_icon">&nbsp;</td>
+						    <td>您的位置: 首页 >> 公共平台参数</td>
+						  </tr>
+						</table>
+						<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>公共平台参数列表</td>
+							</tr>
+						</table>
+						<table class="table_list">
+							<tr>
+								<th width=12%>系统代码</th>
+								<th width=16%>系统名称</th>
+								<th width=12%>系统日期</th>
+								<th width=12%>系统状态</th>
+								<th width=12%>账务日期</th>
+								<th width=12%>清算日期</th>
+								<th width=12%>管理机构</th>
+								<th width=12%>操作</th>
+							</tr>
+							 <tbody id="show">
+							<tr>
+								<td>${oboList.stmCd!''}</td>
+								<td>${oboList.stmNm!''}</td>
+								<td>${oboList.pltfrmDt!''}</td>
+								<td id="J_stmStcd"></td>
+								<td>${oboList.acgDt!''}</td>
+								<td>${oboList.clrgDt!''}</td>
+								<td>${oboList.mtitId!''}</td>
+								<td><a href="javascript:void(0)" class="blue" onclick="update()">修改</a></td>
+								<!--<td> <input type="button" value="修改" onclick="update()" /></td>-->
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "/common/admin/bottom.htm">
+</body>
+</html>

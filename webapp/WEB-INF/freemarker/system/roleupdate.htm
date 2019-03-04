@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/successMessage.js"></script>
+<script language="javascript" type="text/javascript">
+	console.log(1);
+
+	
+</script>
+
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td><span>您的位置：</span>
+		<span><a href="${MainSite}">首页</a></span>
+		<span>&nbsp;&gt;&gt;&nbsp;</span>
+		<span><a href="${SysSite}admin.html">系统管理</a></span>
+		<span>&nbsp;&gt;&gt;&nbsp;</span>
+		<span><a href="${SysSite}system/role.html">角色管理</a></span>
+		</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>修改</td>
+  </tr>
+</table>
+<table class="table_submit" id="detailspageTableSubmit">
+    <tr>
+      <th><span class="must">*</span>角色名称：</th>
+      <td width=40%>
+        <input id="roleName" name="roleName" title="角色名称" required="true" datatitle="角色名称" maxlength="128" value="${(sysRole.rolename)?default('')}" type="text" class="text3" style="width: 280px"/>
+         <span id="jsmc" style="color:red"></span>  
+      </td>
+          
+      <th>排序编码：</th>
+      <td width=40%><input type="text" id="sortCode" name="sortCode" title="排序编码"
+							  style="width:50px;text-align:left;"
+							 maxlength="64" value="${(sysRole.sortcode)?default(0)}" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" class="text3" style="width:80px" />
+							 <span id="pxbm"></span></td>
+    </tr>
+    <tr>
+      <th><span class="must">*</span>角色描述：</th>
+      <td><input id="roleMemo" name="roleMemo" title="角色描述" datatitle="角色描述"  maxlength="256" value="${(sysRole.rolememo)?default('')}" type="text" class="text3" style="width:280px" /><span id="jsms"></span></td>
+      <th>&nbsp;</th>
+      <td>&nbsp;</td>
+    </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="确定" id="qd" class="button3" onclick="subForm()" />
+       <input name="" type="button" value="返回" class="button3" onclick="javascript:history.go(-1);return false;" />
+    </td>
+  </tr>
+</table>
+<table class="table_noline2">
+  <tr>
+    <td><span class="must">*</span>为必输项</td>
+  </tr>
+</table>
+
+
+<div class="pop-success" id="pop-success">
+	<a href="javascript:void(0);" class="pop-close" onclick="successclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-ok.png" /></p>
+    <h3>操作成功</h3>
+</div>
+
+<div class="pop-success" id="pop-fail">
+	<a href="javascript:void(0);" class="pop-close" onclick="failclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-error.png" /></p>
+    <h3>操作失败</h3>
+</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+
+<script language="javascript" type="text/javascript">
+	function subForm(){
+			var roleCode='${sysRole.rolecode}';
+			var roleName=$("#roleName").val();
+			var roleMemo=$("#roleMemo").val();
+			var sortCode=$("#sortCode").val();
+			var subflag=2;
+			if(!roleName){
+			jQuery("#jsmc").html("&nbsp;&nbsp;&nbsp;角色名称不能为空");
+				return;
+			}
+			var dataUrl="/system/role.html";
+			jQuery("#jsmc").html("");
+			$.ajax({
+				url : '${RootPath}system/sysRole_add.html',
+				type : "post",
+				data :{"roleName":roleName,"roleMemo":roleMemo,"sortCode":sortCode,"subflag":subflag,"roleCode":roleCode},
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+				console.log(d);
+					if(d.code=="-1"){
+						errorMessage(true,d.msg);
+						return;
+					}else if(d.code=="1"){
+						successMessage(true,d.msg,dataUrl);
+						
+					}
+				},
+				error: function(d) {
+					var message = JSON.parse(d.responseText).message;
+					errorMessage(true,message);
+				}
+			});
+		  }
+</script>
+
+<#include "/common/admin/bottom.htm">
+
+</body>
+</html>

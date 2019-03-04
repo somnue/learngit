@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/closed_detail.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>已结清余额信息</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="goodsNum">涉案资金编号:</label>
+                        <input type="text" class="form-control" id="goodsNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="withholdNum">扣押通知书编号:</label>
+                        <input type="text" class="form-control" id="withholdNum">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="name">涉案人员姓名:</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="caseName">案件名称:</label>
+                        <input type="text" class="form-control" id="caseName">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+            </div>
+            <div class="infTable">
+                <table id="printContent" class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>所属机构</th>
+                        <th>办案部门</th>
+                        <th>涉案资金编号</th>
+                        <th>扣押通知书编号</th>
+                        <th>案件名称</th>
+                        <th>案件编号</th>
+                        <th>涉案人员姓名</th>
+                        <th>证件号码</th>
+                        <th class="all_moneyTR">应扣金额</th>
+                        <th class="all_moneyTR">账号</th>
+                        <th class="all_moneyTR">本金</th>
+                        <th class="all_moneyTR">利息</th>
+                        <th class="all_moneyTR">本息合计</th>
+                        <th class="all_moneyTR">预估利息</th>
+                        <th class="all_moneyTR">支取利息</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide noteOfProblem_pages" id="pages_pageHide">
+            	<#include "./common/pages.html">
+                <button id="print" class="btn btn-primary">打印</button>
+                <a id="downloadBtn" target=_blank class="btn btn-info" href="#">下载</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+
+<script type="text/html" id="tabelTem">
+    <tr>
+        <td style="text-align: center">合计</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+        <td style="text-align: center">--</td>
+
+        <td class="all_moneyTR">{{sum.invlvAmt}}</td>
+		<td style="text-align: center">--</td>
+        <td class="all_moneyTR">{{sum.pnpAmt}}</td>
+        <td class="all_moneyTR">{{sum.intAmt}}</td>
+        <td class="all_moneyTR">{{sum.pnInt}}</td>
+        <td class="all_moneyTR">{{sum.wIntAmt}}</td>
+        <td class="all_moneyTR">{{sum.wIntCpt}}</td>
+        
+		<td style="text-align: center">--</td>
+
+    </tr>
+    {{each list value i}}
+    <tr>
+        <td>{{pageSize*(pageNum-1)+i+1}}</td>
+        <td>{{value.blngIns}}</td>
+        <td>{{value.caseDept}}</td>
+        <td>{{value.invlvAmtNo}}</td>
+        <td>{{value.dtnNtcId}}</td>
+        <td>{{value.caseNm}}</td>
+        <td>{{value.crdtId}}</td>
+        <td>{{value.invlvOprNm}}</td>
+        <td>{{value.crdtId}}</td>
+        <td class="all_moneyTR">{{value.invlvAmt}}</td>
+        <td class="all_moneyTR">{{value.accno}}</td>
+        <td class="all_moneyTR">{{value.pnpAmt}}</td>
+        <td class="all_moneyTR">{{value.intAmt}}</td>
+        <td class="all_moneyTR">{{value.allAmt}}</td>
+        <td class="all_moneyTR">{{value.wIntAmt}}</td>
+        <td class="all_moneyTR">{{value.wIntCpt}}</td>
+        <td><a class="btn btn-info" href="./closed_detailInf?goodsNum={{value.invlvAmtNo}}">详细信息</a></td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

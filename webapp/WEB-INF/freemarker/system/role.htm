@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/js/zTree_v3/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/zTree_v3/jquery.ztree.core.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successMessage.js"></script> 
+<script type='text/javascript' src='${RootPath}static/js/jquery.page.js'></script>
+<script type="text/javascript">
+$(document).ready(function(){
+			var logtype = $("#logtype").val();
+			if(logtype == 0) {
+				$(".tabpage2 > div[class='fl tab']").eq(0).attr("class","fl ctab");
+			} else if(logtype == 1) {
+				$(".tabpage2 > div[class='fl tab']").eq(1).attr("class","fl ctab");
+			} else if(logtype == 2) {
+				$(".tabpage2 > div[class='fl tab']").eq(2).attr("class","fl ctab");
+			} else if(logtype == 3) {
+				$(".tabpage2 > div[class='fl tab']").eq(3).attr("class","fl ctab");
+			}
+		});
+		function handelss(isdel,rolecode){
+      		var cftitle = null;
+		    if(isdel == 0){
+		    	cftitle = '禁用员工请确认该操作员没有被使用。确认禁用该操作员吗？';
+		    }else{
+		   	 	cftitle = '启用员工请确认该操作员没有被使用。确认启用该操作员吗？';
+		    }
+         	var jsonData = {rolecode:rolecode,isdel:isdel};
+	     	isConfirm(cftitle,isStart,jsonData); 
+     
+     }
+		
+		function isStart(jsonData){
+		var dataUrl="/system/role.html";
+			    var isDel;
+				if(jsonData.isdel==0){
+					isDel=1;
+				}else{
+					isDel=0;
+				}
+				$.ajax({
+					url : '/system/updateRoleIsDel.html',
+					type : "post",
+					data : {"isdel":isDel,"rolecode":jsonData.rolecode,"orgtype":"0"},
+					dataType: 'json',
+					async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						errorMessage(true,d.msg);
+						
+					}else if(d.code=="1"){
+						successMessage(true,d.msg,dataUrl);
+						
+					}
+				},
+				error: function(d) {
+					var message = JSON.parse(d.responseText).message;
+					errorMessage(true,message);
+				}
+				})
+			
+		}
+			
+			
+			function a_click(url,rolecode,orgtype,pageNum,pageSize){
+				if(confirm('删除角色请确认该角色没有被使用。确认将该角色删除吗？')){
+				console.log(1);
+					$('#delform').attr('action',url);
+					$('#rolecode').val(rolecode);
+					$('#orgtype').val(orgtype);
+					$('#pageNum').val(pageNum);
+					$('#pageSize').val(pageSize);
+					$.ajax({
+						url : url,
+						type : "post",
+						data : $("#delform").serialize(),
+						dataType: 'json',
+						async: false,
+					success : function(d) {
+						if(d.code=="-1"){
+							errorMessage(true,d.msg);
+							
+						}else if(d.code=="1"){
+							successMessage(true,d.msg,dataUrl);
+							
+					}
+				},
+				error: function(d) {
+					var message = JSON.parse(d.responseText).message;
+					errorMessage(true,message);
+				}
+					})
+				}
+			}
+
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+	</style>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+			<div class="menusdiv">
+				<div class="menus padding">${MenuHtml}</div>
+			</div>
+		</div>
+		<div class="rightbody">
+			<table class="path">
+			  <tr>
+			    <td class="path_icon">&nbsp;</td>
+			    <td>您的位置: 首页  >> 系统管理   >> 角色管理</td>
+			  </tr>
+			</table>
+			 
+			<table class="table_noline2">
+			  <tr>
+			    <td class="fl">
+			    	<input type="button" value="新增" class="button3" onclick="location.href='${RootPath}system/addHtml.html?tagName=add&orgtype=${orgtype}+#/system/role.html'" />
+		    	
+			    </td>
+			  </tr>
+			</table>
+			 
+			<table class="table_submit_title">
+			  <tr>
+			    <td class="table_submit_title_icon"></td>
+			    <td>角色列表</td>
+			  </tr>
+			</table>
+			<table class="table_list">
+			<tr class="header">
+				<th width="5%" class="center">序号</th>
+				<th width="15%" class="center">角色名称</th>
+				<th width="55%" class="center">角色描述</th>
+				<th width="10" class="center">状态</th>
+				<th width="15%" class="center">操作</th>
+			</tr>
+			<!-- loop begin -->
+			<#list roleList as role>
+			<tr class="trow">
+                <td class="center tno">${role_index + 1+pageinfo.pageSize*(pageinfo.pageNum-1)}</td>
+                <td class="left ttitle">${role.rolename?if_exists}</td>
+                <td class="left ttitle">${role.rolememo?if_exists}</td>
+                <#if (orgtype!='3')>
+                <td class="center tlink">
+                	<#if (role.rolecode!="502089D7B1434E25BDAD0D3700D92CDF" && role.rolecode!="69CC44EBD6E167D5E0530ADDC4802A40")>
+					<#if (role.isdel=0)>
+						<a class="blue" href="javascript:handelss('${role.isdel}','${role.rolecode}');">启用中</a>
+					<#else>
+						<a class="blue" href="javascript:handelss('${role.isdel}','${role.rolecode}');">已禁用</a>
+					</#if>
+					</#if>
+                </td>
+                <td class="center tlink" width="120px";>
+                	<#if (role.rolecode!="502089D7B1434E25BDAD0D3700D92CDF"&& role.rolecode!="69CC44EBD6E167D5E0530ADDC4802A40")>
+                	<a class="blue" href="${RootPath}system/rolepermit.html?rolecode=${role.rolecode}&orgtype=${orgtype}#/system/role.html">授权</a>&nbsp;
+                	<a class="blue" onClick="updates('${role.rolecode}');"  href="javascript:void(0)">修改</a>&nbsp;
+                	<a class="blue" onClick="removess('${role.rolecode}');"  href="javascript:void(0)" title="点击进行删除">删除</a>
+                	</#if>
+                </td>
+               
+				
+                </#if>
+            </tr>
+			</#list>
+			<!-- loop end -->
+			</table>
+			${PageHtml} 
+		</div>
+	<form id="delform" action="${RootPath}system/delRole.html" method="post" target="HiddenFrame">
+		<input type="hidden" name="subflag" value="1"/>
+		<input type="hidden" name="rolecode" id="rolecode" value=""/>
+		<input type="hidden" name="orgtype" id="orgtype" value=""/>
+		<input type="hidden" name="pageNum" id="pageNum" value=""/>
+		<input type="hidden" name="pageSize" id="pageSize" value=""/>
+	</form>
+		<div class="clear"></div>
+	</div>
+</div>
+</div>
+</div></div>
+<#include "/common/admin/bottom.htm">
+<script>
+
+     function removess(value){
+     var cftitle="确定要删除此项吗？"
+         var jsonData = {rolecode:value}
+	     isConfirm(cftitle,deletes,jsonData); 
+     
+     }
+ function deletes(jsonData){	
+ 		$.ajax({
+				url :'${RootPath}system/delRole.html',
+				type : "post",				
+				data :{"rolecode":jsonData.rolecode},
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					window.location.reload();
+					console.log(d.code);
+				},
+				error: function(d) {
+					RootElement.errorMessage(d);
+				}
+			});
+     
+    }
+     function updates(value){
+    window.location.href = "/system/update.html?rolecode="+value+"#/system/role.html";
+     }
+</script>
+</body>
+</html>
+

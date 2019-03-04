@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>政融支付-水费</title>
+<link href="${RootPath}static/payment/css/reset.css" rel="stylesheet" type="text/css" />
+<link href="${RootPath}static/payment/css/style.css" rel="stylesheet" type="text/css" />
+<script src="${RootPath}static/payment/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="${RootPath}static/payment/js/jquery.zoombie.js" type="text/javascript"></script>
+<script src="${RootPath}static/payment/js/jf_public.js" type="text/javascript"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript">
+
+// search 分割取值
+function getParam() {
+	if (typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if (str) {
+		str = str.slice(1);
+	} else if (!str) {
+		window.location.href = "/manage/payment/paymentType.html"
+		return '';
+	} else {
+		str = decodeURIComponent(str);
+	};
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+	arr1 = str.split("&");
+	if (arr1.length) {
+		for (var i = 0; i < arr1.length; i++) {
+			arr2 = arr1[i].split("=")
+			if (arr2.length == 2) {
+				result[arr2[0]] = arr2[1]
+			}
+		}
+	};
+	return result;
+};
+
+var urlData = getParam();
+var globle_data = JSON.parse(decodeURIComponent(urlData.search))
+$(function(){
+        $(".btn_select").click(function(){
+            $(this).parents(".pbd_selectCtrl").find(".cur_select").text($(this).find('option:selected').text());
+        });
+        $("#feeItmPrjAmt00002").bind("keyup",function(){
+			$("#_text").text("")
+        })
+        //欠费金额
+        $(".feeItmPrjAmt").val(globle_data.feeItmPrjAmt);
+        //缴费说明
+        $(".udfFldCntnt").val(globle_data.udfFldCntnt)
+    });
+    function okUnit(){
+    	if(!$("#feeItmPrjAmt00002").val()){
+    		$("#_text").text("请输入缴费金额")
+    		return;
+    	};
+    	if($("#feeItmPrjAmt00002").val() && isNaN(Number($("#feeItmPrjAmt00002").val()))){
+    		$("#_text").text("请输入正确的缴费金额")
+    		return;
+    	}
+    	if($("#feeItmPrjAmt00002").val() && (Number($("#feeItmPrjAmt00002").val()) < Number($(".feeItmPrjAmt").val())) ){
+    		$("#_text").text("缴费金额须大于或等于欠费金额")
+    		return;
+    	};
+    	
+    	
+    	globle_data.feeItmPrjAmt = $("#feeItmPrjAmt00002").val();
+    	globle_data.ittChnlId = "1";
+    	globle_data.ittpartyStmID = "00001";
+    	globle_data.txnCd = "1";
+		globle_data.ittpartyTms = "1";
+		globle_data.ittpartyJrnlNo = "1";
+		globle_data.txnTp = "0";
+    	loading(true)
+			jQuery.ajax({
+				url :"/manage/payment/freeok",
+				type : "post",
+				data : globle_data,
+				dataType : 'json',
+	        	success : function(data) {
+	        		window.location.href = data.obo.cshDkURL
+	        		loading(false);
+	        	},
+	        	error : function(errorDate) {
+	        		loading(false);
+					var message = JSON.parse(errorDate.responseText).message;
+					errorMessage(true,message);
+	        	}
+	 		}); 
+    };
+    
+</script>
+</head>
+
+<body>
+<div class="header-top-box">
+</div><!--/.header-top-box-->
+
+<div class="header-box-little">
+	<div class="container">
+    	<div class="logo-little">
+        	<a href="index.html"><img src="${RootPath}static/payment/images/logo.png" ></a>
+        </div>
+        <div class="chengshixuanze">
+        	<div class="select-city">
+            	<a href="javascript:void(0)" class="toggle_btn pointer">湖南省</a>
+            </div>
+        </div><!--/.chengshixuanze-->
+    </div><!--/.container-->
+</div><!--/.header-box-little-->
+<div class="shadow-bg"></div>
+
+<div class="pay_mylife">
+    <div class="mylife_right_title"><h3><img src="${RootPath}static/payment/images/20160116234205310867.png" width="34px" height="34px">水费</h3></div>
+    <div class="step">
+        <ul class="pbd_step clearfix">
+            <li class="pbd_step_item pbd_step_1"><em></em><span>填写缴费信息</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_2 on"><em></em><span>确认缴费信息</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_3"><em></em><span>收银台</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_4"><em></em><span>缴费成功</span></li>
+        </ul>
+    </div>
+    <form id="jhform" name="jhform" method="post" action="">
+    <div class="form_box">
+        <table class="shuifeitable">
+            <tbody class="list_tb_no">
+                <tr>
+                  <th width="150">欠费金额</th>
+                  <td width="302">
+                    <input type="text" id="COMM" name="COMM" class="inputText_h30 w_t200 readonly feeItmPrjAmt" readonly value="32" > 元
+                  </td>
+                  <td width="263"><p>每月28号出账单，出账单前欠费金额默认为0元。</p></td>
+                </tr>
+                <tr>
+                  <th>缴费金额</th>
+                  <td>
+                    <input type="text" id="feeItmPrjAmt00002" name="COMM" class="inputText_h30 w_t200" value="" > 元
+                  </td>
+                  <td><p id="_text" style="color:red"></p></td>
+                </tr>
+                <tr>
+                  <th>缴费说明</th>
+                  <td>
+                    <input type="text" id="COMM" name="COMM" class="inputText_h30 w_t200 readonly udfFldCntnt" readonly value="悦龙湾小区33-1-102" >
+                  </td>
+                  <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                  <td></td>
+                  <td><a href="#" class="btn_blue" onclick="okUnit()">确认</a></td>
+                  <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    </form>
+</div><!--/.pay_mylife-->
+
+<div class="footer">
+</div><!--/.footer-->
+<div class="copyright-box">
+</div><!--/.copyright-box-->
+</body>
+</html>

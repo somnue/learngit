@@ -1,0 +1,81 @@
+<div class='cm-top'>
+	<div class='headers'>
+		<div class='header'>
+			<div class='head_left fl'>
+				<div class='leftinfo'>
+					<span class='head_logo'><a href='${MainSite!}'>XX市民之家</a></span>
+					<span>&nbsp;&nbsp;</span>
+					<span>&nbsp;&nbsp;</span>
+					<span>&nbsp;&nbsp;</span>
+					<span>&nbsp;&nbsp;</span>
+					<span><a href='${MainSite}'>首页</a></span>
+					<span class='line'>|</span>
+					<span class='more'>
+						<a href='${WorkSite!}'>网上办事
+							<!-- <div class='sub'>
+								<ul>
+									<li><a href='${WorkSite!}'>局委部门导航</a></li>
+									<li><a href='${WorkSite!}navSearch.html'>办事项检索</a></li>
+									<li><a href='${InfoSite!}orgwindow.html'>局委之窗</a></li>
+								</ul>
+							</div> -->
+						</a>
+					</span>
+					<span class='line'>|</span>
+					<span><a href='${InfoSite!}'>新闻中心</a></span>
+					<span class='line'>|</span>
+					<span class='more'>
+						<a href='#'>政民互动
+							<div class='sub'>
+								<ul>
+									<#if sysMember??>
+										<#if (sysMember.membername) ??>
+
+										<#else>
+											<li><a href='http://szrx.aysmzj.gov.cn/12345' target='_blank'>市长热线</a></li>
+										</#if>
+									<#else>
+										<li><a href='http://szrx.aysmzj.gov.cn/12345' target='_blank'>市长热线</a></li>
+									</#if>
+									<li><a href='http://szxx.aysmzj.gov.cn/web/welcome' target='_blank'>市长信箱</a></li>
+									<li><a href='${OaSite!}interview/web/index.html' target='_blank'>在线访谈</a></li>
+									<li><a href='${OaSite!}web/bbs/index.html' target='_blank'>连线政府</a></li>
+									<#-- <li><a href='${OaSite!}bbs/peopel/infoindex.html' target='_blank'>人民网留言</a></li> -->
+									<li><a href='http://www.haay.hrss.gov.cn/zxft/default.aspx' target='_blank'>人社局在线访谈</a></li>
+								</ul>
+							</div>
+						</a>
+					</span>
+					<span class='line'>|</span>
+					<span><a href='${SubjectSite!}'>便民应用</a></span>
+					<span class='line'>|</span>
+					<span><a href='${FinanceSite!}'>普惠金融</a></span>
+				</div>
+			</div>
+
+			<div class='head_right fr'>
+				<div class='rightinfo'>
+					<#if sysMember??>
+						<span>欢迎您，
+							<#if (sysMember.truename)??>
+								${(sysMember.truename)!}(${(sysMember.membername)!})
+							<#else>
+								${(sysMember.membername)!}
+							</#if>
+						</span>
+						<span class='line'>|</span>
+						<span><a href='${MemberSite!}'>我的用户中心</a></span>
+						<span class='line'>|</span>
+						<span><a href='${MemberSite!}logout.html'>退出</a></span>
+					<#else>
+						<span><a href='${MemberSite!}login.html'>登录</a></span>
+						<span class='line'>|</span>
+						<span><a href='${MemberSite!}web/reg/reg.html'>注册</a></span>
+					</#if>
+					<span>&nbsp;&nbsp;</span>
+				</div>
+			</div>
+			<div class='clear'></div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+
+
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/successfulMessage.js"></script> 
+</head>
+
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+	
+	
+	
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 账户管理</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>修改</td>
+  </tr>
+</table>
+<table class="table_submit" id="detailspageTableSubmit">
+  <tr>
+      <th><span class="must">*</span>银行编码</th>
+      <td>
+      	<span style="position:relative">
+        	<input name="" id="input-select" onfocus="setfouse(this)" onblur="setblur(this)" placeholder="选择银行" type="text" class="text3" value="" style="position: absolute;top: -13px;width: 280px"/>
+            
+      	<!-- <select name="select" class="text3" id="bandFind" onchange="changeSelect(this)">
+      	option
+        </select> -->
+        <ul id="bandFind" style="cursor: pointer;height: 200px;position: absolute;overflow: auto;width: 263px;border: 1px solid #a8c3d6;background: rgba(241, 250, 250, 1);top: 13px;padding: 10px;font-size: 13px;display:none;">
+        </ul>
+       </span>       
+      </td>
+      <th>联行号</th>
+      <td><input id="bnkcd" name="" type="text" class="text3 disabledOrChange" value="" style="width:280px" />（他行账号时该字段为必输）</td>
+    </tr>
+    <tr>
+    <th>开户行名</th>
+    <td><input id="depbnkNm" name="input2" type="text" class="text3 disabledOrChange" value="" style="width:280px"/></td>
+    <th>账户状态</th>
+    <td>
+      	<select id="typeID" name="select" class="text3" onchange="typeID()">
+          <option value="2" selected="selected">正常</option>
+          <option dataid="#1m" value="1">停用</option>
+          <option dataid="#2m" value="3">注销</option>
+        </select>
+        
+        <div id="tdT" class="inline" style="display:none;">
+        <input name="" type="text" class="text3" id="1m" style="display:none;" placeholder="请填写停用原因"  onchange="reasonChange('1')" />
+        <input name="" type="text" class="text3" id="2m" style="display:none;" placeholder="请填写注销原因"  onchange="reasonChange('3')" />
+        </div>
+      </td>
+  </tr>
+
+    <tr>
+      <th><span class="must">*</span>账户名称</th>
+      <td>
+      	<input id="accnoNm" name="" type="text" class="text3 disabledOrChange" value="" style="width:280px"/>
+        <!-- <input type="button" value="查找" class="button5 find" onclick="findSelect()"/> -->
+      </td>
+      <th><span class="must">*</span>账号</th>
+      <td><input id="accno" name="" type="text" class="text3" value="" style="width:280px" /></td>
+    </tr>
+    <tr>
+      <th>账户类型</th>
+      <td>
+      	<select id="accnoTp" name="select" class="text3 disabledOrChange">
+          <option value="1" >对公</option>
+          <option value="2">对私</option>
+          <option value="3">内部</option>
+          <option value="4">电子账号</option>
+        </select>
+      </td>
+      <th>账户权限</th>
+      <td>
+      	<select id="accAhrTpcd" name="select" class="text3 disabledOrChange">
+          <option value="1">只收</option>
+          <option value="2">只付</option>
+          <option value="3">可收可付</option>
+        </select>
+      </td>
+    </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="确定" class="button3" onclick="postValue()" />
+    <input name="" type="button" value="取消" class="button3" onclick="callback()" />
+    </td>
+  </tr>
+</table>
+
+<div id="modal-form" class="modal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header-color-blue">
+                <button type="button" class="modal-close white" onclick="pupclose()">&times;</button>
+                <h5>复核授权</h5>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>账号：<strong>1000001</strong> &nbsp;&nbsp;  账户名称：<strong>北京自来水公司</strong></p>
+                <p>授权编号 <input name="Input2" type="text" class="text3"   id="modal-body-1"/></p>
+                <p>授权密码 <input name="Input2" type="password" class="text3"   id="modal-body-2"/></p>
+            </div>
+            <div class="modal-footer">
+                <button class="button5" onclick="nonNullDetectionDelgo()">
+                   	 确定
+                </button>
+                <button class="button5" onclick="pupclose()">
+                	取消
+                </button>
+            </div><!--/.modal-footer-->
+        </div><!--/.modal-content-->
+    </div><!--/.modal-dialog-->
+</div><!--/.modal-->
+
+<div class="pop-success" id="pop-success">
+	<a href="javascript:void(0);" class="pop-close" onclick="successclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-ok.png" /></p>
+    <h3>操作成功</h3>
+</div>
+
+<div class="pop-success" id="pop-fail">
+	<a href="javascript:void(0);" class="pop-close" onclick="failclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-error.png" /></p>
+    <h3>操作失败</h3>
+</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+<script language="javascript" type="text/javascript">
+
+function getParam(){      // 获取 hash值
+	if(typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if(str){
+		str = str.slice(1);
+		
+	}else if(!str){
+		return '';
+	}else{
+		str = decodeURIComponent(str);
+	}
+	
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+ 	arr1 = str.split("&");
+	if(arr1.length){
+		for (var i = 0; i < arr1.length; i ++){
+			arr2 = arr1[i].split("=")
+			if(arr2.length == 2){
+				result[arr2[0]] = arr2[1]
+			}
+			
+		}
+	}
+	return result;	
+};
+
+// var GLOBLE_LIST;
+var POST_DATE;  	 // 提交数据存储
+var TempArr = [];  	 // 银行列表
+var STATEARRY = JSON.parse(decodeURIComponent(getParam().data));     // 返显数据存储
+var bankNum;		 //银行号
+var depbnkNo;			//开户行号
+$(document).ready(function(){
+	// 挂载IE 判断加载oninput 事件 
+	immediately();
+	//请求银行列表
+	bankAll();
+	// 返回数据状态判断
+	stateJudgment(STATEARRY.accSt);
+});
+//获取银行列表
+function bankAll(){
+	loading(true);
+	jQuery.ajax({
+		url :"/static/gzf/json/bank.json",
+		type : "get",
+		dataType : 'json',
+        success : function(data,textStatus,jqXHR) {
+        						loading(false)
+		    					if(textStatus == "success"){
+		       						TempArr = data
+		    					};
+        						bankSelectAll(data);
+      							var urlData = getParam();
+    							inputValue(JSON.parse(decodeURIComponent(urlData.data)));
+       },
+       error : function(xhr,textStatus) {
+    	   						loading(false)
+		    					errorMessage(true,"银行列表请求失败")
+       }
+   });
+};
+//银行sellect生成
+function bankSelectAll(bankList){
+	for (var i = 0; i< bankList.length; i++){
+		var option = "<li key=" + TempArr[i].num + " onclick='changeSelect(this)'  style='border-bottom:1px solid gray;height:20px;line-height:1.5em'></li>"
+		$("#bandFind").append($(option).text(bankList[i].bank))
+	};	
+};
+//获取焦点
+function setfouse(this_){
+	$("#bandFind").css({"display":""});
+};
+//失去焦点
+function setblur(){
+	setTimeout(function(){
+		$("#bandFind").css({"display":"none"});
+	},300)
+};
+//addEvenentListener 
+function immediately(){
+	var element = document.getElementById("input-select");
+	if("\v" == "v"){  //ie
+		element.onpropertychange = inputChange;
+	}else{
+		element.addEventListener("input",inputChange,false);
+	}
+};
+//oninput
+function inputChange(e){
+	$("#bandFind").html("");
+	var e = e || window.event;
+	var elem = e.target || e.srcElement;
+	for(var i=0; i < TempArr.length;i++) {		
+		if(TempArr[i].bank.indexOf(elem.value) != -1){
+			var option = "<li key=" + TempArr[i].num + " onclick='changeSelect(this)'  style='border-bottom:1px solid gray;height:20px;line-height:1.5em'></li>"
+			$("#bandFind").append($(option).text(TempArr[i].bank))
+		}
+	}
+};
+//银行列表选择
+function changeSelect(this_){
+	$("#input-select").val($(this_).text());
+	bankNum = $(this_).attr("key");
+	$("#bandFind").css({"display":"none"});
+};
+
+//数据返显
+function inputValue (data){				
+	$("#bnkcd")[0].value = data.bnkcd;  				// 联行号 		
+	$("#depbnkNm")[0].value = data.depbnkNm;  		 	// 开户行名	
+	$("#accnoNm")[0].value = data.accnoNm;    			// 账户名称	
+	$("#accno")[0].value = data.accno;    				// 账号	
+	$("#typeID")[0].value = $.trim(data.accSt)  		//账户状态
+	$("#accnoTp")[0].value = $.trim(data.accnoTp)  		//账户类型
+	$("#accAhrTpcd")[0].value = $.trim(data.accAhrTpcd) //账户权限
+	depbnkNo = data.depbnkNo;							//开户行号
+	disabledOrnone(data);								//状态禁用
+	reasonControl(data,$.trim(data.accSt));	
+	bank_num(data);										//银行编码
+};
+//根据银行禁用DOM   此数据永久不可修改
+function disabledOrnone(data){
+	if(data.bnkEcd == "202004"){   //建行
+		$("#input-select").attr({"disabled":"true"}).css({"background":"#f7f7f7"})
+	};
+	$("#accno").attr({"disabled":"true"}).css({"background":"#f7f7f7"})
+};
+
+//原因显示控制
+function reasonControl(data,type){
+	//正常
+	if(type && $.trim(type) == "2"){
+		$("#tdT")[0].style.display = "none";
+		$("#1m")[0].style.display = "none";
+		$("#2m")[0].style.display = "none"
+	//停用	
+	}else if(type && $.trim(type) == "1"){
+		$("#tdT")[0].style.display = "inline";
+		$("#1m")[0].style.display = "inline-block";
+		$("#2m")[0].style.display = "none";
+		$("#1m")[0].value = data.modrsn ? data.modrsn : '';
+		$("#2m")[0].value = '';
+	//注销
+	}else if(type && $.trim(type) == "3"){
+		$("#tdT")[0].style.display = "inline";
+		$("#1m")[0].style.display = "none";
+		$("#2m")[0].style.display = "inline-block";
+		$("#1m")[0].value = '';
+		$("#2m")[0].value = data.modrsn ? data.modrsn : '';
+	}else{
+		errorMessage(true,"此账户状态错误，请联系开发人员查看数据结构")
+		return
+	}
+};
+
+//原因 change
+function reasonChange(type){
+	if(type && type == "1"){
+		$("#2m")[0].value = '';
+	}
+	if(type && type == "3"){
+		$("#1m")[0].value = '';
+	}
+};
+
+//银行号 转换 bank
+function bank_num(data){
+	for(var i=0; i < TempArr.length;i++) {		
+		if(TempArr[i].num.substring(0,$.trim(data.bnkEcd).length).indexOf($.trim(data.bnkEcd)) == 0){
+			$("#input-select")[0].value = TempArr[i].bank  //银行编号
+		}
+	}
+};
+
+//bank 转换  银行号
+function num_bank(){
+	var bank = $("#input-select")[0].value;
+	for(var i=0; i < TempArr.length;i++) {		
+		if(TempArr[i].bank.substring(0,bank.length).indexOf(bank) == 0){
+			var bnkEcd = TempArr[i].num;
+			return bnkEcd;
+		}
+	}
+};
+
+// 账户状态 选择改变
+function typeID(){
+	var accSt = $("#typeID")[0].value
+	stateJudgment(accSt,"change")
+};
+
+// 账户状态判断
+function stateJudgment(accSt,type){
+	// 2:正常,1:停用,3:注销,
+	if(accSt && $.trim(accSt) == "2"){
+			disabledOrtrue("2")		
+	}else if(accSt && $.trim(accSt) == "1"){
+		disabledOrChange("1")	
+	}else if(accSt && $.trim(accSt) == "3"){		
+		if(type != "change"){
+			disabledOrChange("3")
+			$("#typeID")[0].setAttribute("disabled","");
+			$("#typeID")[0].style.background = '#f7f7f7';
+		}		
+	}else{
+		return false;
+	}
+};
+//根据状态禁用 
+function disabledOrChange(type){
+	$(".disabledOrChange").each(function (i){
+		this.setAttribute("disabled","");
+		this.style.background = '#f7f7f7';
+	});
+	$("#input-select").attr({"disabled":"true"}).css({"background":"#f7f7f7"})
+	if(type && (type == "1" || type == "3")){
+		STATEARRY.accSt = type;
+		inputValue(STATEARRY);		
+	};	
+};
+//取消禁用
+function disabledOrtrue(type){
+	$(".disabledOrChange").each(function (i){
+		this.removeAttribute("disabled");
+		this.style.background = '#f1fbfa'
+	});
+	if(STATEARRY.bnkEcd == "202004"){   //建行
+		$("#input-select").attr({"disabled":"true"}).css({"background":"#f7f7f7"})
+	}else{
+		$("#input-select").css({"background":"#f1fbfa"});
+		$("#input-select")[0].removeAttribute("disabled");
+	}
+};
+
+/* //账号搜索看控制
+function findSelect(){
+	if(num_bank() != "202004"){
+		errorMessage(true,'只有选择建行才可以进行查找')
+	}else{
+		var accno = $("#accno")[0].value;
+		var accnoNm = $("#accnoNm")[0].value;
+		var accnoTp = $("#accnoTp")[0].value;
+		var bnkEcd = num_bank();
+		if(accno && accnoNm){
+			var condition = {"bnkEcd":bnkEcd,"accno":accno,"accnoTp":accnoTp,"accnoNm":"1"}
+			search(condition)
+		}else{
+			errorMessage(true,'需要填写帐号和帐号名称')
+		}
+		
+	}
+};
+//账号搜索
+function search(condition){
+	loading(true)
+	jQuery.ajax({
+		url :"/manage/acct/acctsearch",
+		type : "post",
+		data : condition,
+		dataType : 'json',
+         success : function(data) {
+        	 	loading(false)
+ 				callbackShow(data.obo);
+         },
+         error : function(data) {
+        	 loading(false)
+        	 errorMessage(true,"账号查出信息为空")
+         }
+     });
+};
+//账号搜索数据返显
+function callbackShow(obo){		
+	$("#depbnkNm")[0].value = obo.depbnkNm;// 开户行名
+	$("#accnoNm")[0].value = obo.accnoNm;  // 账户名称	
+	depbnkNo = obo.depbnkNo //开户行号
+	//obo.cshmgtAccCgycd   现金管理账户类别代码	
+}; */
+
+//提交修改数据
+function postValue(){
+	var modrsn;
+	if($("#typeID")[0].value && $("#typeID")[0].value == "2"){
+		modrsn = ''
+	}else if($("#typeID")[0].value && $("#typeID")[0].value == "1"){  //停用
+		modrsn = $("#1m")[0].value
+	}else if($("#typeID")[0].value && $("#typeID")[0].value == "3"){  //禁用
+		modrsn = $("#2m")[0].value
+	}
+	var data = {
+			"bnkEcd":num_bank(),						//银行编号
+			"bnkcd":$("#bnkcd")[0].value, 				// 联行号 		
+			"depbnkNm":$("#depbnkNm")[0].value, 		// 	开户行名	
+			"modrsn":modrsn,   							// 原因    
+			"accnoNm":$("#accnoNm")[0].value, 			// 账户名称	
+			"accno":$("#accno")[0].value, 				// 账号			
+			"accSt":$("#typeID")[0].value, 				//账户状态
+			"accnoTp":$("#accnoTp")[0].value, 			//账户类型
+			"accAhrTpcd":$("#accAhrTpcd")[0].value, 	//账户权限
+			"depbnkNo":depbnkNo,
+			"modOpr": "当前用户",      					//修改操作员			
+			"ahnOprId": "",   							//授权操作员			
+			"username":"",  							//授权用户
+			"password":"", 								//授权密码
+			"appcode":"",  								//菜单位置
+			"modcode":"",  								// 系统id
+	};
+	POST_DATE = data;
+	nonNullDetection(data);
+};
+//数据非空检测
+function nonNullDetection(data){
+	
+	var errorMessageText = [];
+	
+	if(!data.bnkEcd){
+		errorMessageText.push("请选择银行")
+	};
+	if(data.bnkEcd && data.bnkEcd != "202004"){
+		if(!data.bnkcd){
+			errorMessageText.push("银行编码不是建设银行时必须填写联行号")
+		}
+	};		
+	if(!data.depbnkNm){
+		errorMessageText.push("请输入开户行名")
+	};
+	if(!data.accnoNm){
+		errorMessageText.push("请输入账户名称")
+	};
+	if(!data.accno){
+		errorMessageText.push("请输入账号")
+	};
+	if(!data.accnoTp){
+		errorMessageText.push("请选择账户类型")
+	};
+	if(!data.accAhrTpcd){
+		errorMessageText.push("请选择账户权限")
+	};
+	if(!data.accSt){
+		errorMessageText.push("请选择账户状态")
+	};
+	
+	if(errorMessageText.length > 0){
+		var text = '';
+		for (var i = 0; i<errorMessageText.length; i++){
+			text += ( "<span class='must'>*</span>" + (i+1) + ":" + errorMessageText[i] + "." + "<br />")
+		}
+		errorMessage(true,text)
+	};
+	if(errorMessageText.length == 0){
+		if(data.bnkEcd == "202004"){
+			var condition = {"bnkEcd":num_bank(),"accno":$("#accno")[0].value,"accnoTp":$("#accnoTp")[0].value,"accnoNm":"1"}
+			loading(true)
+			jQuery.ajax({
+				url :"/manage/acct/acctsearch",
+				type : "post",
+				data : condition,
+				dataType : 'json',
+		         success : function(bo) {
+		        	 	loading(false)
+		        	 	data.depbnkNo = bo.obo.depbnkNo //开户行号
+		        	 	var errorMessageText = [];
+		        	 	if(bo.obo.depbnkNm != $("#depbnkNm")[0].value){
+		        	 		errorMessageText.push("您修改的开户行名不匹配，是否修改")		        	 		
+		        	 	};
+		        	 	if(bo.obo.accnoNm != $("#accnoNm")[0].value){
+		        	 		errorMessageText.push(" 您修改的帐号名称不匹配，是否修改")
+		        	 	};
+		        	 	if(errorMessageText.length > 0){
+		        			var text = '';
+		        			for (var i = 0; i<errorMessageText.length; i++){
+		        				text += ( "<span class='must'>*</span>" + (i+1) + ":" + errorMessageText[i] + "." + "<br />")
+		        			}
+		        			accnoMessage(true,text)
+		        		};
+		        		if(errorMessageText.length == 0){
+		        			pupopen();
+		        			POST_DATE = data;
+		        			$("#modal-body strong")[0].innerHTML = data.accno;
+		        			$("#modal-body strong")[1].innerHTML = data.accnoNm;
+		        		};
+
+		         },
+		         error : function(data) {
+		        	 loading(false)	
+		        	 accnoMessage(true,"此帐号没有匹配信息，是否修改")
+		         }
+		     });
+		}else{
+			pupopen();
+			POST_DATE = data;
+			$("#modal-body strong")[0].innerHTML = data.accno;
+			$("#modal-body strong")[1].innerHTML = data.accnoNm;
+		}
+		
+	};		
+};
+//弹框非空检测
+function nonNullDetectionDelgo(){
+	if(!$("#modal-body-1")[0].value || !$("#modal-body-2")[0].value){
+		if(!$("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid red";
+		}else if($("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid #AAC5D8";
+		}
+		if(!$("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid red";
+		}else if($("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid #AAC5D8";
+		}
+	}else{
+		POST_DATE.username = $("#modal-body-1")[0].value;
+		POST_DATE.password = hex_md5($("#modal-body-2")[0].value);
+		POST_DATE.ahnOprId = $("#modal-body-1")[0].value;
+		postUpdate();
+		pupclose();
+	}	
+};
+//弹窗
+function pupopen(){
+	accnoMessage(false);
+	$("#modal-body strong")[0].innerHTML = POST_DATE.accno;
+	$("#modal-body strong")[1].innerHTML = POST_DATE.accnoNm;
+	document.getElementById("modal-form").style.display="block" ;	
+};	
+//关闭	
+function pupclose(){
+	$("#modal-body-1")[0].value='';
+	$("#modal-body-2")[0].value='';
+	document.getElementById("modal-form").style.display="none" ;
+};
+//数据提交
+function postUpdate(){
+	loading(true);
+	pupclose();	
+	jQuery.ajax({
+		url :"/manage/acct/change",
+		type : "post",
+		data : POST_DATE,
+		dataType : 'json',
+		success:function(data){
+				loading(false)
+				//successopen();
+				successfulMessage(true,'修改成功');
+				var urlData = getParam();
+				window.location.href = "/manage/acct/index.html?global_data=" + urlData.global_data
+		},
+		error : function(errorDate){
+			loading(false)
+			var message = JSON.parse(errorDate.responseText).message;
+			errorMessage(true,message)
+		}
+	
+	});
+};
+//返回
+function callback(){
+	var urlData = getParam();
+	window.location.href = "/manage/acct/index.html?global_data=" + urlData.global_data
+};
+
+
+function accnoMessage(type,text){
+	if(type){
+		$("body").append(
+				'<div id="pop-fail" class="modal accnoMessage" style="display:block">' +
+				'<div class="modal-dialog">' +
+				    '<div class="modal-content">' +
+				        '<div class="modal-header header-color-blue">' +
+				            '<button type="button" class="modal-close white" onclick="accnoMessage(false);"></button>' +
+				            '<h5>提示</h5>' +
+				       	'</div>' +
+				        '<div class="modal-body">' +
+				            '<div class="modal-left">' +
+				            	'<img src="/static/gzf/images/icon-alert.png" />' +
+				            '</div>' +
+				            '<div class="modal-right">' +
+				            	'<h3>经检测</h3>' +
+				                '<p>' + text +'</p>' +
+				            '</div>' +
+				            '<div class="clear"></div>' +
+				        '</div>' +
+				        '<div class="modal-footer">' +
+				            '<button class="button3" onclick="pupopen()">确认修改</button>' +
+				        '</div>' +
+				    '</div>' +
+				'</div>' +
+				'</div>' 
+				);		
+	}else{
+		if($(".accnoMessage")){
+			$(".accnoMessage").remove();
+		}
+	}
+};
+
+function successopen(){
+	document.getElementById("pop-success").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};	
+function successclose(){
+	document.getElementById("pop-success").style.display="none" ;
+};	
+function failopen(){
+	document.getElementById("pop-fail").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};	
+function failclose(){
+	document.getElementById("pop-fail").style.display="none" ;
+};	
+</script>
+
+</body>
+</html>

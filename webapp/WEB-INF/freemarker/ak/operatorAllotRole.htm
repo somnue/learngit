@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/operatorAllotRole.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./operatorAdmin">操作员管理</a></li>
+                <li>操作员角色分配</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="clearfix operatorAllotRoleInf">
+                <div class="form-group col5">
+                    <label for="operatorID" class="col3">操作员编号:</label>
+                    <input readonly type="text" class="form-control col7" id="operatorID">
+                     <input readonly type="hidden" class="form-control col7" id="id">
+                </div>
+                <div class="form-group col5">
+                    <label for="operatorName" class="col3">操作员姓名:</label>
+                    <input readonly type="text" class="form-control col7" id="operatorName">
+                </div>
+                <div class="form-group col5">
+                    <label for="affiliation" class="col3">所属机构:</label>
+                    <input readonly type="text" class="form-control col7" id="affiliation">
+                </div>
+                <div class="form-group col5">
+                    <label for="cardID" class="col3">证件号码:</label>
+                    <input readonly type="text" class="form-control col7" id="cardID">
+                </div>
+                <div class="form-group radioBox">
+                    <label class="col3">角色:</label>
+                    <div class="col7" id="roleTemBox"></div>
+                </div>
+                <div id="anKuanAlert" class="anKuanAlert">
+                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger">
+                        <strong id="anKuanAlertContent"></strong>
+                    </div>
+                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                        <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                    </div>
+                </div>
+                <div class="anKuanButtons" id="anKuanButtons">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">确认</button>
+                    <span class="btn btn-info" onclick="window.history.back(-1);">取消</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script id="roleTem" type="text/html">
+    {{each list value i}}
+    <div class="radio col5">
+        <label>
+            {{if value.checked }}
+            <input type="checkbox" data-inslevel="{{value.insLevel}}" name="roleCheck" value="{{value.rlId}}" checked>
+            {{else}}
+            <input type="checkbox" data-inslevel="{{value.insLevel}}" name="roleCheck" value="{{value.rlId}}">
+            {{/if}}
+            {{value.rlName}}
+        </label>
+    </div>
+    {{/each}}
+</script>
+</body>
+</html>

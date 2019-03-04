@@ -1,0 +1,31 @@
+<header class="header">
+    <div>
+        <ul class="headerLeftUl clearfix">
+            <li class="webLogo">
+                <img src="/static/images/logo.png">
+            </li>
+            <li class="webName">天津市公安局案款管理系统</li>
+        </ul>
+        <ul class="headerRightUl clearfix">
+            <li>
+                <span class="welcomeMen">欢迎,操作员(<a style="color:#fff;" href="./operatorInf"><span id="welcomeName"></span></a>)</span>
+            <li>
+                <img src="/static/images/systerm1.gif" class="logout" data-toggle="modal" data-target="#logoutModal"/>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<div class="modal fade backModal" id="logoutModal" tabindex="-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                确定退出系统登陆吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="logout" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

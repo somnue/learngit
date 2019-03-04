@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+	<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+    <script src="/static/js/operatorPswChange.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./operatorInf">操作员信息</a></li>
+                <li>操作员密码修改</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="operateBox clearfix">
+                <div class="form-group">
+                    <label for="operatorID">操作员编号:</label>
+                    <input readonly type="text" class="form-control" id="operatorID">
+                </div>
+                <div class="form-group">
+                    <label for="operatorPsw">原密码:</label>
+                    <input type="password" class="form-control" id="operatorPsw" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="operatorNewPsw">新密码:</label>
+                    <input autocomplete="off" type="password" class="form-control" id="operatorNewPsw">
+                </div>
+                <div class="form-group">
+                    <label for="operatorNewPswA">确认新密码:</label>
+                    <input autocomplete="off" type="password" class="form-control" id="operatorNewPswA">
+                </div>
+                <div id="anKuanAlert" class="anKuanAlert">
+                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger" style="width: 100%;">
+                        <strong id="anKuanAlertContent"></strong>
+                    </div>
+                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                        <a id="backOldPage" href="./operatorInf" class="btn btn-info">返回</a>
+                    </div>
+                </div>
+                <div class="anKuanButtons" id="anKuanButtons">
+                    <button class="btn btn-primary" id="submitBtn">确认</button>
+                    <span class="btn btn-info" onclick="window.history.back(-1);">取消</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+</body>
+</html>

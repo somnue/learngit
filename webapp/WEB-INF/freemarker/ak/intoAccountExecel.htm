@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/jquery.form.min.js"></script>
+    <![if !IE]> 
+		<script src="/static/js/intoAccExecel.js"></script>
+	<![endif]>
+	<!--[if lt IE9]> 
+		<script src="/static/js/intoAccExcIE.js"></script> 
+	<![endif]-->
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./bindingAccountInto">绑定账号导入</a></li>
+                <li>账号绑定导入</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="operateBox clearfix">
+                <div class="form-group" id="upIptShow">
+                	<label class="col3">请选择导入的文件:</label>
+                    	<input readonly class="form-control col5" type="text" id="fileName">
+                    	<span class="btn btn-info" id="choiceFileBtn">选择文件</span>
+                </div>
+                <form id="ajaxForm" enctype="multipart/form-data">	
+                   	<input type="file" name='upFile' id="upfile"
+                          accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                          
+	                <div id="anKuanAlert" class="anKuanAlert">
+	                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger" style="width: 100%;">
+	                        <strong id="anKuanAlertContent"></strong>
+	                    </div>
+	                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+	                        <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+	                    </div> 
+	                </div>
+	                <div class="anKuanButtons" id="anKuanButtons">
+	                    <button class="btn btn-primary" id="submintBtn">上传</button>
+	                    <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+	                </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+</body>
+</html>

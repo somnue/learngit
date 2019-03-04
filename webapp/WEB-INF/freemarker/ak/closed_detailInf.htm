@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/closed_detailInf.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./closed_detail">已结清余额信息</a></li>
+                <li>存取明细</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="goodsNum">涉案资金编号:</label>
+                        <input readonly type="text" class="form-control" id="goodsNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">涉案人员姓名:</label>
+                        <input readonly type="text" class="form-control" id="name">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="withholdNum">扣押通知书编号:</label>
+                        <input readonly type="text" class="form-control" id="withholdNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="caseName">案件名称:</label>
+                        <input readonly type="text" class="form-control" id="caseName">
+                    </div>
+                </form>
+            </div>
+            <div class="infTable noButtons">
+                <table id="printContent" class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>日期</th>
+                        <th class="all_moneyTR">存入金额</th>
+                        <th class="all_moneyTR">支取本金</th>
+                        <th class="all_moneyTR">支取利息</th>
+                        <th>经办人姓名</th>
+                        <th>证件类型</th>
+                        <th>证件号码</th>
+                        <th>时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide noteOfProblem_pages" id="pages_pageHide">
+            	<#include "./common/pages.html">
+                <button id="print" class="btn btn-primary">打印</button>
+                <a id="downloadBtn" target=_blank class="btn btn-info" href="#">下载</a>
+            </div>
+            <div style="text-align: center;border-top: 1px solid #ccc; padding-top: 20px">
+                <button class="btn btn-primary" onclick="window.history.back(-1);">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td>{{pageSize*(pageNum-1)+i+1}}</td>
+        <td>{{value.prtTm}}</td>
+        <td class="all_moneyTR">{{value.payMoney}}</td>
+        <td class="all_moneyTR">{{value.withdrawMoney}}</td>
+        <td class="all_moneyTR">{{value.wIntCpt}}</td>
+        <td>{{value.rspbPsnNm}}</td>
+        <td>{{value.crdtTpcd}}</td>
+        <td>{{value.crdtId}}</td>
+        <td>{{value.prtTm}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

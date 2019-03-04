@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/interestNotePrint.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody" class="zqdyym">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./withdrawNote">支取</a></li>
+                <li>利息支取通知书打印</li>
+            </ol>
+        </div>
+        <h4>支取通知书预览</h4>
+        <div class="printBox">
+            <div id="NoteBox" class="printContent"></div>
+        </div>
+        <div id="anKuanAlert" class="anKuanAlert">
+            <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger" style="width: 100%;">
+                <strong id="anKuanAlertContent"></strong>
+            </div>
+            <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+            </div>
+        </div>
+        <div class="printBtns">
+            <button class="btn btn-primary" id="print">打印</button>
+            <span class="btn btn-info" onclick="window.history.back(-1);">取消</span>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script type="text/html" id="NoteTem">
+    <div class="p_page">
+        <h2>天津市公安局涉案资金利息支取通知书（存根联）</h2>
+        <div class="print_caseNum textRight">编号：<span class="p_bsnJrnlNo"></span></div>
+        <div class="printItems">
+            <div class="col5"><span>案件编号：</span><span class="pointCon">{{caseId}}</span></div>
+            <div class="col5"><span>案件名称：</span><span class="pointCon">{{caseNm}}</span></div>
+            <div class="col6"><span>涉案资金扣押编号：</span><span id="p_bsnJrnlNo" class="pointCon">{{invlvAmtNo}}</span></div>
+            <div class="col4"><span>利息金额：</span><span class="pointCon">{{amtSmall}} 元</span></div>
+            <div class="col10"><span>支取账号归属银行：</span><span class="pointCon">{{bank}}</span></div>
+            <div class="col6"><span>利息专户名称：</span><span class="pointCon">{{setlAccnm}}</span></div>
+            <div class="col4"><span>账号：</span><span class="pointCon">{{setlAccno}}</span></div>
+            <div class="col10"><span>经办人及联系方式：</span><span class="pointCon">{{rspbPsnNm}}&nbsp;</span></div>
+            <div class="col6"><span>签发人：</span><span></span></div>
+            <div class="col4"><span>签发日期：</span><span></span></div>
+            <div class="col10"><span>当事人信息</span></div>
+            <div class="col3"><span>姓名：</span><span class="pointCon">{{rspbPsnNm}}</span></div>
+            <div class="col3"><span>证件类型：</span><span class="pointCon">{{crdtTpcd}}</span></div>
+            <div class="col4"><span>证件编号：</span><span class="pointCon">{{crdtId}}</span></div>
+        </div>
+        <div class="col10 splitLine"></div>
+        <h2>天津市公安局涉案资金利息支取通知书（银行留存联）</h2>
+        <div class="print_caseNum textRight">编号：<span class="p_bsnJrnlNo"></span></div>
+        <div class="printItems">
+            <div class="col10"><span>中国建设银行天津市分行:</span></div>
+            <div class="col10"><span>&nbsp;&nbsp;请依据本通知书(编号: {{bsnJrnlNo}} )，请贵行从我局涉案资金管理利息专户（户名为{{setlAccnm}} ，帐号为  {{setlAccno}} ）支取涉案资金利息现金人民币{{amtSmall}}元。</span></div>
+            <div class="col10"><span>现金支取：</span><span class="pointCon"></span></div>
+            <div class="col4"><span>小写金额：</span><span class="pointCon">{{ if tpcd == 0 }}{{amtSmall}} 元  {{/if}}</span></div>
+            <div class="col6"><span>大写金额：</span><span class="pointCon">{{ if tpcd == 0 }}{{amtLarge}}{{/if}}</span></div>
+            <div class="col10"><span>转账支取：</span><span class="pointCon"></span></div>
+            <div class="col4"><span>收款人银行账户名称：</span><span class="pointCon">{{rcvPymtPsAccnm}}</span></div>
+            <div class="col6"><span>收款人银行账户账号：</span><span class="pointCon">{{rcvPymtPsAccno}}</span></div>
+            <div class="col4"><span>收款人银行名称：</span><span class="pointCon">{{rpyBkNm}}</span></div>
+            <div class="col6"><span>收款人银行支付行号：</span><span class="pointCon">{{rpyBkAccNo}}</span></div>
+            <div class="col10"><span>经办人信息</span></div>
+            <div class="col3"><span>姓名：</span><span class="pointCon">{{rspbPsnNm}}</span></div>
+            <div class="col3"><span>证件类型：</span><span class="pointCon">{{crdtTpcd}}</span></div>
+            <div class="col4"><span>证件编号：</span><span class="pointCon">{{crdtId}}</span></div>
+            <div class="col10"><span>单位预留印鉴：</span></div>
+            <div class="col10 textRight"><span>天津市公安局{{insNm}}</span></div>
+            <div class="col10 textRight"><span>{{strDate}}</span></div>
+        </div>
+    </div>
+    <div class="p_lastpage">
+        <h2>天津市公安局涉案资金利息支取通知书（银行回执联）</h2>
+        <div class="print_caseNum textRight">编号：<span class="p_bsnJrnlNo"></span></div>
+        <div class="printItems">
+            <div class="printItems">
+                <div class="col10"><span>天津市公安局{{insNm}}：</span></div>
+                <div class="col10"><span>&nbsp;&nbsp;依据通知书(编号: {{bsnJrnlNo}} )要求，我行已从贵局涉案资金管理利息专户（户名为{{setlAccnm}} ，帐号为  {{setlAccno}} ）支取涉案资金利息现金人民币{{amtSmall}}元。</span></div>
+                <div class="col10"><span>现金支取：</span><span class="pointCon"></span></div>
+                <div class="col4"><span>小写金额：</span><span class="pointCon">{{ if tpcd == 0 }}{{amtSmall}} 元  {{/if}}</span></div>
+                <div class="col6"><span>大写金额：</span><span class="pointCon">{{ if tpcd == 0 }}{{amtLarge}}{{/if}}</span></div>
+                <div class="col10"><span>转账支取：</span><span class="pointCon"></span></div>
+                <div class="col4"><span>收款人银行账户名称：</span><span class="pointCon">{{rcvPymtPsAccnm}}</span></div>
+                <div class="col6"><span>收款人银行账户账号：</span><span class="pointCon">{{rcvPymtPsAccno}}</span></div>
+                <div class="col4"><span>收款人银行名称：</span><span class="pointCon">{{rpyBkNm}}</span></div>
+                <div class="col6"><span>收款人银行支付行号：</span><span class="pointCon">{{rpyBkAccNo}}</span></div>
+            </div>
+            <div class="col10 textRight"><span>银行网点签章（业务用章）</span></div>
+        </div>
+    </div>
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/agentAdmin.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>常用经办人管理</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="agentName">经办人姓名:</label>
+                        <input type="text" class="form-control" id="agentName">
+                    </div>
+                    <div class="form-group">
+                        <label for="agentID">证件号码:</label>
+                        <input type="text" class="form-control" id="agentID">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+                <div class="btn-group operateBtns" role="group" aria-label="Basic example">
+                    <a href="./addAgent" class="btn btn-info">
+                        新增
+                    </a>
+                    <button id="delAgent" class="btn btn-danger">删除</button>
+                </div>
+            </div>
+            <div class="infTable noButtons">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th class="operateRadiosBox">选择</th>
+                        <th>序号</th>
+                        <th>经办人姓名</th>
+                        <th>证件类型</th>
+                        <th>证件号码</th>
+                        <th>所属机构</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide" id="pages_pageHide">
+            	<#include "./common/pages.html">
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<div class="modal fade backModal" id="radioAlertModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                请选择一名经办人！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade backModal" id="delAgentModal" tabindex="-2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="delAgentBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="delAgentOk">确定</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td class="operateRadiosBox">
+            <input type="radio" name="agentRadios" data-anm="{{value.name}}" value="{{value.id}}">
+        </td>
+        <td>{{(pageNum-1) * pageSize + i + 1}}</td>
+        <td>{{value.name}}</td>
+        <td>{{value.crdtTpcd}}</td>
+        <td>{{value.crdtId}}</td>
+        <td>{{value.insFullname}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

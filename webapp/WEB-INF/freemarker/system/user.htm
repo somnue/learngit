@@ -1,0 +1,181 @@
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/js/zTree_v3/zTreeStyle/zTreeStyle.css"/>
+<style>
+	.table_list .trow:nth-child(odd){
+	background-color:rgb(226, 236, 240);
+    }
+</style>
+<script type="text/javascript" src="${RootPath}static/js/common/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${RootPath}static/js/common/jquery.page.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successMessage.js"></script>
+<script language="javascript" type="text/javascript">
+	function a_click(url,userid,isdel,flag){
+	    var cftitle = null;
+	    if(url == '/system/enableOrDisableUser2.html'){
+		    if(isdel == 0){
+			    cftitle = '禁用员工请确认该操作员没有被使用。确认禁用该操作员吗？';
+			    }else{
+			    cftitle = '启用员工请确认该操作员没有被使用。确认启用该操作员吗？';
+			    }
+			    }else{
+			    cftitle = '删除员工请确认该操作员没有被使用。确认删除该操作员吗？';
+		    }
+	        var jsonData = {url:url,userid:userid,isdel:isdel}
+	        isConfirm(cftitle,callback,jsonData); 
+		}
+	function a_click2(url,userid,isdel,flag){
+		var cftitle = null;
+	    if(url == '/system/enableOrDisableUser.html'){
+		    if(isdel == 0){
+		    	cftitle = '禁用员工请确认该操作员没有被使用。确认禁用该操作员吗？';
+		    }else{
+		   	 	cftitle = '启用员工请确认该操作员没有被使用。确认启用该操作员吗？';
+		    }
+		    }else{
+		    	cftitle = '删除员工请确认该操作员没有被使用。确认删除该操作员吗？';
+		    }
+	    var jsonData = {url:url,userid:userid,isdel:isdel}
+	    isConfirm(cftitle,callback,jsonData); 
+	   }
+	 function callback(jsonData){
+	    	
+
+			if(jsonData.isdel == ''){
+				$('#subflag').val(2);
+			}
+			$('#eform').attr('action',jsonData.url);
+			$('#userid').val(jsonData.userid);
+			$('#isdel').val(jsonData.isdel);
+			var dataUrl="/system/user.html";
+			$.ajax({
+				url : jsonData.url,
+				type : "post",
+				data : $("#eform").serialize(),
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						errorMessage(true,d.msg);
+					}else if(d.code=="1"){
+						successMessage(true,d.msg,dataUrl);
+					}
+				},
+				error: function(d) {
+					var message = JSON.parse(d.responseText).message;
+					errorMessage(true,message);
+				}
+			});
+		}	
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+	</style>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+			<div class="menusdiv">
+				<div class="menus padding">${MenuHtml}</div>
+			</div>
+		</div>
+		<div class="rightbody">
+			<table class="path">
+			  <tr>
+			    <td class="path_icon">&nbsp;</td>
+			    <td>您的位置: 首页  >> 系统管理   >> 操作员管理</td>
+			  </tr>
+			</table>
+			
+			<table class="table_noline2">
+			  <tr>
+			    <td class="fl">
+			    	<input type="button" value="新增" class="button3" onclick="location.href='${RootPath}system/useredit.html'+'#/system/user.html'" />
+		    	
+			    </td>
+			  </tr>
+			</table>
+			
+			<table class="table_submit_title">
+			  <tr>
+			    <td class="table_submit_title_icon"></td>
+			    <td>操作员列表</td>
+			  </tr>
+			</table>
+			<table class="table_list">
+				<tr >
+						<th width="5%" class="center">序号</th>
+						<th width="30%" class="center">真实姓名</th>
+						<th width="30%" class="center">登录账号</th>
+						<th width="15%" class="center">状态</th>
+						<th width="20%" class="center">操作</th>
+					</tr>
+			<!-- loop begin -->
+					<#list pageList as user>
+					<tr class="trow">
+						<td class="center tno">${user_index+1+pageinfo.pageSize*(pageinfo.pageNum-1)}</td>
+						<td class="center ttext">${user.truename?default("")}</td>
+						<td class="left ttext">${user.username?default("")}</td>
+						<td class="center tlink">
+						<#if (user.issa="1")>
+						<p style="color:#666;">已启用</p>
+						<#else>
+						<#if (user.isdel=0)>
+						<a href="javascript:a_click2('/system/enableOrDisableUser.html','${user.userid?default("")}','0')" class="blue" title="点击进行禁用">已启用</a>
+						<#else>
+						<a href="javascript:a_click2('/system/enableOrDisableUser.html','${user.userid?default("")}','1')" class="blue" title="点击进行启用">已禁用</a>
+						</#if>
+						</#if>
+						</td>
+						<td class="center tlink">
+						<a href="${RootPath}system/userpermit.html?orgtype=${user.orgtype?default("0")}&userid=${user.userid?default("")}#/system/user.html" class="blue">授权</a>
+						<a href="${RootPath}system/userpass.html?userid=${user.userid?default("")}&orgtype=${orgtype?default("")}#/system/user.html" class="blue">重置密码</a>
+						<a href="${RootPath}system/useredit.html?userid=${user.userid?default("")}#/system/user.html" class="blue">修改</a>
+						<#if (user.issa="1")>
+					    <span style="margin:0 5px 0 5px;color:#666;">删除</span>
+						<#else>
+						<a href="javascript:a_click('/system/deleteUser.html','${user.userid?default("")}','')" class="blue" title="点击进行删除">删除</a>
+						</#if>
+						</td>
+					</tr>
+					</#list>
+					<!-- loop end -->
+			</table>
+			${PageHtml}
+		</div>
+	<form id="eform" action="" method="post" target="HiddenFrame">
+		<input type="hidden" id="subflag" name="subflag" value="1"/>
+		<input type="hidden" id="orgtype" name="orgtype" value="${orgtype?default('')}" />
+		<input type="hidden" id="userid" name="userid"/>
+		<input type="hidden" id="isdel" name="isdel" />
+		<input type="hidden" name="orgcode" value="${orgcode?default('')}"/>
+		<input type="hidden" name="pageNum" value="${pageNum?default('')}"/>
+		<input type="hidden" name="pageSize" value="${pageSize?default('')}"/>
+		<input type="hidden" name="truename" value="${truename?default('')}"/>
+		<input type="hidden" name="search" value="${search?default('')}"/>
+	</form>
+		<div class="clear"></div>
+	</div>
+</div>
+</div>
+</div></div>
+
+
+
+<#include "/common/admin/bottom.htm">
+</body>
+</html>

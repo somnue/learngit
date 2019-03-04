@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <link rel="stylesheet" type="text/css" href="/static/css/viewer.min.css">
+    <script src="/static/js/viewer.min.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>查看扫描件</li>
+            </ol>
+        </div>
+        
+	    <h4 class="scaningH4">查看扫描件：</h4>
+        <div id="s_filesBox">
+	        <div class="scanningPicsBox" id="viewer"></div>
+	        <h4 class="scaningH4">查看PDF文件：</h4>
+	        <div class="pdfBox" id="pdfBox"></div>
+        </div>
+        <div class="noData" id="noData" style="padding:74px;">暂无数据</div>
+        <div class="closeBtn">
+            <button class="btn btn-info btn-lg" onclick="window.history.back(-1)">返回</button>
+        </div>
+    </div>
+</div>
+<#include "./common/footer.htm">
+
+<script type="text/html" id="viewerTem">
+    {{if imgs.length>0}}
+        {{each imgs value i}}
+        <div class="PicBox">
+            <img src="{{value.fileRte}}" title="{{value.fileNm}}">
+        </div>
+        {{/each}}
+    {{else}}
+    <div class="PicBox">
+        没有图片数据
+    </div>
+    {{/if}}
+</script>
+<script type="text/html" id="viewerTemPdf">
+    {{if pdfs.length>0}}
+        {{each pdfs value i}}
+        <a target="_blank" href="{{value.fileRte}}">{{value.fileNm}}</a>
+        {{/each}}
+    {{else}}
+    <div>
+        没有PDF文件
+    </div>
+    {{/if}}
+</script>
+<script>
+    $(function () {
+        var search = window.location.search;
+        var goodsNum = getQueryString('goodsNum') ||'';
+		var params =  {
+			dtnNtcId: goodsNum
+        }
+        $.post('/akadmin/caseAccon/akDtnNtcFiles', params,function (data) {
+        	data = JSON.parse(data);
+            if (data.state == 1) {
+                var imgs = [], pdfs = [];
+                data.list.map(function (v) {
+                    if (v.fileRte.indexOf('.pdf') != -1) {
+                        pdfs.push(v);
+                    } else {
+                        imgs.push(v);
+                    }
+                });
+                data.imgs = imgs;
+                data.pdfs = pdfs;
+                $('#viewer').html(template('viewerTem', data));
+                $('#pdfBox').html(template('viewerTemPdf', data));
+                var viewer = new Viewer(document.getElementById('viewer'));
+            }else{
+            	$("#s_filesBox").hide();
+            	$("#noData").show();
+            }
+        });
+    });
+</script>
+</body>
+</html>

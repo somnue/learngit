@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/operateWeb.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./operatorAdmin">操作员管理</a></li>
+                <li id="webBread">操作员添加</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="operateBox clearfix">
+                <div class="form-group">
+                    <label for="account">操作员编号: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="account" 
+                    onchange="if(/[^\w\.\/]/ig.test(this.value)){alert('只能输入字母和数字');this.value='';}">
+                </div>
+                <div class="form-group">
+                    <label for="operatorID">操作员编号: <span class="mustIcon">*</span></label>
+                    <input readonly type="text" class="form-control" id="operatorID">
+                </div>
+                <div class="form-group">
+                    <label for="operatorName">操作员姓名: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="operatorName"
+                     onchange="if(/[^\u4E00-\u9FA5]/g.test(this.value)){alert('只能输入汉字');this.value='';}">
+                </div>
+                <div class="form-group">
+                    <label for="cardID">证件号码:</label>
+                    <input type="text" 
+                    onkeyup="(this.v=function(){this.value=this.value.replace(/[^A-Za-z0-9-]+/,'');}).call(this)" 
+                    class="form-control" 
+                    id="cardID">
+                </div>
+                <div class="form-group">
+                    <label for="affiliation">所属机构: 
+                    	<span style="font-weight: 100;" id="checkOrgTip">(点击左侧选择机构)</span>
+                    	<span class="mustIcon">*</span>
+                    </label>
+	                <input readonly type="text" class="form-control" id="affiliation">
+                </div>
+                <div class="form-group">
+                    <label for="desc">备注:</label>
+                    <input type="text" class="form-control" id="desc">
+                </div>
+                <div id="anKuanAlert" class="anKuanAlert">
+                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger" style="width: 100%;">
+                        <strong id="anKuanAlertContent"></strong>
+                    </div>
+                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                        <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                    </div>
+                </div>
+                <div class="anKuanButtons" id="anKuanButtons">
+                    <button id="submitBtn" class="btn btn-primary">确认</button>
+                    <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/cancellationing_payNote.js"></script>
+    <style>
+        .form-horizontal .form-group {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./cancellation?type=0">缴存通知书作废</a></li>
+                <li>缴存通知书作废详情</li>
+            </ol>
+        </div>
+        <div class="infListBox row">
+            <form class="form-horizontal" id="infForm">
+                <div class="operatorInf">
+                    <div class="form-group col5">
+                        <label for="goodsNum">涉案资金编号：</label>
+                        <input readonly type="text" class="form-control" id="goodsNum">
+                        <p class="errorTip"></p>
+                    </div>
+                    <div class="form-group col5">
+                        <label for="caseName">案件名称：</label>
+                        <input readonly type="text" class="form-control" id="caseName">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="dtnNtcId">扣押通知书编号：</label>
+                        <input readonly type="text" class="form-control" id="dtnNtcId">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="caseNum">案件编号：</label>
+                        <input readonly type="text" class="form-control" id="caseNum">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="name">涉案人员姓名：</label>
+                        <input readonly type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="caseTime">扣押日期：</label>
+                        <input readonly type="text" class="form-control" id="caseTime">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="IDcardType">证件类别：</label>
+                        <input readonly type="text" class="form-control" id="IDcardType">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="doneTime">到期日：</label>
+                        <input readonly type="text" class="form-control" id="doneTime">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="IDcard">证件号码：</label>
+                        <input readonly type="text" class="form-control" id="IDcard">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="desc">备注：</label>
+                        <input readonly type="text" class="form-control" id="desc">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="payAccount">缴存账户：</label>
+                        <input readonly type="text" class="form-control" id="payAccount">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="moneyNum">应扣金额：</label>
+                        <input readonly type="text" class="form-control" id="moneyNum">
+                    </div>
+                    <div class="form-group col5">
+                        <label for="payAccountName">缴存账号户名：</label>
+                        <input readonly type="text" class="form-control" id="payAccountName">
+                    </div>
+                    <div class="form-group col5">
+                        <label></label>
+                    </div>
+                    <div class="form-group col5">
+                        <label for="payAccountAlias">缴存账号别名：</label>
+                        <input readonly type="text" class="form-control" id="payAccountAlias">
+                    </div>
+                    <div class="form-group col5">
+                        <label></label>
+                        <a href="#" data-akhref='./scanningPics' class="btn btn-info" id="seePics">查看扫描件</a>
+                    </div>
+                </div>
+                <div class="operatorInf">
+                    <div class="col5 form-group">
+                        <label for="payType">缴存类型：</label>
+                        <input readonly id="payType" class="form-control" type="text">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="operator">经办人姓名：</label>
+                        <input readonly id="operator" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group payMoneyBox">
+                        <label for="payMoney">缴存金额小写：</label>
+                        <input readonly id="payMoney" type="text" class="form-control">
+                        <span class="payMoneyYUAN" aria-hidden="true">元</span>
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="operatorIDType">证件类型：</label>
+                        <input readonly id="operatorIDType" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="payMoneyCapital">缴存金额大写：</label>
+                        <input readonly id="payMoneyCapital" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="operatorID">证件号码：</label>
+                        <input readonly id="operatorID" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="noteID">通知书编号：</label>
+                        <input readonly id="noteID" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="operatorName">操作员名称：</label>
+                        <input readonly id="operatorName" type="text" class="form-control">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="printDate">打印日期：</label>
+                        <input readonly id="printDate" type="text" autocomplete="off" class="form-control">
+                    </div>
+                    <input type="hidden" id="operatorIdHide" name="operatorId">
+                </div>
+                <div id="anKuanAlert" class="anKuanAlert">
+                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger">
+                        <strong id="anKuanAlertContent"></strong>
+                    </div>
+                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                       	<span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                    </div>
+                </div>
+                <div class="anKuanButtons"  id="anKuanButtons">
+                    <span id="submitBtn" class="btn btn-warning" data-toggle="modal" data-target="#backModal">作废</span>
+                    <span class="btn btn-info" onclick="window.history.back(-1);">取消</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade backModal" id="backModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                确定作废通知书？
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="ModalOk" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<#include "./common/footer.htm">
+
+</body>
+</html>

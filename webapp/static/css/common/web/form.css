@@ -1,0 +1,76 @@
+﻿
+.pageform .isempty {font-size:14px; padding-top:5px; padding-left:5px; color:#ccc;}
+.pageform .isempty span {color:#f60; font-family:宋体;}
+.pageform .acccrow {font-size:14px; padding-top:6px;}
+.pageform .comment {font-size:14px; padding-left:3px; color:#bbb;padding-top:6px;}
+.pageform .redcomment {font-size:14px; padding-top:10px; color:#f30;}
+.pageform .buttons {padding-top:15px; padding-bottom:10px;}
+.pageform .formbtn {border:1px solid #06acef; background:#06acef; margin-right:10px; font-size:18px;
+    padding-left:35px; padding-right:35px; padding-top:9px; padding-bottom:10px;
+    *padding-left:17px; *padding-right:17px; *padding-top:6px; *padding-bottom:7px;
+    _padding-left:17px; _padding-right:17px; _padding-top:5px; _padding-bottom:5px;
+    font-family:微软雅黑,Microsoft yahei,Arial,Verdana,Tahoma,sans-serif; color:#fff;
+    cursor:pointer;}
+
+.pageform .textbox {}
+.pageform .textbox .finput {font-size:14px; border:1px solid #ccc; height:20px; padding-left:3px; padding-right:2px;}
+.pageform .textbox .rinput {font-size:14px; border:1px solid #ccc; height:20px; background:#f3f3f3; padding-top:2px; padding-bottom:2px; padding-left:3px; padding-right:2px;}
+.pageform .textbox .ftitle {font-size:14px; padding-top:6px;}
+.pageform .textbox .prevtext {font-size:14px; padding-top:6px; padding-right:5px;}
+.pageform .textbox .nexttext {font-size:14px; padding-top:6px; padding-left:5px;}
+.pageform .textbox .control {font-size:14px;padding-top:6px;}
+
+.pageform .radiobox {padding-top:3px; padding-bottom:8px;}
+.pageform .radiobox .ftitle {font-size:14px; padding-top:6px;}
+.pageform .radiobox .control {font-size:14px; padding-top:7px; padding-right:5px;}
+.pageform .radiobox .itemtext {font-size:14px; padding-top:6px; padding-right:10px;}
+
+.pageform .radioboxs {padding-top:3px; padding-bottom:3px;}
+.pageform .radioboxs .ftitle {font-size:14px; padding-top:6px;}
+.pageform .radioboxlist {padding-top:3px; padding-bottom:5px;}
+.pageform .radioboxlist .radioitem {padding-bottom:3px;}
+.pageform .radioboxlist .radioitem .control {font-size:14px; padding-top:7px; padding-right:5px;}
+.pageform .radioboxlist .radioitem .itemtext {font-size:14px; padding-top:6px;}
+
+.pageform .checkbox {padding-top:3px; padding-bottom:8px;}
+.pageform .checkbox .ftitle {font-size:14px; padding-top:6px;}
+.pageform .checkbox .control {font-size:14px; padding-top:7px; padding-right:5px;}
+.pageform .checkbox .itemtext {font-size:14px; padding-top:6px; padding-right:10px;}
+
+.pageform .checkboxs {padding-top:3px; padding-bottom:3px;}
+.pageform .checkboxs .ftitle {font-size:14px; padding-top:6px;}
+.pageform .checkboxlist {padding-top:3px; padding-bottom:5px;}
+.pageform .checkboxlist .checkitem {padding-bottom:3px;}
+.pageform .checkboxlist .checkitem .control {font-size:14px; padding-top:7px; padding-right:5px;}
+.pageform .checkboxlist .checkitem .itemtext {font-size:14px; padding-top:6px;}
+
+.pageform .selectbox {padding-top:8px; padding-bottom:3px;}
+.pageform .selectbox .ftitle {font-size:14px; padding-top:6px;}
+.pageform .selectbox .control {font-size:14px; padding-top:1px;}
+.pageform .selectbox .select {font-size:14px; padding-top:3px; padding-bottom:3px; padding-left:3px; padding-right:3px; border:1px solid #ccc;}
+.pageform .selectbox .select select {font-size:14px; border:0px;}
+
+.pageform .textareatitle {padding-top:3px; padding-bottom:3px;}
+.pageform .textareatitle .ftitle {font-size:14px; padding-top:6px;}
+.pageform .textareatitle .split {padding-top:5px; width:10px;}
+.pageform .textareatitle .menudiv {padding-top:4px; padding-right:1px;}
+.pageform .textareatitle .menudiv .menu {width:80px; height:22px; font-size:12px; background:#f3f3f3; border:1px solid #c1c1c1; display:block; display:inline-block; text-align:center; line-height:22px;}
+.pageform .textareatitle .menudiv .menu a {color:#000;}
+.pageform .textarea {padding-top:6px; padding-bottom:3px;}
+.pageform .textarea .control {}
+.pageform .textarea .finput {border:1px solid #ccc; padding-top:3px; padding-bottom:2px; padding-left:3px; padding-right:2px;}
+.pageform .textarea .rinput {border:1px solid #ccc; background:#f3f3f3; padding-top:3px; padding-bottom:2px; padding-left:3px; padding-right:2px;}
+.pageform .texteditor {padding-top:6px; padding-bottom:3px;}
+
+.pageform .uplink {padding-top:3px; padding-bottom:8px;}
+.pageform .uplink .ftitle {font-size:14px; padding-top:6px;}
+.pageform .uplink .link {font-size:14px; padding-top:6px;}
+.pageform .uplist {}
+.pageform .uplist .pics {width:153px; height:145px; overflow:hidden;}
+.pageform .uplist .pics .picbox {padding-top:5px; padding-right:13px;}
+.pageform .uplist .pics .picbox .imgbox {width:140px; height:105px; background:#999; overflow:hidden;}
+.pageform .uplist .pics .picbox .imgbox img {display:block;}
+.pageform .uplist .pics .linkbtn {padding-top:12px; padding-right:13px; text-align:center; font-size:12px;}
+.pageform .uplist .pics .linkbtn a {color:#333;}
+.pageform .uplist .pics .linkbtn a:hover {color:#f60;}
+

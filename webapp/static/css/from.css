@@ -1,0 +1,60 @@
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote{
+    margin: 0;
+    padding: 0;
+}
+
+html,body{
+    width: 100%;
+    height: auto;
+    color: #333333;
+    font-size: 12px;
+    background: #188bca url("../images/index_top_bg2.jpg") left top repeat-x;
+}
+
+input,textarea,select{
+    color: #666666;
+    font-size: 12px;
+}
+
+td,th{
+    font-size: 12px;
+    padding: 0;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+fieldset,img{
+    border: none;
+}
+address,caption,cite,code,dfn,em,strong,th,var{
+    font-style: normal;
+    font-weight: normal;
+}
+
+a{
+    color: #333333;
+    text-decoration: none;
+    outline: none;
+}
+a:hover{
+    color: #ff6600;
+    text-decoration: none;
+    outline: none;
+}
+
+strong{
+    font-weight: bold;
+}
+
+ul,ol,li{
+    list-style: none;
+}
+
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}

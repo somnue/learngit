@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>操作员信息</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="operateBox clearfix">
+                <div class="form-group">
+                    <label for="operatorID">操作员编号:</label>
+                    <input readonly type="text" class="form-control" id="operatorID">
+                </div>
+                <div class="form-group">
+                    <label for="operatorName">操作员姓名:</label>
+                    <input readonly type="text" class="form-control" id="operatorName">
+                </div>
+                <div class="form-group">
+                    <label for="affiliation">所属机构:</label>
+                    <input readonly type="text" class="form-control" id="affiliation">
+                </div>
+                <div class="form-group">
+                    <label for="desc">备注:</label>
+                    <input readonly type="text" class="form-control" id="desc">
+                </div>
+                <div class="anKuanButtons">
+                    <a class="btn btn-primary" href="./operatorPswChange">修改密码</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script>
+    $(function () {
+        $.post('/akadmin/sysuser/loginDetails', function (data) {
+           	data = JSON.parse(data);
+            if (data && data.status == 1) {
+                $("#operatorID").val(data.AkSysUserDo.userName);
+                $("#operatorName").val(data.AkSysUserDo.name);
+                $("#affiliation").val(data.AkSysUserDo.insNm);
+                $("#desc").val(data.AkSysUserDo.remark);
+            }
+        });
+    });
+</script>
+</body>
+</html>

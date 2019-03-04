@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/payNote.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>缴存</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="goodsNum">涉案资金编号:</label>
+                        <input type="text" class="form-control" id="goodsNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="withholdNum">扣押通知书编号:</label>
+                        <input type="text" class="form-control" id="withholdNum">
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="name">涉案人员姓名:</label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="caseName">案件名称:</label>
+                        <input type="text" class="form-control" id="caseName">
+                    </div>
+                    <button type="submit" class="btn btn-primary">查询</button>
+                </form>
+            </div>
+            <div class="infTable">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>序号</th>
+                        <th>涉案资金编号</th>
+                        <th>扣押通知书编号</th>
+                        <th>案件名称</th>
+                        <th>案件编号</th>
+                        <th>涉案人员姓名</th>
+                        <th>扣押日期</th>
+                        <th>到期日</th>
+                        <th>缴存账号</th>
+                        <th class="all_moneyTR">应扣金额</th>
+                        <th class="all_moneyTR">账户余额</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide" id="pages_pageHide">
+            	<#include "./common/pages.html">
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <th class="tableControl">
+            <a href="./paying?goodsNum={{value.invlvAmtId}}">
+                <button class="btn btn-info btn-sm toBind">选择</button>
+            </a>
+        </th>
+        <th>{{(pageNum-1)*pageSize+i+1}}</th>
+        <td>{{value.invlvAmtId}}</td>
+        <td>{{value.dtnNtcId}}</td>
+        <td>{{value.caseNm}}</td>
+        <td>{{value.caseId}}</td>
+        <td>{{value.invlvName}}</td>
+        <td>{{value.sDate}}</td>
+        <td>{{value.eDate}}</td>
+        <td>{{value.accno}}</td>
+        <td class="all_moneyTR">{{value.invlvAmt}}</td>
+        <td class="all_moneyTR">{{value.accba}}</td>
+        <td>{{value.remark}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

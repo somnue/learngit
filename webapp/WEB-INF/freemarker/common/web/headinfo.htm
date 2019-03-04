@@ -1,0 +1,148 @@
+ <div class='cm-header'>
+    <div class='top_info'>
+        <div class='cm-center'>
+   		<#if sysMember??>
+        	<div class='fl'>
+                <span>
+                	<a href='${MemberSite!}' style="color:red;"><#if (sysMember.membername)??>
+                		<#if (sysMember.membername)?length gt 9>
+                			${(sysMember.membername)[0..9]}...
+                		<#else>
+                			${(sysMember.membername)}
+                		</#if>
+                	</#if></a>
+            	，您好，欢迎来到XX市民之家！
+                </span>
+                <span><img src='${RootPath}static/images/common/icons/header_tel.png' />0372-12345（07:00-21:00 周一至周日）</span>
+            </div>
+             <div class='fr'>
+                <span>关注我们：</span>
+                <span><a href='${HomeSite!}app.html'><img src='${RootPath}static/images/common/icons/header_mobile.png' alt='XX市民之家手机App' />手机APP</a></span>&nbsp;&nbsp;
+                <span style='position: relative;'>
+                    <a href='javascript:;' id='topWx'><img src='${RootPath}static/images/common/icons/header_wechat.png' alt='XX市民之家微信公众号' />微信公众号</a>
+                    <div class='wechat_ewm' style='display:none;'><img src='${RootPath}static/images/common/other/footer_ewm3.png' /></div>
+                </span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span><a href='${MemberSite!}' style="color:red;">我的用户中心</a></span>&nbsp;|&nbsp;
+                <span><a href='${MemberSite!}logout.html'>退出</a></span>
+            </div>
+       	<#else>
+        	<div class='fl'>
+                <span>您好，欢迎来到XX市民之家！</span>
+                <span><img src='${RootPath}static/images/common/icons/header_tel.png' />0372-12345（07:00-21:00 周一至周日）</span>
+            </div>
+            <div class='fr'>
+                <span>关注我们：</span>
+                <span><a href='${HomeSite!}app.html'><img src='${RootPath}static/images/common/icons/header_mobile.png' alt='XX市民之家手机App' />手机APP</a></span>&nbsp;&nbsp;
+                <span style='position: relative;'>
+                <a href='javascript:;' id='topWx'><img src='${RootPath}static/images/common/icons/header_wechat.png' alt='XX市民之家微信公众号' />微信公众号</a>
+                    <div class='wechat_ewm' style='display:none;'><img src='${RootPath}static/images/common/other/footer_ewm3.png' /></div>
+                </span>&nbsp;&nbsp;
+                <span><a href='${MemberSite!}login.html'>登录</a></span>&nbsp;|&nbsp;<span><a href='${MemberSite!}web/reg/reg.html'>注册</a></span>
+                &nbsp;
+                <span>
+                	<a href='http://member.aysmzj.gov.cn/sso/login'>使用省统一认证登录</a>
+                </span>
+            </div>
+       </#if>
+            <div class='clear'></div>
+        </div>
+    </div>
+
+     <div class='logo_info'>
+         <div class='cm-center'>
+             <div class='fl logo'>
+                 <div class='fl logoimg' style='cursor:pointer;' onclick="javascript:location.href ='${MainSite!}' ;"></div>
+                 <div class='fl line'></div>
+                 <div class='fl weather'>
+                     <div class='mask'></div>
+                     <iframe allowtransparency='true' frameborder='0' width='180' height='36' scrolling='no' src='http://tianqi.2345.com/plugin/widget/index.htm?s=3&z=2&t=0&v=0&d=3&bd=0&k=000000&f=&q=1&e=1&a=0&c=53898&w=180&h=36&align=left'></iframe>
+                 </div>
+                 <div class='clear'></div>
+             </div>
+             <div class='fr seach'>&nbsp;&nbsp;<a href='javascript:;' id='topseach'><img src='${RootPath}static/images/common/icons/header_search.png' /></a></div>
+             <div class='fr nav'>
+                 <span><a href='${MainSite!}'
+                 <#if basePage??>
+					<#if (basePage.appCode)??>
+						<#if basePage.appCode == 'Home'>
+							class='nav_on'
+						</#if>
+					</#if>
+                 </#if>
+                 >首页</a></span>
+                 <span>
+                     <a href='${WorkSite!}'
+                     <#if basePage??>
+						<#if (basePage.appCode)??>
+							<#if basePage.appCode == 'OnLine'>
+								class='nav_on'
+							</#if>
+						</#if>
+	                 </#if>
+                     >网上办事</a>
+                 </span>
+                 <span><a href='${InfoSite!}'
+                 <#if basePage??>
+					<#if (basePage.appCode)??>
+						<#if basePage.appCode == 'Info'>
+							class='nav_on'
+						</#if>
+					</#if>
+                 </#if>
+                 >新闻中心</a></span>
+                 <span>
+                     <a href='javascript:;'
+                     <#if basePage??>
+						<#if (basePage.appCode)??>
+							<#if basePage.appCode == 'BBS'>
+								class='nav_on'
+							</#if>
+						</#if>
+	                 </#if>
+	                 >政民互动</a>
+                     <div class='sub'>
+                         <ul>
+							<li><a href='${OaSite!}bbs/matterindex/telindex.html' target='_blank'>市长热线</a></li>
+                             <li><a href='${OaSite!}bbs/matterindex/emailindex.html' target='_blank'>市长信箱</a></li>
+                             <li><a href='${OaSite!}interview/web/index.html' target='_blank'>在线访谈</a></li>
+                             <li><a href='${OaSite!}web/bbs/index.html' target='_blank'>连线政府</a></li>
+                             <#-- <li><a href='${OaSite!}bbs/peopel/infoindex.html' target='_blank'>人民网留言</a></li> -->
+                             <li><a href='http://www.haay.hrss.gov.cn/zxft/default.aspx' target='_blank'>人社局在线访谈</a></li>
+                         </ul>
+                     </div>
+                 </span>
+                 <span><a href='${SubjectSite!}'
+                 <#if basePage??>
+					<#if (basePage.appCode)??>
+						<#if basePage.appCode == 'Subject'>
+							class='nav_on'
+						</#if>
+					</#if>
+                 </#if>
+                 >便民应用</a></span>
+                 <span><a href='${FinanceSite!}'
+                 <#if basePage??>
+					<#if (basePage.appCode)??>
+						<#if basePage.appCode == 'Finance'>
+							class='nav_on'
+						</#if>
+					</#if>
+                 </#if>
+                 >普惠金融</a></span>
+                 <span><img src='${RootPath}static/images/common/other/line.jpg' /></span>
+             </div>
+             <div class='clear'></div>
+             <div class='search_nav' style='display:none;'>
+                 <div class='gb_btn'><a href='javascript:;' id='closesearch'><img src='${RootPath}static/images/common/icons/header_search_gb.png'></a></div>
+                 <div class='search_sn'>
+                     <table width='100%'>
+                         <tr>
+                             <td><input type='text' id='txtTitle' class='search_input'></td>
+                             <td><input type='button' class='search_btn' onclick='javascript:searchForm("${SubjectSite!}");' value='搜索'></td>
+                         </tr>
+                     </table>
+                 </div>
+             </div>
+         </div>
+     </div>
+</div>

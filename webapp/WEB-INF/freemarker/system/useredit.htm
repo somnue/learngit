@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<link rel='stylesheet' href="${RootPath}static/js/common/ztree/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/js/common/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${RootPath}static/js/common/jquery.page.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successMessage.js"></script>
+<script type="text/javascript">
+function selectOrg(){
+	var layer = RootElement.JsCore.FrameLayer('selectOrg');
+	layer.TipMode = false;
+	layer.ShowClose = true;  // 是否显示关闭按钮
+	//layer.LayerUrl = '${RootPath}formflow/user.html?layerid=selectUser&flowCode='+flowCode+'&nodeCode='+nodeCode; // 弹出层URL
+	layer.LayerUrl = '${RootPath}system/selectorg.html?orgtype=${sysUser1.orgtype?default("0")}&orgcode=${sysUser1.orgcode?if_exists}'; // 弹出层URL
+	layer.Scrolling = 'auto'; // 滚动条
+	layer.Width = 900; // 弹出层宽度
+	layer.Height = 500; // 弹出层高度
+	layer.open();
+	layer = null;
+}
+function selectorgCallBack(orgtype,orgcode,orgname){
+	$("#orgtype").val(orgtype);
+	$("#orgcode").val(orgcode);
+	$("#orgname").val(orgname);
+}
+
+	function subForm(){
+		var isOk=JsCore.Valitor.ChkForm('subform', 1);
+		var dataUrl="/system/user.html";
+		if(isOk){
+			$.ajax({
+				url : '${RootPath}system/saveUser',
+				type : "post",
+				data : $("#subform").serialize(),
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						errorMessage(true,d.msg);
+					}else if(d.code=="1"){
+						successMessage(true,d.msg,dataUrl);
+					}
+				},
+				error: function(d) {
+					var message = JSON.parse(d.responseText).message;
+					errorMessage(true,message);
+				}
+			});
+		  }
+	}
+	function callback(){
+		window.location.href="/system/user.html";
+	}
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+	</style>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 操作员管理</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>新增  / 修改</td>
+  </tr>
+</table>
+<form id="subform" class="pageform" action="${RootPath}system/saveUser.html" method="post" target="HiddenFrame">
+<input type="hidden" name="subflag" value="${subflag}"/>
+<input type="hidden" name="userid" value="${sysUser1.userid?if_exists}"/>
+<input type="hidden" id="orgtype" name="orgtype" value="${sysUser1.orgtype?default("0")}"/>
+<input type="hidden" id="orgcode" name="orgcode" value="${sysUser1.orgcode?if_exists}"/>
+<input type="hidden" name="isdel" value="${sysUser1.isdel}"/>
+<input type="hidden" name="isdrop" value="${sysUser1.isdrop}"/>
+<table class="table_submit" id="detailspageTableSubmit">
+    <tr>
+      <th><span class="must">*</span>登录账号</th>
+      <td width=40%>
+          <input type="text" id="username" name="username" title="登录账号" class="text3" required="true" datatype="Char" datatitle="登录账号" msg="提示：登录账号只允许填写请填写英文、数字或下划线的组合
+		    " style="width:260px;text-align:left;" maxlength="128" value="${sysUser1.username?if_exists}" <#if sysUser1.userid??>readonly=readonly</#if>/> 
+      </td>
+      <th><span class="must">*</span>真实姓名</th>
+      <td width=40%>
+          <input type="text" id="trueName" name="truename" title="真实姓名" required="true" datatitle="真实姓名" class="text3" style="width:260px;text-align:left;" maxlength="64" value="${sysUser1.truename?if_exists}"/>
+      </td>
+    </tr>
+    <#if (isAdd)>
+    <tr>
+    <th><span class="must">*</span>登录密码</th>
+    <td>
+          <input type="password" id="userpassword" name="userpassword" title="登录密码" required="true" datatype="" datatitle="登录密码" class="text3" style="width:260px;text-align:left;" maxlength="32" value="${sysUser1.userpassword?if_exists}"/>
+    </td>
+    <th><span class="must">*</span>重复密码</th>
+    <td>
+    <input type="password" id="secpassword" name="secpassword" title="重复密码" required="true" datatype="Repeat" msg="提示：两次输入的密码不一致" to="userpassword" datatitle="重复密码" class="text3" style="width:260px;text-align:left;" maxlength="32" value="${secpassword?if_exists}"/>
+    </td>
+    </tr>
+    </#if>
+  <tr>
+  <th>联系电话</th>
+  <td>
+  <input type="text" id="tel" name="tel" title="联系电话" datatype="Phone" datatitle="联系电话" msg="提示：请填写正确格式的电话号码" class="text3" style="width:260px;text-align:left;" maxlength="32" value="${sysUser1.tel?if_exists}"/>  
+  </td>
+  <th>传真号码</th>
+  <td>
+  <input type="text" id="fax" name="fax" title="传真号码" datatype="Phone" datatitle="传真号码" msg="提示：请填写正确格式的传真号码" class="text3" style="width:260px;text-align:left;" maxlength="32" value="${sysUser1.fax?if_exists}"/>
+  </td>
+</tr>
+<tr>
+   <th>联系地址</th>
+   <td>
+   <input type="text" id="address" name="address" title="联系地址"  datatitle="联系地址" class="text3" style="width:260px;text-align:left;" maxlength="260" value="${sysUser1.address?if_exists}"/>
+   </td>
+   <th>邮政编码</th>
+   <td>
+   <input type="text" id="zip" name="zip" title="邮政编码" datatitle="邮政编码" datatype="Zip" class="text3" style="width:260px;text-align:left;" maxlength="6" value="${sysUser1.zip?if_exists}"/>
+   </td>
+</tr>
+<tr>
+<th>手机号码</th>
+<td>
+<input type="text" id="mobile" name="mobile" title="手机号码" datatitle="手机号码" datatype="Mobile" msg="提示：请填写正确格式的手机号码" class="text3" style="width:260px;text-align:left;" maxlength="32" value="${sysUser1.mobile?if_exists}"/>
+</td>
+<th>QQ号码</th>
+<td>
+<input type="text" id="qq" name="qq" title="QQ号码" class="text3" datatitle="QQ号码" datatype="Numeral" msg="提示：QQ号码为纯数字" style="width:260px;text-align:left;" maxlength="32" value="${sysUser1.qq?if_exists}"/>
+</td>
+</tr>
+<tr>
+<th>电子邮箱</th>
+<td>
+<input type="text" id="email" name="email" title="电子邮箱" datatitle="电子邮箱" datatype="Email" class="text3" style="width:260px;text-align:left;" maxlength="64" value="${sysUser1.email?if_exists}"/>
+</td>
+<th></th>
+<td></td>
+</tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="确定" class="button3" onclick="subForm();" />
+    <input name="" type="button" value="取消" class="button3" onclick="callback()" />
+    </td>
+  </tr>
+</table>
+<table class="table_noline2">
+  <tr>
+    <td><span class="must">*</span>为必输项</td>
+  </tr>
+</table>
+<span id="error" style="color:#f00;"></span>
+<div class="msgrow">
+	<div id="Comment_Msg" class="redcomment"></div>
+</div>
+</form>		
+		
+<div class="pop-success" id="pop-success">
+	<a href="javascript:void(0);" class="pop-close" onclick="successclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-ok.png" /></p>
+    <h3>操作成功</h3>
+</div>
+
+<div class="pop-success" id="pop-fail">
+	<a href="javascript:void(0);" class="pop-close" onclick="failclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-error.png" /></p>
+    <h3>操作失败</h3>
+</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>

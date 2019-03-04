@@ -1,0 +1,22 @@
+<table class="top">
+  <tr>
+    <td><a href="logout.html"><img src="${RootPath}static/gzf/images/systerm1.gif" title="退出系统" ></a></td>
+  </tr>
+</table>
+<table class="nav">
+  <tr>
+    <td class="nav_left">
+    </td>
+	<td>&nbsp;</td>
+	<td class="nav_right">
+		欢迎 您：
+		<#if sysUser??>
+			<#if (sysUser.truename)??>
+				${(sysUser.truename)!}(${(sysUser.username)!})
+			<#else>
+				${(sysUser.username)!}
+			</#if>
+		</#if>
+	</td>
+  </tr>
+</table>

@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm"> <#include
+"/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet"
+	href="${RootPath}static/gzf/css/form.css" />
+<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successfulMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+
+<script type="text/javascript">
+
+// 允许退款标志 0：允许 1：不允许
+var prmtRfndInd = '${ob.prmtRfndInd!""}';
+// 退款有效期
+var rfndAvldt = ${(ob.rfndAvldt)?default('""')};
+// 退款方式代码 0：自动原路退款 1：手工退款
+var rfndMtdcd = '${ob.rfndMtdcd!""}';
+// 退款金额方式代码 0：全额 1：部分
+var rfndModAmtCd = '${ob.rfndModAmtCd!""}';
+
+//console.log("prmtRfndInd=",prmtRfndInd,"rfndAvldt=",rfndAvldt, "rfndMtdcd=",rfndMtdcd, "rfndModAmtCd=",rfndModAmtCd)
+
+$(document).ready(function(){
+	var stmcd ='${obo.subOrdrStCd}'
+	$("#offbtn").hide();
+	$("#onbtn").hide();
+	
+	if(stmcd == '2'){
+		$("#offbtn").show();
+		$("#onbtn").show();
+	}
+	var dt = '${obo.stmDt} ';
+	var tm = '${obo.stmTm}';
+
+	var pydate=dt+tm;
+	
+
+	$("#paydate").val(pydate);
+})
+	//全额退款控制
+	function allclick() {
+		var feeItmPrjAmt= $('#feeItmPrjAmt').val();
+		var money= feeItmPrjAmt.replace("元", "");
+		$("#refundmoneyon").val(money);
+		$("#refundmoneyoff").val(money);
+
+	};
+	// 退款方式金额代码控制
+	function allChange(_this){
+		if($(_this).val() <= 0 || Number($(_this).val() )> $('#feeItmPrjAmt').val()){
+			errorMessage(true,"请输入正确范围金额")
+			$(_this).val("")
+		}
+		
+	}
+	//日期加减
+	function addDate(date,days){
+		var d = new Date(date);
+		d.setDate(d.getDate() + days);
+		var m = d.getMonth() + 1;
+		return d.getFullYear() + "/" + (m < 10?"0" + m : m) + "/" + d.getDate() + " " + d.getHours() +  ":" + d.getMinutes() + ":" + d.getSeconds();
+	}
+	//线上退款弹框
+	function pupopen() {
+		$("#refundmoney").val("");
+		//退款方式代码控制输入框
+		if(rfndModAmtCd == "0"){//全额
+			$("#refundmoneyon").attr({'disabled':"true"})
+		}
+		if(prmtRfndInd == "0"){
+			var stmDt = "${(obo.stmDt?default(''))}";
+			var stmTm = "${(obo.stmTm?default(''))}";
+			var dt = stmDt.slice(0,4) + "/" + stmDt.slice(4,6) + "/" + stmDt.slice(6,8) + " " + stmTm.slice(0,2) + ":" + stmTm.slice(2,4) + ":" + stmTm.slice(4,6)
+			var dtGtM = addDate(dt,Number(rfndAvldt));
+			var Ldt = new Date().getTime();
+			if(new Date(dtGtM).getTime() >= Ldt){				//手工退款
+				if(rfndMtdcd == "1"){
+					errorMessage(true,"该订单不允许线上退款")
+				}
+				//自动退款 
+				if(rfndMtdcd == "0"){
+					document.getElementById("modal-form").style.display = "block";
+				}
+			}else{
+				errorMessage(true,"该订单已经超过退款有效期")
+			}
+		}else{
+			errorMessage(true,"该订单不允许线上退款")
+		}
+		
+
+	}
+	//弹出线下退款框
+	function offlinerefund() {
+		$("#refundmoneyoff").val("");
+		//退款方式代码控制输入框
+		if(rfndModAmtCd == "0"){//全额
+			$("#refundmoneyoff").attr({'disabled':"true"})
+		}
+		if(prmtRfndInd == "0"){
+			var stmDt = "${(obo.stmDt?default(''))}";
+			var stmTm = "${(obo.stmTm?default(''))}";
+			var dt = stmDt.slice(0,4) + "/" + stmDt.slice(4,6) + "/" + stmDt.slice(6,8) + " " + stmTm.slice(0,2) + ":" + stmTm.slice(2,4) + ":" + stmTm.slice(4,6)
+			var dtGtM = addDate(dt,Number(rfndAvldt));
+			
+			var Ldt = new Date().getTime();
+			if(new Date(dtGtM).getTime() >= Ldt){
+				document.getElementById("modal-form2").style.display = "block";
+			}else{
+				errorMessage(true,"该订单已经超过退款有效期")
+			}
+			
+		}else{
+			errorMessage(true,"该订单不允许线下退款")
+		}
+		
+	}
+
+	//线上退款确认
+	function confirmrefundon() {
+		/* document.getElementById("refundmoneyon").addEventListener("input",function(event){
+			event.target.value = event.target.replace(/\-/g,"");
+		}) */
+		//document.getElementById("refundmoneyon").value = val >= 0 ?val:0;
+
+		var offstate = "1";
+		
+		if (!$("#refundmoneyon").val()) {
+			alert("退款金额不能为空！");
+			return;
+		}
+		if($("#refundmoneyon").val() == 0){
+			alert("退款金额不能为零！");
+			return;
+		}
+		if(!$("#onno").val() || !$("#onpassw").val()){
+			alert("用户名或密码为空")
+			return;
+		}
+		if (!$("#onrefundreason").val()) {
+			alert("退款原因不能为空")
+			return;
+		}
+		var pySubOrdrNo = $('#pySubOrdrNo').val();
+		var pyOrdrNo = $('#pyOrdrNo').val();
+		var rfndAmt = $('#refundmoneyon').val();
+		var onno = $("#onno").val();
+		var onpassw =hex_md5($("#onpassw").val());
+		pupclose();
+		loading(true)
+		$.ajax({
+			url : '/manage/queryorder/refund.html',
+			type : "post",
+			data : {
+				"pySubOrdrNo" : pySubOrdrNo,
+				"pyOrdrNo" : pyOrdrNo,
+				"rfndAmt" : rfndAmt,
+				"rfndMtdCd" : offstate,
+				"username":onno,
+				"password":onpassw
+			},
+			dataType : 'json',
+			success : function(data) {
+				loading(false)
+				if (data.sYSRESPCODE == "00000") {
+					successfulMessage(true,'操作成功');
+					window.location.reload();
+					//var pySubOrdrNo = $("#pySubOrdrNo").val();
+					//var pyOrdrNo = $("#pyOrdrNo").val();
+					//window.location.href = "/manage/queryorder/orderdetail?pySubOrdrNo=" + pySubOrdrNo + "&&pyOrdrNo=" + pyOrdrNo + "#/manage/queryorder/queryorder.html"        
+				} else {
+					alert("未知错误");
+					return;
+				}
+			},
+			error : function(data) {
+				loading(false)
+				if(data.responseText != null || data.responseText != "") {
+				
+					var message = JSON.parse(data.responseText).message;
+					errorMessage(true,message);
+				}
+				
+			}
+		});
+	}
+	//线下退款确认
+	function confirmrefund() {
+		
+	
+		var offstate = "2";
+		if (!$("#refundmoneyoff").val()) {
+			alert("退款金额不能为空！")
+			return;
+		}
+		if($("#refundmoneyoff").val() == 0){
+			alert("退款金额不能为零！");
+			return;
+		}
+		if(!$("#offno").val() || !$("#offpassw").val()){
+			alert("用户名或密码为空")
+			return;
+		}
+	
+		if (!$("#offrefundreason").val()) {
+			alert("线下退款原因不能为空")
+			return;
+		}
+		var pySubOrdrNo = $('#pySubOrdrNo').val();
+		var pyOrdrNo = $('#pyOrdrNo').val();
+		var rfndAmt = $('#refundmoneyoff').val();
+		var username = $("#offno").val();
+		var password = hex_md5($("#offpassw").val());
+		pupclose2();
+		loading(true)
+		$.ajax({
+			url : '/manage/queryorder/refund.html',
+			type : "post",
+			data : {
+				"pySubOrdrNo" : pySubOrdrNo,
+				"pyOrdrNo" : pyOrdrNo,
+				"rfndAmt" : rfndAmt,
+				"rfndMtdCd" : offstate,
+				"username":username,
+				"password":password
+			},
+			dataType : 'json',
+			success : function(data) {
+				loading(false)
+				if (data.sYSRESPCODE == "00000") {
+					successfulMessage(true,'操作成功');
+					window.location.reload();
+					//var pySubOrdrNo = $("#pySubOrdrNo").val();
+					//var pyOrdrNo = $("#pyOrdrNo").val();
+					//window.location.href = "/manage/queryorder/orderdetail?pySubOrdrNo=" + pySubOrdrNo + "&&pyOrdrNo=" + pyOrdrNo + "#/manage/queryorder/queryorder.html"        
+				} else {
+					failopen();
+					return;
+				}
+
+			},
+			error : function(data) {
+				loading(false)
+				if(data.responseText != null || data.responseText != "") {
+					var message = JSON.parse(data.responseText).message;
+					errorMessage(true,message);
+				}
+				
+			}
+		});
+	}
+	function pupclose2() {
+		document.getElementById("modal-form2").style.display = "none";
+	}
+	function pupclose() {
+		document.getElementById("modal-form").style.display = "none";
+	}
+	function successopen() {
+		document.getElementById("pop-success").style.display = "block";
+		document.getElementById("modal-form").style.display = "none";
+
+	}
+	function successclose() {
+		document.getElementById("pop-success").style.display = "none";
+	}
+
+	function failopen() {
+		document.getElementById("pop-fail").style.display = "block";
+		document.getElementById("modal-form").style.display = "none";
+
+	}
+	function failclose() {
+		document.getElementById("pop-fail").style.display = "none";
+	}
+	
+</script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/localdata.js"></script>
+
+<script language="javascript" type="text/javascript">
+	
+</script>
+</head>
+<body>
+	<#include "/common/admin/headinfo.htm">
+	<div class="cm-wrapper">
+		<div class="cm-center">
+			<!--
+			<div class="cm-sitemap">
+				<div class="fl navinfo">
+					<span>您现在的位置：</span> <span><a href="${SysSite}">我的管理首页</a></span> <span>&nbsp;&gt;&nbsp;</span>
+					<span>系统管理平台</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			-->
+			<div class="cm-center">
+				<div class="cm-pagebody">
+					<div class="fl leftbody">
+						<div class="titlediv">
+							<div class="tname">功能菜单</div>
+						</div>
+						<div class="menusdiv">
+							<div class="menus padding">${MenuHtml!}</div>
+						</div>
+					</div>
+					<div class="rightbody">
+						<table class="path">
+							<tr>
+								<td class="path_icon">&nbsp;</td>
+								<td>您的位置: 首页 >> 支付订单管理 >> 订单查询 >> 订单明细</td>
+							</tr>
+						</table>
+						<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>订单明细</td>
+							</tr>
+						</table>
+						<table class="table_submit">
+						
+							<tr>
+								<th>支付流水号</th>
+								<td><input id="pySubOrdrNo" name="" type="text"
+									class="gray_text" readonly="readonly" size="60"
+									value="${(obo.pySubOrdrNo)?default('')}" /></td>
+								<th>支付订单号</th>
+								<td><input id="pyOrdrNo" name="" type="text"
+									class="gray_text" readonly="readonly" size="60"
+									value="${(obo.pyOrdrNo)?default('')}" /></td>
+							</tr>
+							<tr>
+								<th>商品订单号</th>
+								<td><input id="cmdtyOrdrNo" name="" type="text"
+									class="gray_text" readonly="readonly" size="60"
+									value="${(obo.cmdtyOrdrNo)?default('')}" /></td>
+								<th>订单号</th>
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="${(obo.ordrNo)?default('')}" size="60" /></td>
+							</tr>
+							<tr>
+								<th>缴费金额</th>
+								<td><input id="feeItmPrjAmt" name="" type="text"
+									class="gray_text" readonly="readonly" size="60"
+									value="${(obo.feeItmPrjAmt?default(''))}元" /></td>
+								<th>缴费户号</th>
+								<td><input name="" type="text" class="gray_text"
+									readonly="readonly" size="60"
+									value="${(obo.feeItmPrjUsrNo)?default('')}" /></td>
+							</tr>
+							<tr>
+								<th>缴费单位</th>
+								<td><input type="text" class="gray_text"
+									readonly="readonly" size="60"
+									value="${(obo.rvPyUntNm?default(''))}" /></td>
+								<th>缴费时间</th>
+								<td><input name="" type="text" class="gray_text"
+									readonly="readonly" id="paydate"
+									size="60" /></td>
+							</tr>
+							<tr>
+								<th>缴费事项</th>
+								<td><input name="" type="text" class="gray_text"
+									readonly="readonly" value="${(obo.feeItmPrjNm)?default('')}"
+									size="60" /></td>
+								<th>订单状态</th> 
+								<#if obo.subOrdrStCd == "1">
+									<td><input type="text" class="gray_text"
+									readonly="readonly" value="待缴费" size="60" /></td> 
+								<#elseif obo.subOrdrStCd == "2">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="缴费成功" size="60" /></td> 
+								<#elseif obo.subOrdrStCd == "3">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="缴费失败" size="60" /></td> 
+								<#elseif obo.subOrdrStCd == "4">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="待退费" size="60" /></td>
+								<#elseif obo.subOrdrStCd == "6">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="失效" size="60" /></td>
+								<#elseif obo.subOrdrStCd == "7">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="已部分退费" size="60" /></td>
+								<#elseif obo.subOrdrStCd == "8">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="已全额退费" size="60" /></td>
+								<#elseif obo.subOrdrStCd == "9">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="取消 " size="60" /></td> 
+								<#elseif obo.subOrdrStCd == "0">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="退费失败 " size="60" /></td>
+								<#elseif obo.subOrdrStCd == "a">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="处理中 " size="60" /></td>
+								<#elseif obo.subOrdrStCd == "b">
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="待冲正 " size="60" /></td>
+								<#else>
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value=" " size="60" /></td> 
+								</#if>
+							</tr>
+							<tr>
+								<th>退款金额</th>
+								<td><input type="text" class="gray_text"
+									readonly="readonly" value="${(obo.rfndAmt)?default('')}" size="60" /></td>
+								<th></th>
+								<td></td>	
+							</tr>
+							<tr>
+								<th>退款审批结果</th>
+								<td colspan="3"><input type="text" class="text3"
+									value="" size="100" readonly="readonly" /></td>
+							</tr>
+						</table>
+						<table class="table_submit_button">
+							<tr>
+								<td><input type="button" id="onbtn" value="线上退款" class="button3"
+									onclick="pupopen()" /> <input id="offbtn" type="button" value="线下退款"
+									class="button3" onclick="offlinerefund()" />  <input
+									name="" type="button" value="关闭" class="button3"
+									onclick="window.location.href = '/manage/queryorder/queryorder.html';" /></td>
+							</tr>
+						</table>
+						<div id="modal-form" class="modal">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header header-color-blue">
+										<button type="button" class="modal-close white"
+											onclick="pupclose()">&times;</button>
+										<h5>线上退款</h5>
+									</div>
+									<div class="modal-body">
+										<!--<h3 class="blue">退款金额 200.12 元</h3>-->
+										<p>
+											退款金额 <input name="" type="text"  onkeyup="if(!/^(0|[1-9][0-9]{0,9})(\.[0-9]{1,2})?$/.test(Number(this.value))){this.value=''}" id="refundmoneyon"
+												class="text3" onchange="allChange(this)" />元 &nbsp;&nbsp; <input type="button"
+												id="allclickUp" onclick="allclick()" value="全额退款"
+												class="button7" />
+										</p>
+										<p>
+											授权编号 <input name="" id="onno" type="text" class="text3" size="40" />
+										</p>
+										<p>
+											授权密码 <input name="" id="onpassw" type="password" class="text3" size="40" />
+										</p>
+										<p>
+											退款原因 <input name="" id="onrefundreason" type="text" size="40" class="text3" />
+										</p>
+									</div>
+									<div class="modal-footer">
+										<button class="button3" onclick="confirmrefundon()">
+											确定</button>
+									</div>
+									<!--/.modal-footer-->
+								</div>
+								<!--/.modal-content-->
+							</div>
+							<!--/.modal-dialog-->
+						</div>
+						<!--/.modal-->
+						<div id="modal-formtest" class="modal">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header header-color-blue">
+										<button type="button" class="modal-close white"
+											onclick="pupclose()">&times;</button>
+										<h5>test</h5>
+									</div>
+									<div class="modal-body">
+										<p>
+											商品订单号 <input id="cmdtyOrdrNo" type="text"
+												class="gray_text" readonly="readonly" size="30"/>
+										</p>
+										<p>订单状态代码<input id="ordrStcd" type="text" class="gray_text"
+												readonly="readonly" size="30"/>
+										</p>
+										<p>
+											成功笔数<input id="scssDnum" name="" type="text"
+												class="gray_text" readonly="readonly" size="30" />
+										</p>
+										<p>
+											成功金额 <input id="scssAmt" name="" type="text"
+												class="gray_text" readonly="readonly" size="30" />
+										</p>
+										<p>
+											交易总金额 <input id="txmTAmt" name="" type="text"
+												class="gray_text" readonly="readonly" size="30" />
+										</p>
+										<p></p>
+									</div>
+									<div class="modal-footer">
+										
+									</div>
+									<!--/.modal-footer-->
+								</div>
+								<!--/.modal-content-->
+							</div>
+							<!--/.modal-dialog-->
+						</div>
+						<!--/.modal-->
+						<div id="modal-form2" class="modal">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header header-color-blue">
+										<button type="button" class="modal-close white"
+											onclick="pupclose2()">&times;</button>
+										<h5>线下退款</h5>
+									</div>
+									<div class="modal-body">
+										<!--<h3 class="blue">退款金额 200.12 元</h3>-->
+										<p>
+											退款金额 <input name="" type="text" min="0" onkeyup="if(!/^(0|[1-9][0-9]{0,9})(\.[0-9]{1,2})?$/.test(Number(this.value))){this.value=''}" id="refundmoneyoff"
+												class="text3"  onchange="allChange(this)" />元 &nbsp;&nbsp; <input type="button"
+												id="allclickDown" onclick="allclick()" value="全额退款"
+												class="button7" />
+										</p>
+										<p>
+											授权编号 <input id="offno" name="" type="text" class="text3" size="40" />
+										</p>
+										<p>
+											授权密码 <input id ="offpassw" name="" type="password" class="text3" size="40" />
+										</p>
+										<p>
+											退款原因 <input name="" id="offrefundreason" type="text" size="40" class="text3" />
+										</p>
+									</div>
+									<div class="modal-footer">
+										<button class="button3" onclick="confirmrefund()">确定</button>
+									</div>
+									<!--/.modal-footer-->
+								</div>
+								<!--/.modal-content-->
+							</div>
+							<!--/.modal-dialog-->
+						</div>
+						<!--/.modal-->
+					</div>
+					
+					<div class="pop-success" id="pop-success">
+						<a href="javascript:void(0);" class="pop-close"
+							onclick="successclose()"></a>
+						<p>
+							<img src="${RootPath}static/gzf/images/icon-ok.png" />
+						</p>
+						<h3>操作成功</h3>
+					</div>
+					
+					<div id="pop-success" class="modal" >
+					    <div class="modal-dialog">
+					        <div class="modal-content">
+					            <div class="modal-header header-color-blue">
+					                <button type="button" class="modal-close white" onclick="successclose()">&times;</button>
+					                <h5>提示</h5>
+					            </div>
+					            <div class="modal-body">
+					                <div class="modal-left">
+					                	<img src="${RootPath}static/gzf/images/icon-ok.png" />
+					                </div>
+					                <div class="modal-right">
+					                	<h3>操作成功</h3>
+					                    <!--<p>提示信息提示信息提示信息，提示信息提示信息提示信息，提示信息提示信息</p>-->
+					                </div>
+					                <div class="clear"></div>
+					            </div>
+					            <div class="modal-footer">
+					                <button class="button3" onclick="successclose()">关闭</button>
+					            </div><!--/.modal-footer-->
+					        </div><!--/.modal-content-->
+					    </div><!--/.modal-dialog-->
+					</div><!--/.modal-->
+
+					<!--<div class="pop-success" id="pop-fail">
+						<a href="javascript:void(0);" class="pop-close"
+							onclick="failclose()"></a>
+						<p>
+							<img src="${RootPath}static/gzf/images/icon-error.png" />
+						</p>
+						<h3>操作失败</h3>
+					</div>-->
+					
+					<div id="pop-fail" class="modal" >
+					    <div class="modal-dialog">
+					        <div class="modal-content">
+					            <div class="modal-header header-color-blue">
+					                <button type="button" class="modal-close white" onclick="failclose()"></button>
+					                <h5>提示</h5>
+					            </div>
+					            <div class="modal-body">
+					                <div class="modal-left">
+					                	<img src="${RootPath}static/gzf/images/icon-alert.png" />
+					                </div>
+					                <div class="modal-right">
+					                	<h3>操作失败</h3>
+					                    <!--<p>错误信息错误信息，错误信息错误信息错误信息，错误信息错误信息，错误信息</p>-->
+					                </div>
+					                <div class="clear"></div>
+					            </div>
+					            <div class="modal-footer">
+					                <button class="button3" onclick="failclose()">关闭</button>
+					            </div><!--/.modal-footer-->
+					        </div><!--/.modal-content-->
+					    </div><!--/.modal-dialog-->
+					</div><!--/.modal-->
+					
+					
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "/common/admin/bottom.htm">
+</body>
+</html>

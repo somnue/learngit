@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+
+<script language="javascript" type="text/javascript">
+</script>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+		
+		<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 账户管理</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>详情</td>
+  </tr>
+</table>
+<table class="table_submit">
+    <tr>
+      <th>账号</th>
+      <td><input name="" type="text" class="gray_text" readonly="readonly" value="1000001" /></td>
+      <th>账号类型</th>
+      <td>
+      	<input name="" type="text" class="gray_text" readonly="readonly" value="对公" />
+      </td>
+    </tr>
+    <tr>
+      <th>账号名称</th>
+      <td>
+      	<input name="" type="text" class="gray_text" readonly="readonly" value="北京自来水公司" />
+      </td>
+      <th>账户权限</th>
+      <td>
+      	<input name="" type="text" class="gray_text" readonly="readonly" value="只收" />
+      </td>
+    </tr>
+    <tr>
+      <th>账户状态</th>
+      <td>
+      	<input name="" type="text" class="gray_text" readonly="readonly" value="正常" />
+      </td>
+      <th></th>
+      <td></td>
+    </tr>
+    <tr>
+      <th>银行编码</th>
+      <td><input name="" type="text" class="gray_text" readonly="readonly" value="000" /></td>
+      <th>联行号</th>
+      <td><input name="" type="text" class="gray_text" readonly="readonly" value="000" /></td>
+    </tr>
+    <tr>
+      <th>开户行号</th>
+      <td><input name="" type="text" class="gray_text" readonly="readonly" value="000" /></td>
+      <th>开户行名</th>
+      <td><input name="" type="text" class="gray_text" readonly="readonly" value="000" /></td>
+    </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="返回" class="button3" onclick="location.href='9-1.html'" />
+    </td>
+  </tr>
+</table>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>
+

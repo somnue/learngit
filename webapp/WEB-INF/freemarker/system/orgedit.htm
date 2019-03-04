@@ -1,0 +1,243 @@
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+
+<script language="javascript" type="text/javascript">
+		function subForm(){
+			var typename=$('#orgcate').find('option:selected').text();
+			var typeid=$('#orgcate ').val();
+			if(typename=='请选择'){
+				$('#typename').val('');
+			}else{
+				$('#typename').val(typename);
+			}
+			$('#typeid').val(typeid);
+			
+			var isOk=JsCore.Valitor.ChkForm('subform', 1);
+			if(isOk){
+				$.ajax({
+					url : '${RootPath}system/saveOrg.html',
+					type : "post",
+					data : $("#subform").serialize(),
+					dataType: 'json',
+					async: false,
+					success : function(d) {
+						if(d.code=="-1"){
+							var layer = RootElement.JsCore.FrameLayer('Infomation');
+							layer.TipMode = true;
+							layer.TipFlag ="-1";
+							layer.TipTitle ='';
+							layer.TipText = d.msg;
+							layer.CloseFun = function (){};
+							layer.open();
+							layer = null;
+						}else if(d.code=="-2"){
+							var layer = RootElement.JsCore.FrameLayer('Infomation');
+							layer.TipMode = true;
+							layer.TipFlag = "-1";
+							layer.TipTitle = d.title;
+							layer.TipText = d.msg;
+							layer.CloseFun = function (){RootElement.location.href=d.url};
+							layer.open();
+							layer = null;
+						}else if(d.code=="1"){
+							var layer = RootElement.JsCore.FrameLayer('Infomation');
+							layer.TipMode = true;
+							layer.TipFlag = d.code;
+							layer.TipTitle = d.title;
+							layer.TipText = d.msg;
+							layer.CloseFun = function (){RootElement.location.href=d.url};
+							layer.open();
+							layer = null;
+						}
+					},
+					error: function(d) {
+						RootElement.errorMessage(d);
+					}
+				});
+			  }
+		}
+</script>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-fullpage">
+<div class="cm-center">
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${MainSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span><a href="${SysSite}admin.html">系统管理平台</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span><a href="${SysSite}system/org.html">组织机构管理</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>
+			<#if subflag==1>
+				添加组织机构
+			<#else>
+				编辑组织机构
+			</#if>
+		</span>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv">
+			<div class="tname">
+				<#if oaorg??>
+					政民互动
+				<#else>
+					系统管理平台
+				</#if>
+			</div>
+		</div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="fr rightbody">
+		<div class="titlediv"><div class="tname">组织机构管理</div></div>
+		<div class="bodydiv">
+			<div class="padding">
+				<div class="bigtitle">
+				<#if subflag==1>
+					添加组织机构：
+				<#else>
+					编辑组织机构：
+				</#if>
+				</div>
+				<div class="dotline1"></div>
+				<form id="subform" class="pageform" action="/system/saveOrg.html" method="post" target="HiddenFrame">
+				<input type="hidden" name="subflag" value="${subflag}"/>
+
+				<div id="ParentNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">上级部门：</div>
+						<div class="fl control">
+							<input type="text"  name="" title="上级部门" readonly="readonly" class="rinput" style="width:180px;text-align:left;" maxlength="50" value="${sysOrg.parentname}"/>
+							<input type="hidden" name="orgtype" value="${sysOrg.orgtype}" />
+				            <input type="hidden" name="parentcode" value="${sysOrg.parentcode}" />
+				            <input type="hidden" name="isdel" value="${sysOrg.isdel!}" />
+				            <input type="hidden" name="addtime" value="${sysOrg.addtime?string('yyyy-MM-dd HH:mm:ss')}" />
+				            <input type="hidden" name="orgcode" value="${sysOrg.orgcode!}" />
+				            <input type="hidden" id="typeid" name="typeid" value="${(sysOrg.typeid)!}" />
+				            <input type="hidden" id="typename" name="typename" value="${(sysOrg.typename)!}" />
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="OrgNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">部门名称：</div>
+						<div class="fl control">
+							<input type="text" id="orgname" name="orgname" title="部门名称" class="finput" style="width:180px;text-align:left;" maxlength="64" value="${sysOrg.orgname}" required="true" datatitle="部门名称" />
+						</div>
+						<div class="fl isempty">[<span>*</span>]</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="OrgMemoRow">
+					<div class="textbox">
+						<div class="fl ftitle">部门描述：</div>
+						<div class="fl control">
+							<input type="text" id="orgmemo" name="orgmemo" title="部门描述" datatitle="部门描述" class="finput" style="width:500px;text-align:left;" maxlength="256" value="${sysOrg.orgmemo}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<#if orgtype == '3'> 
+				  <div id="OrgMemoRow">
+					<div class="textbox">
+						<div class="fl ftitle">机构分类：</div>
+						<div class="fl control">
+							<select name="orgcate" id="orgcate"  style="width:150px;">
+								    <option value="">请选择</option>
+									    <#if sysDicts??>
+									      <#list sysDicts as sysDict>
+									        <option value='${(sysDict.dictid)!}'
+										        <#if (sysOrg.typeid??&&sysDict.dictid==sysOrg.typeid)>
+										         selected
+									            </#if>
+									         >${(sysDict.dictname)!}</option>
+									         </#list>
+									    </#if>
+								  </select>
+						</div>
+						<div class="clear"></div>
+					</div>
+				  </div>
+				</#if>
+				<div id="IsAloneRow">
+					<div class="radiobox">
+						<div class="fl ftitle">部门类型：</div>
+						<div class="fl control"><input id="isalone" name="isalone"  type="radio" <#if (sysOrg.isalone=0)>checked="checked"</#if>  value="0" /></div>
+						<div class="fl itemtext">
+							<#if orgtype == '3'>
+								网内单位
+							<#else>
+								内部部门
+							</#if>
+						</div>
+						<div class="fl control"><input id="isalone" name="isalone"  type="radio" <#if (sysOrg.isalone=1)>checked="checked"</#if>  value="1"/></div>
+						<div class="fl itemtext">
+							<#if orgtype == '3'>
+								网外单位
+							<#else>
+								独立单位
+							</#if>
+						</div>
+						<div class="fl isempty">[<span>*</span>]</div>
+						<div class="fl comment"></div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<#if orgtype == '3'> 
+					<div id="IsAloneRow">
+						<div class="checkbox">
+							<div class="fl ftitle">应用范围：</div>
+							<div class="fl control"><input id="istel" name="area" type="checkbox" <#if (sysOrg.istel=1)>checked="checked"</#if> value="istel" /></div>
+							<div class="fl itemtext">市长热线</div>
+							<div class="fl control"><input id="isemail" name="area" type="checkbox" <#if (sysOrg.isemail=1)>checked="checked"</#if> value="isemail"/></div>
+							<div class="fl itemtext">市长信箱</div>
+							<div class="fl control"><input id="islink" name="area" type="checkbox" <#if (sysOrg.islink=1)>checked="checked"</#if> value="islink"/></div>
+							<div class="fl itemtext">连线政府</div>
+							<div class="fl control"><input id="islink" name="area" type="checkbox" <#if (sysOrg.ismsg=1)>checked="checked"</#if> value="ismsg"/></div>
+							<div class="fl itemtext">人民网留言</div>
+							<div class="fl comment"></div>
+							<div class="clear"></div>
+						</div>
+					</div>
+				</#if>
+				<div id="SortCodeRow">
+					<div class="textbox">
+						<div class="fl ftitle">排序编码：</div>
+						<div class="fl control">
+							<input type="text" id="sortcode" name="sortcode" title="排序码" class="finput" style="width:50px;text-align:left;" maxlength="4" value="${sysOrg.sortcode}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div class="buttons">
+					<input type="button" class="formbtn" onclick="subForm();" value="确定" />
+				</div>
+				<span id="error" style="color:#f00;"></span>
+				<div class="msgrow">
+					<div id="Comment_Msg" class="redcomment"></div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>
+

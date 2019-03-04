@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/js/zTree_v3/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/zTree_v3/jquery.ztree.core.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/successMessage.js"></script>
+<script>
+	var orgtype="";
+var rolecode="";
+var appcode="";
+var isRevise=false;
+
+$(document).ready(function(){
+	orgtype = $.trim($("#hid_orgtype").val());
+	rolecode = $.trim($("#hid_rolecode").val());
+	appcode = $.trim($("#hid_appcode").val());
+	if(appcode!=null){
+		$(".itemlist.padding").children("div[class='item']").css({fontWeight:"normal"});
+		$(".itemlist.padding").children("div[sign='app_"+appcode+"']").css({fontWeight:"bold"});
+	}
+
+	$("#tb_mod tr").each(function(i,v){
+		if(i!=0){
+			var actions = $.trim($(this).children("td:last").text());
+			if(actions!=""){
+				var html=""
+				for(var i1=0;i1<actions.split(' ').length;i1++){
+					var v1=actions.split(' ')[i1];
+					var actCode=v1.split('-')[0];
+					var actName=v1.split('-')[1]
+					html+="<input type='checkbox' id='ckb_"+$(this).attr("id")+"_"+actCode+"' onclick='isRevise=true;'/>"+actName+"&nbsp;&nbsp;";
+					//ckb_1_4_4_delete
+					//appcode_modcode_modid_actcode
+				}
+				$(this).children("td:last").html(html);
+			}
+		}
+	});
+
+	if(orgtype==""){alert("没有部门参数。")}
+	if(rolecode==""){alert("没有角色参数。")}
+	if(orgtype!=""&&rolecode!=""){
+		$.ajax({
+		  type:"post",
+		  //async:false,
+		  url: "getRolePermit",
+		  data:{orgtype:orgtype,rolecode:rolecode,appcode:appcode},
+		  cache: false,
+		  dataType:'json',
+		  success: function(jsonData){
+		    //[{"actcode":"add","appcode":"1","modcode":"002003001","modid":"SysUserCent","orgtype":1,"permitcode":"SysUserCent_Add","rolecode":"1"}]
+			//var jsonData=eval("("+data+")");
+			for(var i=0;i<jsonData.length;i++){
+				var v=jsonData[i];
+				var id=v.appcode+"_"+v.modcode+"_"+v.modid+"_"+v.actcode;
+				$("#ckb_"+id).attr({"checked":"true"});
+			}
+		  }
+		});
+	}
+});
+
+
+$(window).bind('beforeunload',function(){
+	if(isRevise){
+		return "您还没有保存数据，确定要离开此页面吗?";
+	}
+});
+
+
+function savePermit(){
+	isRevise=true;
+	if(orgtype!=""&&rolecode!=""){
+		var json="[";
+		$("#tb_mod input[type=checkbox]:checked").each(function(i,v){
+			var ids=$(this).attr("id").split('_');
+			json+="{";
+			//ckb_1_4_4_delete
+			//appcode_modcode_modid_actcode
+			json+="\"appcode\":\""+ids[1]+"\",\"modcode\":\""+ids[2]+"\",\"modid\":\""+ids[3]+"\",\"actcode\":\""+ids[4]+"\",\"orgtype\":\""+orgtype+"\",\"rolecode\":\""+rolecode+"\",\"permitcode\":\""+ids[3]+"_"+ids[4]+"\""
+			json+="},";
+		});
+		json=json.replace(/,$/gi,"");//去掉最后一个逗号
+		json+="]";
+		var dataUrl="/system/role.html";
+		$.ajax({
+		  type:"post",
+		  //async:false,
+		  url: "/system/saveRolePermit.html",
+		  data:{orgtype:orgtype,rolecode:rolecode,appcode:appcode,json:json},
+		  cache: false,
+		  dataType:'json',
+		  success: function(jsonData){
+		    //[{"actcode":"add","appcode":"1","modcode":"002003001","modid":"SysUserCent","orgtype":1,"permitcode":"SysUserCent_Add","rolecode":"1"}]
+			//var jsonData=eval("("+data+")");
+			if(jsonData.result==1){
+				successMessage(true,"授权成功",dataUrl);
+				isRevise=false;
+				
+			}
+		  },
+		  error:function(){
+			 var message = JSON.parse(d.responseText).message;
+				errorMessage(true,message);
+		  }
+		});
+	}else{
+		errorMessage(true,"授权失败");
+	}
+}
+
+function checkAll() {
+	$("input[type=checkbox]").attr("checked",true);
+}
+
+function removeAll() {
+	$("input[type=checkbox]").removeAttr("checked");
+}
+
+function toUrl(baseUrl,appcode){
+	window.location.href=baseUrl+"system/rolepermit.html?appcode="+appcode+"&orgtype="+orgtype+"&rolecode="+rolecode;
+}
+</script>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+
+	<input type="hidden" id="hid_orgtype" value="${orgtype}"/>
+	<input type="hidden" id="hid_rolecode" value="${rolecode}"/>
+	<input type="hidden" id="hid_appcode" value="${appcode}"/>
+
+	<div class="rightbody">
+		<table class="path">
+			<tr>
+			  <td class="path_icon">&nbsp;</td>
+			  <td>您的位置: 首页  >> 系统管理   >> 角色管理</td>
+			</tr>
+		</table>
+		<table class="table_submit_title">
+			<tr>
+			  <td class="table_submit_title_icon"></td>
+			  <td>角色授权 - ${rolename!'管理员'}</td>
+			</tr>
+		</table>
+		<table class="table_list" id="tb_mod">
+				<tr>
+					<th width="100">功能编码</th>
+					<th width="180">功能名称</th>
+					<th>操作</th>
+				</tr>
+				<!-- loop begin -->
+				<#list modActList as modAct>
+					<tr id="${modAct.appcode}_${modAct.modcode}_${modAct.modid}">
+						<td>${modAct.modcode}</td>
+						<td>
+						<#if ('${modAct.parentcode!}'=="")>
+							<b>${modAct.modname}</b>
+						<#else>
+							${modAct.modname}
+						</#if>
+						</td>
+						<td>${modAct.actname}</td>
+					</tr>
+				</#list>
+				<!-- loop end -->
+				</table>
+		
+		
+		<table class="table_submit_button">
+			<tr>
+				<td>
+				    <input type="button" class="button3" onclick="savePermit();" value="确定" />
+					<input type="button" class="button3" onclick="checkAll();" value="全选" />
+					<input type="button" class="button3" onclick="removeAll();" value="取消全选" />
+				    
+				</td>
+			</tr>
+		</table>
+		<form id="subform" action="" method="post" target="HiddenFrame">
+		<input type="hidden" name="subflag" value="1"/>
+		<div class="msgrow">
+			<div id="Comment_Msg" class="redcomment"></div>
+		</div>
+		</form>		
+				
+		
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>

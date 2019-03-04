@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<#include "/common/web/head.htm">
+	<#include "/common/web/headfile.htm">
+<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+<script language="javascript" type="text/javascript">
+$(document).ready(function(){ 
+  document.getElementById("username").focus();
+  
+});
+$(function(){
+			// $("#username").bind("keypress",function(event){w13136180020
+			// 	if(event.keyCode=='13'){
+			// 		$("#userpassword").focus(); 
+			// 	}
+			// });
+			// $("#userpassword").bind("keypress",function(event){
+			// 	if(event.keyCode=="13"){
+			// 		var userpassword=hex_md5(("#userpassword").val());
+			// 	}
+			// });
+			// $("#checkCode").bind("keypress",function(event){
+			// 	if(event.keyCode == '13'){
+			// 		subForm();
+			// 	}
+			// });
+			$(document).on("keypress",function(){
+                if (event.keyCode == '13') {
+                    if ($("#username").val() == "") {
+                    	$("#username").next().text("账户不能为空");
+                    	$("#username").focus();
+                    } else if ($("#userpassword").val() == "") {
+                    	$("#userpassword").next().text("密码不能为空");
+                    	$("#userpassword").focus();
+                    } else if ($("#checkCode").val() == "") {
+						$("#checkCode").next().text("验证码不能为空");
+						$("#checkCode").focus();
+                    } else {
+                    	subForm();
+                    }
+                }
+            })
+		});
+function subForm(){
+        if(jQuery('#username').val()==null || jQuery('#username').val()==''){
+           jQuery('#error').html("用户名不能为空");
+           return;
+        }
+        if(jQuery('#userpassword').val()==null || jQuery('#userpassword').val()==''){
+           jQuery('#error').html("密码不能为空");
+           return;
+        }
+        if(jQuery('#checkCode').val()==null || jQuery('#checkCode').val()==''){
+           jQuery('#error').html("验证码不能为空");
+           return;
+        }
+		$.ajax({
+			url : 'user/login',
+			type : "post",
+			data : {username:$("#username").val(),userpassword: hex_md5($("#userpassword").val()),code:$("#checkCode").val()},
+			dataType: 'json',
+			async: false,
+			success : function(d) {
+					if(d.code==0000){
+					   window.location.href="/";
+					}
+					if(d.code==9999){
+					   jQuery('#error').html(d.msg);
+					}
+			},
+			error: function(d) {
+				RootElement.errorMessage(d);
+			}
+		});
+	  
+
+}
+
+	function myReload(){
+         $("#createCheckCode").attr('src',"/userLogin/code.html?time='"+Date.parse(new Date())+"'");
+	}
+	
+	
+	$(document).ready(function(){
+		myReload();
+	})
+
+
+	function checkForm(){
+	     $("#subForm").submit()
+	}
+</script>
+<style>body {background:#f3f3f3;}
+</style>
+</head>
+<body>
+<div class="cm-header" style="background:#fff;">
+	<div class="cm-center" style="padding-top:10px;">
+		<div class="fl logos">
+			<div class="logo" onclick="javascript:location.href='${MainSite}';"></div>
+		</div>
+		<!--<div class="fl lines"><div class="line"></div></div>
+		<div class="fl piclogo"></div>-->
+		<div class="clear"></div>
+	</div>
+</div>
+<div class="userlogin">
+	<div class="banner">
+		<div class="fl banner-img">
+			<div class="logo-img"></div>
+		</div>
+		<div class="fr form">
+			<div class="form-top"></div>
+			<form id="subForm" method="post" target="HiddenFrame">
+			<div class="form-main">
+				<div class="form-wid">
+					<div style="height:60px;"></div>
+					<div class="form-bor">
+						<div class="row row-bor">
+							<div class="fl" style="width: 20px;height:10px;"></div>
+							<div class="fl" style="color：#000;">帐&nbsp;&nbsp;&nbsp;号：</div>
+							<div class="fl"><input name="username" id="username" type="text" placeholder="请输入帐号" required="true"  datatitle="帐号" class="input" maxlength="32"/></div>
+							<div class="clear"></div>
+						</div>
+						<div class="row row-bor">
+							<div class="fl" style="width: 20px;height:10px;"></div>
+							<div class="fl" style="color：#000;">密&nbsp;&nbsp;&nbsp;码：</div>
+							<div class="fl"><input name="userpassword" id="userpassword" type="password" placeholder="请输入密码" required="true"  datatitle="密码" class="input" maxlength="32"/></div>
+							<div class="clear"></div>
+						</div>
+						<div class="row">
+							<div class="fl" style="width: 20px;height:10px;"></div>
+							<div class="fl" style="color：#000;">验证码：</div>
+							<div class="fl"><input type="text" id="checkCode" name="code" class="input2" required="true"  datatitle="验证码" placeholder="请输入验证码" maxlength="4"/></div>
+							<div class="fl yzm"><a href="javascript:myReload();"><img id="createCheckCode" src=""/></a></div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div class="but">
+					<a href="javascript:subForm();"><div class="button">登&nbsp;&nbsp;&nbsp;录</div></a>
+					<div class="clear"></div>
+				</div>
+				</div>
+				<div id="error" style="color:#f00;margin-top:20px;text-align:center"></div>
+			</div>
+			</form>
+			<div class="form-bottom"></div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+   <!--<#include "/common/web/bottom.htm">-->
+    </div>
+</body>
+</html>

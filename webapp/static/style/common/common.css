@@ -1,0 +1,74 @@
+/* CSS Document */
+html {border:0px;}
+body {background:#fff;}
+body,div,td {margin:0px; padding:0px; border:0px; font-size: 14px; font-family:΢���ź�,Microsoft yahei,Arial,Verdana,Tahoma,sans-serif;}
+input,select,textarea {margin:0px; padding:0px; font-size: 14px;  font-family:΢���ź�,Microsoft yahei,Arial,Verdana,Tahoma,sans-serif;}
+form,img,dl,dt,dd,iframe {margin:0px; padding:0px; border:0px;}
+ul,li {margin:0px; padding:0px; border:0px; list-style-type:none;}
+a {color:#08f; text-decoration:none; cursor:pointer;}
+a,input {outline:none;}
+a:hover {color:#f50; text-decoration:none; cursor:pointer;}
+
+/* Common Style */
+.fl {float:left;}
+.fr {float:right;}
+.clear {clear:both;}
+.hsplit {height:15px; line-height:15px; font-size:1px;}
+.hsplit2 {height:20px; line-height:20px; font-size:1px;}
+.hsplit3 {height:30px; line-height:30px; font-size:1px;}
+.hsplit4 {height:40px; line-height:40px; font-size:1px;}
+.vsplit {width:15px; font-size:1px;}
+.vsplit2 {width:20px; font-size:1px;}
+.yahei {font-family:΢���ź�,Microsoft yahei,Arial,Verdana,Tahoma,sans-serif;}
+.songti {font-family:����;}
+.dotline1 {height:16px; margin-top:15px; border-top:1px dotted #999;}
+.dotline2 {height:11px; margin-top:10px; border-top:1px dotted #999;}
+.dotline3 {height:6px; margin-top:5px; border-top:1px dotted #999; font-size:1px;}
+.dotline4 {height:2px; margin-top:0px; border-top:1px dotted #999; font-size:1px;}
+.f12 {font-size:12px;}
+.f14 {font-size:14px;}
+.f16 {font-size:16px;}
+.f18 {font-size:18px;}
+.f20 {font-size:20px;}
+.f24 {font-size:24px;}
+.f32 {font-size:32px;}
+.ft_wi{font-weight: bold;}
+/* Layer Style */
+.layer .topleft {width:10px; height:10px; font-size:1px; background:url(/static/img/layer/layertopleft.png) no-repeat;}
+.layer .topcenter {height:10px; font-size:1px; background:url(/static/img/layer/layertop.png) repeat-x;}
+.layer .topright {width:10px; height:10px; font-size:1px; background:url(/static/img/layer/layertopright.png) no-repeat;}
+.layer .midleft {width:10px; font-size:1px; background:url(/static/img/layer/layerleft.png) repeat-y;}
+.layer .midcenter {background:#fff;}
+.layer .midright {width:10px; font-size:1px; background:url(/static/img/layer/layerright.png) repeat-y;}
+.layer .botleft {width:10px; height:10px; font-size:1px; background:url(/static/img/layer/layerbotleft.png) no-repeat;}
+.layer .botcenter {height:10px; font-size:1px; background:url(/static/img/layer/layerbot.png) repeat-x;}
+.layer .botright {width:10px; height:10px; font-size:1px; background:url(/static/img/layer/layerbotright.png) no-repeat;}
+.layer .layertitle {background:#fff;}
+.layer .layertitle .titlefont {padding-left:10px; color:#000;}
+.layer .layertitle .titlemax1 {width:20px; height:30px; background:url(/static/img/layer/layermax1.gif) no-repeat; cursor:pointer;}
+.layer .layertitle .titlemax2 {width:20px; height:30px; background:url(/static/img/layer/layermax2.gif) no-repeat; cursor:pointer;}
+.layer .layertitle .titleclose {width:30px; height:30px; background:url(/static/img/layer/layerclose.gif) no-repeat; cursor:pointer;}
+.layer .tipbackground2 {background:url(/static/img/layer/background.jpg) no-repeat;}
+.layer .tipbutton {border:1px solid #f60; background:#f93; padding-top:5px; padding-bottom:6px;
+    padding-left:15px; padding-right:15px; font-size:14px;
+    font-family:Microsoft yahei,΢���ź�,Arial,Verdana,Tahoma,sans-serif; color:#fff;
+    cursor:pointer;}
+.transparent {filter:alpha(opacity=10); -moz-opacity:0.1;-khtml-opacity: 0.1; opacity: 0.1;}
+
+
+/* PopLogin Style */
+.popcontent { background: #fff; z-index: 99; width: 362px; height: 385px; left: 50%; top: 50%; margin-left: -181px !important; margin-top: -182px !important; margin-top: 0px; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginbg { background-color: #000; width: 100%; height: 100%; left: 0; top: 0; filter: alpha(opacity=10); opacity: 0.1; z-index: 1; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginframebg { width: 100%; height: 100%; left: 0; top: 0; z-index: 2; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginframebg iframe { border: 0px; }
+
+/***PopLogin style**/
+.popcontent { background: #fff; z-index: 99; width: 362px; height: 385px; left: 50%; top: 50%; margin-left: -181px !important; margin-top: -182px !important; margin-top: 0px; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginbg { background-color: #000; width: 100%; height: 100%; left: 0; top: 0; filter: alpha(opacity=10); opacity: 0.1; z-index: 1; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginframebg { width: 100%; height: 100%; left: 0; top: 0; z-index: 2; position: fixed !important; position: absolute; _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); }
+.loginframebg iframe { border: 0px; }
+
+
+
+
+

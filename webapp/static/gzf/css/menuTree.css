@@ -1,0 +1,125 @@
+/* Global Reset */
+
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote{ 
+	margin:0;
+	padding:0;	
+	/*font-family:Arial, Helvetica, sans-serif;*/
+}
+html,body{
+    width:100%;
+	height:auto;
+	color:#333333;
+	font-size:12px;
+	background:none; 
+	overflow-x:hidden;   
+}
+input,textarea,select{color:#666666;font-size:12px;}
+td, th{font-size:12px;padding:0;}
+table {
+	border-collapse:collapse;
+	/*border-spacing:0;*/
+}
+fieldset,img { 
+	border:none;
+}
+address,caption,cite,code,dfn,em,strong,th,var {
+	font-style:normal;
+	font-weight:normal;
+}
+a{color:#333333;text-decoration:none;outline:none;}
+a:hover{color:#FF6600; text-decoration:none;outline:none;}
+strong{
+	font-weight:bold;
+}
+ul, ol, li {
+	list-style:none;
+}
+
+/* End Global Reset*/
+/*** ²Ëµ¥Ê÷ ***/
+.menu_main{
+    width:190px;
+}
+.favMenu{
+	color:#333;
+	width:190px;
+}
+
+.topFolder{
+   width:190px;
+	height:28px;
+	text-align:left;
+	vertical-align:middle;
+	cursor:pointer;
+	background:url(../images/menuTree_1_bg.jpg);
+	 overflow:hidden;
+	 color:#333;
+	 text-decoration:none;
+	 zoom:1;
+}
+.topFolder:hover{}
+
+	.topFolder a{	
+	cursor:pointer;
+	display:block;
+	height:28px;
+	line-height:30px;
+	float:left;
+	margin-left: 30px;
+}  
+	.topFolder img{
+	vertical-align:middle;
+	margin-left:10px;margin-right:3px;
+	float:left;}   
+.topItem{
+}
+.subFolder{
+    width:190px;
+	height:22px;	
+    text-align:left;
+	line-height:22px;
+	vertical-align:middle;
+	background:url(../images/dian1.gif) left center no-repeat;
+	overflow:hidden;
+}
+/*.subFolder.open{background:url(../images/dian1_open.gif) left center no-repeat;}*/
+.subFolderOpen{background:url(../images/dian1_open.gif) left center no-repeat;}
+.subFolderOpen a{color:#0066CC;}
+    .subFolder a{
+	cursor:pointer;
+	display:block;
+	height:22px;
+	width:190px;
+	line-height:22px;
+	padding-left:27px;
+	} 
+.subItem{    
+	width:190px;
+	height:22px;	
+	line-height:22px;
+	overflow:hidden;
+	cursor:pointer;
+	display:block;
+	background:url(../images/dian2.gif) left center no-repeat;
+}
+ .subItem a{
+    cursor:pointer;
+	display:block;
+	height:22px;
+	width:190px;
+	line-height:22px;
+	padding-left:27px;
+ }
+
+.subItemOpen{background:url(../images/dian2_open.gif) left center no-repeat;}
+.subItemOpen a{color:#FF6600;}
+.sub{
+    width:190px;
+	Display: none;
+}
+.sub .sub{
+    width:190px;
+	background:#FFFFFF url(../images/gray_bg.jpg) left top repeat-x;
+	border-bottom:#D0D8DB solid 1px;
+	padding-top:4px;padding-bottom:4px;
+}

@@ -1,0 +1,2483 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/js/zTree_v3/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/zTree_v3/jquery.ztree.core.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successfulMessage.js"></script> 
+<script language="javascript">
+
+
+
+$(document).ready(function(){
+	none_right();
+	async();
+});
+//数据请求
+var TREE_DATE;
+function async(){
+	loading(true)
+	var insno = {insno:"2"};
+	$.ajax({
+		url :"/manage/sysorg/index.html",
+		type : "post",
+		data : insno,
+		dataType : 'json',
+		//contentType: "application/json; charset=utf-8",
+		success : function(data) {	
+					loading(false)
+					TREE_DATE = data;
+					//undateCallback(TREE_DATE);
+					zTreeSetting();
+					successfulMessage(false);
+			   	},
+		error : function(errorDate) {
+					loading(false)
+					var message = JSON.parse(errorDate.responseText).message;
+					errorMessage(true,message)
+					//failopen()		
+			    }
+		});	
+}
+
+
+
+//树根拼组
+function undateCallback(findFeeItmCd){
+	var zNodes = [];
+	//第一层
+	for(var i = 0; i < 1; i++){
+		zNodes.push({"name":"个人所属机构","insno":"2",isParent:true,"open":false,children:[]})
+	};
+	//第二层机构 
+	for(var i = 0; i<TREE_DATE.oboList.length; i++ ){
+		if(TREE_DATE.oboList[i].suprInstno == "2"){
+			zNodes[0].children.push({"name":TREE_DATE.oboList[i].instNm,"orgcode":TREE_DATE.oboList[i].orgcode,"insno":TREE_DATE.oboList[i].insno,isParent:true,"open":false,children:[]})
+		}
+	};
+	//第二层费项
+	for(var i = 0; i<TREE_DATE.oboList2.length; i++ ){
+		if(TREE_DATE.oboList2[i].insno == "2"){
+			zNodes[0].children.push({"name":TREE_DATE.oboList2[i].feeItmCd,"feeItmCd":TREE_DATE.oboList2[i].feeItmCd,"insno":TREE_DATE.oboList2[i].insno})
+		}
+	};
+	function closere(){
+		//机构
+		inson(zNodes[0])
+		//费项
+		feeItmCd(zNodes[0])
+		
+	};
+	function inson(node){
+		if(node.children && node.children.length > 0){
+			for(var i = 0; i<node.children.length; i++ ){
+				for(var j = 0; j<TREE_DATE.oboList.length; j++ ){
+					if(TREE_DATE.oboList[j].suprInstno == node.children[i].orgcode){
+						node.children[i].children.push({"name":TREE_DATE.oboList[j].instNm,"orgcode":TREE_DATE.oboList[j].orgcode,"suprInstno":TREE_DATE.oboList[j].suprInstno,"insno":TREE_DATE.oboList[j].insno,isParent:true,"open":false,children:[]})
+					}
+				}
+				inson(node.children[i])
+			};
+		}
+	};
+	function feeItmCd(node){
+		if(node.children && node.children.length > 0){
+			for(var i = 0; i<node.children.length; i++ ){
+				for(var j = 0; j<TREE_DATE.oboList2.length; j++ ){
+					if(TREE_DATE.oboList2[j].insno == node.children[i].orgcode){
+						node.children[i].children.push({"name":TREE_DATE.oboList2[j].feeItmCd,"feeItmCd":TREE_DATE.oboList2[j].feeItmCd,"insno":TREE_DATE.oboList2[j].insno})
+					}
+				}
+				feeItmCd(node.children[i])
+			};
+		}
+	};
+	closere();
+	
+	//空机构删除
+	function insnonull(node){
+		if(node && node.children){
+			for (var i = 0; i< node.children.length; i++){
+				if(node.children[i].children){
+					insnonull(node.children[i])
+				}
+			}
+		}
+			
+		if(node.children && node.children.length == 0){
+			array_remove(zNodes[0],node)
+		};
+	};
+	function array_remove(_node,index){
+		if(_node &&　_node.children){
+			for (var i = 0; i< _node.children.length; i++){
+				if(_node.children[i] == index){
+					//delete _node.children[i]
+					_node.children.splice(i,1)
+					return;
+				}
+				array_remove(_node.children[i],index)
+			}
+		};
+	}
+	//insnonull(zNodes[0])
+	
+	//搜索框数据重组
+	if(findFeeItmCd){
+		findFeeItmCdChangeUpdate(zNodes[0],findFeeItmCd)
+	}
+	function findFeeItmCdChangeUpdate(nodeArry,findFeeItmCd){
+		if(nodeArry && nodeArry.children && nodeArry.children.length > 0){
+			for (var i = 0; i < nodeArry.children.length; i ++){
+				if(nodeArry.children[i].feeItmCd == findFeeItmCd){
+					nodeArry.children[i].font = {'background-color':'black', 'color':'white'};
+					//nodeArry.children[i].name =' <a class="level1" treenode_a="" onclick="" target="_blank" title="1"><span class="node_name">' + findFeeItmCd +'</span></a>';
+					nodeArry.open = true;
+					recursiveZNodes(zNodes[0])
+				}else{
+					if(nodeArry && nodeArry.children && nodeArry.children.length > 0){
+						findFeeItmCdChangeUpdate(nodeArry.children[i],findFeeItmCd)
+					}
+				}
+			}
+		}
+	};
+	function recursiveZNodes (node) {
+		if(node && node.children && node.children.length > 0){
+			for (var i = 0 ; i < node.children.length; i++){
+				if(node.children[i].open == true){
+					node.open = true;
+					if(zNodes[0].open != true){
+						recursiveZNodes(zNodes[0])
+					}
+				}else{
+					recursiveZNodes(node.children[i])
+				}
+				
+			}
+		}
+		
+	}
+	return zNodes;
+};
+//ztree 加载
+function zTreeSetting(findFeeItmCd){
+	var zTreeObj;
+	var setting = {
+			view: {
+				selectedMulti: false,
+				fontCss: getFont,
+				nameIsHTML: true
+			},
+			/*async: {
+				enable: true,
+				url:"/manage/sysorg/index.html",
+				autoParam:["insno"],
+				//otherParam:{"insno":"1"},
+				dataFilter: filter
+			},**/
+			callback: {
+				beforeClick: beforeClick,
+				beforeAsync: beforeAsync,
+				onAsyncError: onAsyncError,
+				onAsyncSuccess: onAsyncSuccess,
+				onClick:onClick
+			}
+		};
+		function getFont(treeId, node) {
+			return node.font ? node.font : {};
+		}
+		
+/*   function filter(treeId, parentNode, childNodes) {
+		if (!childNodes) return null;
+		var childNodesArry = [];
+		for (var i=0, l=childNodes.oboList.length; i<l; i++) {
+			childNodesArry.push({"name":childNodes.oboList[i].instNm,"insno":childNodes.oboList[i].insno,isParent:true,"open":false})
+		};
+		for(var i=0, l=childNodes.oboList2.length; i<l; i++){
+			childNodesArry.push({"name":childNodes.oboList2[i].fprjNm,"feeItmCd":childNodes.oboList2[i].feeItmCd})
+		};
+		return childNodesArry;
+	};**/
+	
+	
+	function onClick(even,treeId,treeNode,clickFlag){
+		if(TID){
+			var _id = "#" + TID + " a";
+			$(_id).attr({"style":""})
+		}
+		if(treeNode.feeItmCd){
+			if(FIRST_LOAD){
+				getAjaxDate(treeNode.feeItmCd)
+			}else{
+				if(LEAVE_CONFIRMATION != 0){
+					if(logOut()){
+						getAjaxDate(treeNode.feeItmCd)
+					}
+				}else if(LEAVE_CONFIRMATION == 0){
+					getAjaxDate(treeNode.feeItmCd)
+				}
+			}	
+		}else{
+			return false
+		}
+	};
+	function beforeClick(treeId, treeNode) {
+			
+	};
+	function beforeAsync(treeId, treeNode) {
+		
+		return true;
+	}
+	function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+		
+	}
+	function onAsyncSuccess(event, treeId, treeNode, msg) {
+		
+	}
+	var zNodes = undateCallback(findFeeItmCd);
+	//初始化
+	zTreeObj = $.fn.zTree.init($("#zTree"), setting, zNodes);
+	
+	var treeObj = $.fn.zTree.getZTreeObj("zTree");
+	var nodes = treeObj.getNodes();
+	if(findFeeItmCd){
+		zIdFind(nodes[0])
+	}
+	//根据费项查找生成的zid
+	var TID;
+	function zIdFind(nodes){
+		if(nodes && nodes.children && nodes.children.length > 0){
+			for(var i = 0; i < nodes.children.length;i++){
+				if(nodes.children[i].feeItmCd == findFeeItmCd){
+					TID = nodes.children[i].tId 
+				}
+				zIdFind(nodes.children[i])
+			}
+		
+		}
+	}
+};
+//初始页面  隐藏 右侧 数据 
+function none_right(){
+	$("#tree_right")[0].style.display = "none";
+}
+//数据 加载   显示  右侧 数据 
+function block_right(){
+	$("#tree_right")[0].style.display = "block";
+};
+//搜索费项代码
+function findFeeItmCd(){
+	if($("#findFeeItmCd")[0].value){
+		if(FIRST_LOAD){
+			getAjaxDate($("#findFeeItmCd")[0].value)
+		}else{
+			if(LEAVE_CONFIRMATION != 0){
+				if(logOut()){
+					getAjaxDate($("#findFeeItmCd")[0].value)
+				}
+			}else if(LEAVE_CONFIRMATION == 0){
+				getAjaxDate($("#findFeeItmCd")[0].value)
+			}
+		}
+		zTreeSetting($("#findFeeItmCd")[0].value)
+	}else{
+		errorMessage(true,"请输入费项代码")
+	}
+};
+
+
+
+
+
+var GLOBAL_LIST;
+//AJAX 查询 
+function getAjaxDate(feeItmCd){
+	loading(true)
+	var feeItmCd = {feeItmCd:feeItmCd};
+	$.ajax({
+		url :"/manage/brchexpdPost/index",
+		type : "post",
+		data : feeItmCd,
+		dataType : 'json',
+		//contentType: "application/json; charset=utf-8",
+		success : function(data) {	
+					loading(false)
+					LEAVE_CONFIRMATION = 0;
+					GLOBAL_LIST = data.oboList;
+					judgment(GLOBAL_LIST);
+					CACHE_DATA = 1;
+					FIRST_LOAD = false;
+					ONBEFOREUNLOAD = true;
+					successfulMessage(false);
+			   	},
+		error : function(errorDate) {
+					loading(false)
+					var message = JSON.parse(errorDate.responseText).message;
+					errorMessage(true,message)
+					//failopen()		
+			    }
+		});	
+};
+// 日期比较
+function date_comp(date){
+	var now = new Date();
+	var str = date.replace(/-/g,"/");
+	var time = new Date(str);
+	if(time.getTime() < now.getTime()){    // 小于当前日期
+		return 1;
+	}else if(time.getTime() == now.getTime()){  //等于当前日期 
+		return "1=1";
+	}else if(time.getTime() > now.getTime()){  // 大于当前日期
+		return 2;
+	}else{
+		return 3;
+	}
+};
+// 返回数据判断
+var TimeLengthOne;   // 生效日期选择判断 
+function judgment(obolist){	
+	// 1   一条数据 
+	if(obolist.length == 1){
+		var efdt = obolist[0].efdt.slice(0,4) + '/' + obolist[0].efdt.slice(4,6) + '/' + obolist[0].efdt.slice(6,8);
+		if(date_comp(efdt) == 1){
+			// 1-1  返回日期 < 当前日期  ("以生效数据"，"增加--->修改规则")
+			TimeLengthOne = false;
+			typeShow("1-1");				
+		}else if(date_comp(efdt) == "1=1"){
+			// 1-1  返回日期 = 当前日期  ("以生效数据"，"增加--->修改规则")
+			TimeLengthOne = false;
+			typeShow("1-1");
+		}else if(date_comp(efdt) == 2){
+			// 1-2 返回日期 > 当前日期   (待生效数据   可修改 )		
+			TimeLengthOne = true;
+			typeShow("1-2");
+		}else{
+			// 初始化数据  没有生效日期 
+			TimeLengthOne = true;
+			typeShow("1-2");
+		}									
+	}else if(obolist.length == 2){
+		// 2 两条数据          (一条以生效 ，一条待生效 )
+		TimeLengthOne = false;
+		typeShow("2-1");
+	}else{
+		TimeLengthOne = false;
+		errorMessage(true,"没有费项信息 ")
+		return;
+	}							
+};
+// 按钮显示类型
+function typeShow(type){
+	block_right();
+	if(type == "1-1"){
+		// 显示  新增按钮 已生效数据 
+		$("#buttonType ul li")[0].style.display ="block";
+		$("#buttonType ul li")[1].style.display ="block";
+		$("#buttonType ul li")[2].style.display ="none";
+		TimeLengthOne = false;
+		buttonType(1)
+	}else if(type == "1-2"){
+		// 显示  待生效数据
+		$("#buttonType ul li")[0].style.display ="none";
+		$("#buttonType ul li")[1].style.display ="none";
+		$("#buttonType ul li")[2].style.display ="block";
+		buttonType(3)
+	}else if(type == "2-1"){
+		// 显示 已生效数据 待生效数据
+		$("#buttonType ul li")[0].style.display ="block";
+		$("#buttonType ul li")[1].style.display ="none";
+		$("#buttonType ul li")[2].style.display ="block";
+		buttonType(1)
+	}
+};
+
+// 修改数据缓存依据
+var CACHE_DATA = 1
+//更换费项 提示标志
+var LEAVE_CONFIRMATION = 0;
+//首次加载判断
+var FIRST_LOAD = true;
+// 维护操作功能代码 (1-新增 2-修改)
+var Mnt_Mnplt_Fcn_Cd;
+// 控制混合模式按钮禁用;
+var Mnt_Mnplt_Button;
+//按钮样式
+function buttonType(type){
+	if(type == 1){//已生效
+		$("#buttonType ul li")[0].style.background ="#015488";
+		$("#buttonType ul li")[0].style.color ="#fff";
+		$("#buttonType ul li")[1].style.background ="#e2ecf0";
+		$("#buttonType ul li")[1].style.color ="#000";
+		$("#buttonType ul li")[2].style.background ="#e2ecf0";
+		$("#buttonType ul li")[2].style.color ="#000";
+		Mnt_Mnplt_Button = true;
+		typePage(1);
+	}else if(type == 2){//新增
+		$("#buttonType ul li")[1].style.background ="#015488";
+		$("#buttonType ul li")[1].style.color ="#fff";
+		$("#buttonType ul li")[0].style.background ="#e2ecf0";
+		$("#buttonType ul li")[0].style.color ="#000";
+		$("#buttonType ul li")[2].style.background ="#e2ecf0";
+		$("#buttonType ul li")[2].style.color ="#000";
+		Mnt_Mnplt_Button = false;
+		typePage(2);
+		Mnt_Mnplt_Fcn_Cd = "1";
+		CACHE_DATA++;
+		FIRST_LOAD = false;
+		LEAVE_CONFIRMATION ++;
+	}else if(type == 3){//待生效
+		$("#buttonType ul li")[2].style.background ="#015488";
+		$("#buttonType ul li")[2].style.color ="#fff";
+		$("#buttonType ul li")[0].style.background ="#e2ecf0";
+		$("#buttonType ul li")[0].style.color ="#000";
+		$("#buttonType ul li")[1].style.background ="#e2ecf0";
+		$("#buttonType ul li")[1].style.color ="#000";
+		Mnt_Mnplt_Button = false;
+		typePage(3);
+		Mnt_Mnplt_Fcn_Cd = "2";
+		CACHE_DATA++;
+		FIRST_LOAD = false;
+		LEAVE_CONFIRMATION +=2;
+	}else{
+		return;
+	}
+};
+// 页面切换
+var ArryNum;
+var postDateObject;  //切换数据存储
+function typePage(type){
+	//已生效数据页面
+	if(type == 1){			
+		ArryNum = 0;				
+		disabledOrnone(1,ArryNum);
+		if(CACHE_DATA != 1){
+			postDateObject = postDate(true);
+		}
+		usedPage(GLOBAL_LIST[0]);
+		changeDataNone(ArryNum)
+	}
+	//新增页面
+	if(type == 2){
+		ArryNum = 0;
+		disabledOrnone(2,ArryNum);
+		//addPage();
+		if(CACHE_DATA != 1){
+			usedPage(postDateObject)
+		}else{
+			usedPage(GLOBAL_LIST[0])
+		}
+		changeDataNone(ArryNum)
+	}
+	//待生效数据页面
+	if(type == 3){
+		if(GLOBAL_LIST.length == 1){
+			ArryNum = 0;
+		}else if(GLOBAL_LIST.length == 2){
+			ArryNum = 1;
+		}
+		disabledOrnone(3,ArryNum);
+		if(CACHE_DATA != 1){
+			usedPage(postDateObject)
+		}else{
+			usedPage(GLOBAL_LIST[ArryNum]);
+		}
+		changeDataNone(ArryNum)
+	}	
+};
+// 不可更改数据
+function changeDataNone (ArryNum){	
+		var pyfTpcd;
+		if($.trim(GLOBAL_LIST[ArryNum].pyfTpcd) && $.trim(GLOBAL_LIST[ArryNum].pyfTpcd) == "1"){
+				pyfTpcd = "便民缴费";
+		}else if($.trim(GLOBAL_LIST[ArryNum].pyfTpcd) && $.trim(GLOBAL_LIST[ArryNum].pyfTpcd) == "2"){
+				pyfTpcd = "政务缴费";
+		}else{
+				pyfTpcd = "";
+		}
+		$("#feeItmCd")[0].value = GLOBAL_LIST[ArryNum].feeItmCd;    //费项代码
+		$("#fprjNm")[0].value = GLOBAL_LIST[ArryNum].fprjNm;  	 	//费项名称	
+			
+		$("#pyfTpcd")[0].value = pyfTpcd;      //缴费类型
+		$("#insno")[0].value = GLOBAL_LIST[ArryNum].insno;			//'机构号'
+};
+//手续费收取标志
+function poundage(typeFlag){
+	if (typeFlag){
+		//document.all.tra1.style.display="none";
+		//document.all.tra2.style.display="none";	
+		document.getElementById("tra1").style.display="none"
+		document.getElementById("tra2").style.display="none"	
+	}else { 
+		//document.all.tra1.style.display="";
+		//document.all.tra2.style.display="";	
+		document.getElementById("tra1").style.display=""
+		document.getElementById("tra2").style.display=""	
+	}
+};
+//退款标志
+function backmoney(typeFlag){
+	if (typeFlag){ 
+		//document.all.trb1.style.display="none";
+		//document.all.trb2.style.display="none";
+		document.getElementById("trb1").style.display="none"
+		document.getElementById("trb2").style.display="none"		
+	}else {
+		//document.all.trb1.style.display="";
+		//document.all.trb2.style.display="";
+		document.getElementById("trb1").style.display=""
+		document.getElementById("trb2").style.display=""		
+	}
+};
+//直接清算
+function liquidation_date(){
+	$(".liquidation-date").each(function(){
+		this.style.display = "none"
+	});
+	$("#tdTT")[0].style.display = "none"
+	$("#tdTTT")[0].style.display = "none";
+	document.getElementById("typeIDD").value = "0"
+	document.getElementById("typeIDDD").value = "0"
+};
+//集中清算
+function centralized_clearing(){
+	$(".liquidation-date").each(function(){
+		this.style.display = "table-row"
+	})	
+};
+//生效日期控制
+function efdtChange(_this){
+	var time = "";
+	// 不可以选择当前日期 
+	if(!TimeLengthOne){
+		var time = _this.value + " " + (new Date().getHours()) +  ":" +  new Date().getMinutes() +  ":" +  new Date().getSeconds();;
+		if(date_comp(time) == 1 || date_comp(time) == "1=1"){   //小于等于当前日期
+			errorMessage(true,'选择日期不能小于等于当前日期')
+			_this.value = ''
+		}else if(date_comp(time) == 2 ){  //大于当前日期
+		
+		}else{
+			errorMessage(true,'请输入正确的日期格式')
+			_this.value = ''
+		}
+	};
+	//可以选择当前日期 
+	if(TimeLengthOne){
+		time = _this.value + " " + (new Date().getHours()) +  ":" +  new Date().getMinutes() +  ":" +  (new Date().getSeconds() + 1);
+		if(date_comp(time) == 1){   //小于当前日期
+			errorMessage(true,'选择日期不能小于当前日期')
+			_this.value = ''
+		}else if(date_comp(time) == 2 || date_comp(time) == "1=1"){  //大于等于当前日期
+		
+		}else{
+			errorMessage(true,'请输入正确的日期格式')
+			_this.value = ''
+		}
+	};
+};
+//失效日期控制
+function expdtChange(_this){
+	//console.log(_this.value)
+};
+//控制input  select 
+function disabledOrnone (type){
+	if(type == 1){
+		$('.disabledOrnone').each(function(i){
+			this.setAttribute("disabled","");
+			this.style.background = '#f7f7f7'
+		});
+		$("#buttonOK")[0].setAttribute("disabled","");
+		$("#buttonOK")[0].style.display = 'none';
+	}else if(type == 2 || type == 3){
+		$('.disabledOrnone').each(function(i){
+			this.removeAttribute("disabled");
+			this.style.background = '#fff'
+		});
+		$("#buttonOK")[0].removeAttribute("disabled");
+		$("#buttonOK")[0].style.display = '';
+	}
+};
+//新增页面  状态还原 输入框制空
+function addPage(){
+	//手续费收取 否
+	$("#mm")[0].removeAttribute("checked");
+	$('#nn')[0].setAttribute('checked','');
+	$('#nn')[0].checked = true;
+	//配置生效 日期
+	$('#efdt')[0].value = '';
+	//配置失效日期
+	$('#expdt')[0].value = '2099-12-31';
+	//计费规则隐藏
+	$("#tra1")[0].style.display = "none";
+	$("#tra2")[0].style.display = "none";
+	$("#tdT")[0].style.display = "none";
+	$("#1t")[0].style.display = 'none';
+	$("#2t")[0].style.display = "none";
+	//计费规则数据空
+	$("#tra2 input").each(function(){
+			this.value = ''		
+	})
+	$("#tra2 select").each(function(){
+		this.value = 0
+	})
+	$('#tdTT')[0].style.display = "none";
+	$('#1m')[0].style.display = "none";
+	$('#2m')[0].style.display = "none";
+	$('#3m')[0].style.display = "none";
+	$('#tdTTT')[0].style.display = 'none';
+	//清算规则设置数据空
+	$("#Clearing input").each(function(i){
+		if(i != 0){
+			this.value = ''
+		}	
+		this.checked = false
+	});
+	$("#n")[0].checked = true;
+	$("#Clearing select").each(function(i){
+		this.value = 0
+	})
+	liquidation_date();
+	//退款设置
+	$("#Refund input").each(function(){
+		this.value = ''
+		this.checked = false
+	})
+	$("#f")[0].checked = true;
+	$("#g")[0].checked = true;
+	$("#trb1")[0].style.display = "none";
+	$("#trb2")[0].style.display = "none";
+	$('.clrgDt')[0].value = "1"
+};
+//页面数据装入
+function usedPage(object_date){
+	/* console.log("页面数据装入 ",ArryNum)
+	console.log("--------可改变数据------------")
+	console.log("是否收取手续费 ======1,2","hdcgDdcInd======>>>",GLOBAL_LIST[ArryNum].hdcgDdcInd)
+	console.log("计费模式=======>1,2","chrgModeCd======>>>",GLOBAL_LIST[ArryNum].chrgModeCd)
+	console.log("清算模式=======>1,2","cntrzClrgInd======>>>",GLOBAL_LIST[ArryNum].cntrzClrgInd)
+	console.log("清算次数=======>1,2,3","clrgCnt======>>>",GLOBAL_LIST[ArryNum].clrgCnt)
+	console.log("清算方式=======>1,2,3,4","clrgMtdcd======>>>",GLOBAL_LIST[ArryNum].clrgMtdcd)
+	console.log("退款标志=======>1,2","prmtRfndInd======>>>",GLOBAL_LIST[ArryNum].prmtRfndInd)
+	console.log("自动原路退款=======>1,2","rfndMtdcd======>>>",GLOBAL_LIST[ArryNum].rfndMtdcd)
+	console.log("退款全额方式=======>1是","rfndModAmtCd======>>>",GLOBAL_LIST[ArryNum].rfndModAmtCd)
+	console.log("----------END----------") **/
+	//基本费项信息
+	basicInformation(object_date);
+	//手续费收取
+	hdcgDdcInd(object_date);
+	//日期
+	efdt_expdt(object_date);
+	//计费模式
+	chrgModeCd(object_date);
+	//清算模式
+	cntrzClrgInd(object_date);
+	//清算次数
+	clrgCnt(object_date);
+	//清算方式
+	clrgMtdcd(object_date);
+	//退款标志
+	prmtRfndInd(object_date);
+	//自动原路退款
+	rfndMtdcd(object_date);
+	//退款全额方式
+	rfndModAmtCd(object_date);
+};
+//费项基本信息
+function basicInformation(object_date){ 
+    $("#onlnMrchcd")[0].value = object_date.onlnMrchcd ? object_date.onlnMrchcd : '';		//'线上商户代码'
+    $("#onlnCnterId")[0].value = object_date.onlnCnterId ? object_date.onlnCnterId : '';	//'线上柜台编号'
+    $("#oflnMrchcd")[0].value = object_date.oflnMrchcd ? object_date.oflnMrchcd : '';		//'线下商户代码'
+    $("#oflnCnterid")[0].value = object_date.oflnCnterid ? object_date.oflnCnterid : ''; 	//'线下柜台编号'
+    $("#srpFeeItmCd")[0].value = object_date.srpFeeItmCd ? object_date.srpFeeItmCd : '';  //代收费项代码
+};
+//手续费收取(1,2)
+function hdcgDdcInd(object_date){
+	//手续费收取(1,2)
+	if(object_date.hdcgDdcInd && object_date.hdcgDdcInd == '1'){ 					//是		
+		$('#mm')[0].checked = true;
+		$('#nn')[0].checked = false;		
+		//扣费账号
+		$('#tra2 input')[0].value = object_date.chrgfeeAccno; 
+		//扣费账号类型
+		$('#tra2 select')[0].value = object_date.chrgfeeAccnoTp;			
+		$("#tra1")[0].style.display = '';
+		$("#tra2")[0].style.display = '';
+	}else if(object_date.hdcgDdcInd && object_date.hdcgDdcInd == '2'){			//否
+		//扣费账号
+		//$('#tra2 input')[0].value = ''; 
+		$('#tra2 input').each(function(){
+			this.value = ''
+		})
+		//扣费账号类型
+		//$('#tra2 select')[0].value = '';
+		$('#tra2 select').each(function(){
+			this.value = ''
+		})
+		$('#mm')[0].checked = false;
+		$('#nn')[0].checked = true;				
+		//document.all.tra1.style.display="none";
+		//document.all.tra2.style.display="none";	
+		document.getElementById("tra1").style.display="none"
+		document.getElementById("tra2").style.display="none"
+	}else{
+		$('#mm')[0].checked = false;
+		$('#nn')[0].checked = true;
+		//document.all.tra1.style.display="none";
+		//document.all.tra2.style.display="none";
+		document.getElementById("tra1").style.display="none"
+		document.getElementById("tra2").style.display="none"
+	}
+};
+//生效失效日期
+function efdt_expdt(object_date){
+	var efdt = $.trim(object_date.efdt) ? object_date.efdt.slice(0,4) + '-' + object_date.efdt.slice(4,6) + '-' + object_date.efdt.slice(6,8) : '';
+	//var expdt = $.trim(GLOBAL_LIST[ArryNum].expdt) ? GLOBAL_LIST[ArryNum].expdt.slice(0,4) + '-' + GLOBAL_LIST[ArryNum].expdt.slice(4,6) + '-' + GLOBAL_LIST[ArryNum].expdt.slice(6,8) : '';
+	var expdt = '2099-12-31';
+	//生效日期
+	$("#efdt")[0].value = object_date.efdt ? dateFormat(efdt,"yyyy-MM-dd") : '';
+	//失效日期
+	//$('#expdt')[0].value = GLOBAL_LIST[ArryNum].expdt ? dateFormat(GLOBAL_LIST[ArryNum].expdt,"yyyy-MM-dd") : expdt;
+	$('#expdt')[0].value = expdt;
+};
+//计费模式
+function chrgModeCd(object_date){
+	if(object_date.hdcgDdcInd != '1'){ 
+		return false;
+	};
+	//计费模式(1,2)
+	if(object_date.chrgModeCd && object_date.chrgModeCd == '1'){  //按笔		
+		$("#typeID")[0].value = 1;
+		$("#tdT")[0].style.display = "table-row";			
+		$("#1t")[0].style.display = "table";
+		$("#2t")[0].style.display = "none";	
+		 //计量单价
+		$("#1t input")[0].value = object_date.msrUnitprc ? object_date.msrUnitprc : '';
+	}else if(object_date.chrgModeCd && object_date.chrgModeCd == '2'){  //按比例
+		$("#typeID")[0].value = 2;
+		$("#tdT")[0].style.display = "table-row";
+		$("#1t")[0].style.display = "none";
+		$("#2t")[0].style.display = "table";
+	    //比例数值
+		$("#2t input")[0].value = object_date.pctgNval ? (object_date.pctgNval*100).toFixed(2) : '' ;				
+	}else{
+		$("#typeID")[0].value = 0;
+		$("#tdT")[0].style.display = "none";			
+		$("#1t")[0].style.display = "none";
+		$("#2t")[0].style.display = "none";	
+	}
+};
+//清算模式
+function cntrzClrgInd(object_date){
+	//清算模式(1,2)		
+	if(object_date.cntrzClrgInd && object_date.cntrzClrgInd == '1'){  				//集中清算		
+		centralized_clearing();	
+		$("#m")[0].checked = true;
+		$("#n")[0].checked = false;
+		//清算日期
+		$(".liquidation-date input")[0].value = object_date.clrgDt ? object_date.clrgDt : '1';   				
+	}else if(object_date.cntrzClrgInd && object_date.cntrzClrgInd == '2'){  			//直接清算
+		$("#n")[0].checked = true;
+		$("#m")[0].checked = false;
+		liquidation_date();			
+	}else{
+		$("#n")[0].checked = true;
+		$("#m")[0].checked = false;
+		liquidation_date();	
+	}
+};
+//清算次数
+function clrgCnt(object_date){
+	if(object_date.cntrzClrgInd != '1'){ 
+		return false;
+	};
+	//清算次数
+	if(object_date.clrgCnt && object_date.clrgCnt == '1'){  					//一日一次		
+		$("#typeIDD")[0].value = 1;
+		$("#tdTT")[0].style.display = "table-row"
+		$("#1m")[0].style.display = "table";
+		$("#2m")[0].style.display = "none";
+		$("#3m")[0].style.display = "none";
+		//时间点
+		//$("#1m select")[0].value = GLOBAL_LIST[ArryNum].clrgTmPnt
+		$("#1m select")[0].value = "05:00"
+	}else if(object_date.clrgCnt && object_date.clrgCnt == '2'){  			//一日两次
+		$("#typeIDD")[0].value = 2;
+		$("#tdTT")[0].style.display = "table-row";
+		$("#2m")[0].style.display = "table";
+		$("#1m")[0].style.display = "none";
+		$("#3m")[0].style.display = "none";
+		//时间点
+		$("#2m select").each(function(i){
+			this.value = object_date.clrgTmPnt.split("|")[i]
+		})
+	}else if(object_date.clrgCnt && object_date.clrgCnt == '3'){  			//一日三次
+		$("#typeIDD")[0].value = 3;
+		$("#tdTT")[0].style.display = "table-row";
+		$("#3m")[0].style.display = "table";
+		$("#1m")[0].style.display = "none";
+		$("#2m")[0].style.display = "none";
+		//时间点
+		$("#3m select").each(function(i){
+			this.value = object_date.clrgTmPnt.split("|")[i]
+		})
+	}else{
+		$("#typeIDD")[0].value = 1;
+		$("#tdTT")[0].style.display = "table-row"
+		$("#1m")[0].style.display = "table";
+		$("#2m")[0].style.display = "none";
+		$("#3m")[0].style.display = "none";
+		//时间点
+		//$("#1m select")[0].value = GLOBAL_LIST[ArryNum].clrgTmPnt
+		$("#1m select")[0].value = "05:00"
+	}
+};
+//清算方式
+function clrgMtdcd(object_date){
+	if(object_date.cntrzClrgInd != '1'){ 
+		return false;
+	};
+	//清算方式
+	if(object_date.clrgMtdcd && object_date.clrgMtdcd == '1'){  			//全额		
+		$("#typeIDDD")[0].value = 1;
+		$("#tdTTT")[0].style.display = "table-row";
+		$("#1n")[0].style.display = "table";
+		$("#2n")[0].style.display = "none";
+		$("#3n")[0].style.display = "none";
+		$("#4n")[0].style.display = "none";
+		//收款账号
+		$("#1n input").each(function(i){				
+			this.value = object_date.clrgAccDos[i].accno ? object_date.clrgAccDos[i].accno : '' ; 
+		});
+	}else if(object_date.clrgMtdcd && object_date.clrgMtdcd == '2'){  	//固定金额
+		$("#typeIDDD")[0].value = 2;
+		$("#tdTTT")[0].style.display = "table-row";
+		$("#2n")[0].style.display = "table";
+		$("#1n")[0].style.display = "none";
+		$("#3n")[0].style.display = "none";
+		$("#4n")[0].style.display = "none";
+		
+		$("#2n tr input")[0].value = object_date.clrgAccDos[0].amt ? object_date.clrgAccDos[0].amt : '';
+		$("#2n tr input")[1].value = object_date.clrgAccDos[0].accno ?  object_date.clrgAccDos[0].accno : '';
+		$("#2n tr input")[2].value = object_date.clrgAccDos[1].amt ? object_date.clrgAccDos[1].amt : '';
+		$("#2n tr input")[3].value = object_date.clrgAccDos[1].accno ?  object_date.clrgAccDos[1].accno : '';		
+	}else if(object_date.clrgMtdcd && object_date.clrgMtdcd == '3'){  //固定比例
+		$("#typeIDDD")[0].value = 3;
+		$("#tdTTT")[0].style.display = "table-row";
+		$("#3n")[0].style.display = "table";
+		$("#1n")[0].style.display = "none";
+		$("#2n")[0].style.display = "none";
+		$("#4n")[0].style.display = "none";
+		
+		$("#3n tr input")[0].value = object_date.clrgAccDos[0].clrgPctg ? ((object_date.clrgAccDos[0].clrgPctg)*100).toFixed(2) : '';
+		$("#3n tr input")[1].value = object_date.clrgAccDos[0].accno ? object_date.clrgAccDos[0].accno : ''; 
+		$("#3n tr input")[2].value = object_date.clrgAccDos[1].clrgPctg ? ((object_date.clrgAccDos[1].clrgPctg)*100).toFixed(2) : '';
+		$("#3n tr input")[3].value = object_date.clrgAccDos[1].accno ? object_date.clrgAccDos[1].accno : ''; 
+	}else if(object_date.clrgMtdcd && object_date.clrgMtdcd == '4'){  //混合模式
+		$("#typeIDDD")[0].value = 4;
+		$("#tdTTT")[0].style.display = "table-row";
+		$("#4n")[0].style.display = "";				
+		$("#1n")[0].style.display = "none";
+		$("#2n")[0].style.display = "none";
+		$("#3n")[0].style.display = "none";
+		mixingList(object_date.clrgAccDos,ArryNum)
+	}else{
+		
+	}
+};
+//退款标志
+function prmtRfndInd(object_date){
+	//退款标志 
+	if(object_date.prmtRfndInd && object_date.prmtRfndInd == '0'){  			//是	
+		$("#e")[0].checked = true;
+		$("#f")[0].checked = false;
+		$("#trb1")[0].style.display = "table-row";
+		$("#trb2")[0].style.display = "table-row";
+		//退款有效期
+		$("#Refund input")[4].value = object_date.rfndAvldt ? object_date.rfndAvldt : '';
+	}else if(object_date.prmtRfndInd == '1'){ 							//否
+		$("#f")[0].checked = true;
+		$("#e")[0].checked = false;
+		$("#trb1")[0].style.display = "none";
+		$("#trb2")[0].style.display = "none";
+		$("#Refund input")[4].value = ""
+	}else{
+		$("#f")[0].checked = true;
+		$("#e")[0].checked = false;
+		$("#trb1")[0].style.display = "none";
+		$("#trb2")[0].style.display = "none"
+		$("#Refund input")[4].value = ""
+	}
+};
+//退款方式
+function rfndMtdcd(object_date){
+	//自动原路退款
+	if(object_date.rfndMtdcd && object_date.rfndMtdcd == '0'){ 					//是		
+		$("#h")[0].checked = false;
+		$("#g")[0].checked = true;
+	}else if(object_date.rfndMtdcd &&　object_date.rfndMtdcd == '1'){				//否		
+		$("#h")[0].checked = true;
+		$("#g")[0].checked = false;
+	}else{
+		$("#h")[0].checked = true;
+		$("#g")[0].checked = false;
+	}
+};
+//退款全额方式
+function rfndModAmtCd(object_date){
+	//退款全额方式
+	if(object_date.rfndModAmtCd && $.trim(object_date.rfndModAmtCd) == '0'){ 	//是		
+		$("#i")[0].checked = true;			
+	}else{
+		$("#i")[0].checked = false;	
+	}
+};
+//计费模式  比例 
+function InputChange(_this){
+	if(_this.value && (Number(_this.value) < 100) && (Number(_this.value) > 0)){
+		_this.value = Number(_this.value).toFixed(2)
+	}else{
+		_this.value = '';
+		errorMessage(true,"请输入正确的比例数(0-100)")
+	}
+	
+};
+//比例 change
+function cleartype(){
+	if($("#ratio")[0].value && (Number($("#ratio")[0].value) < 100) && (Number($("#ratio")[0].value) > 0)){
+		$("#ratio")[0].value = Number($("#ratio")[0].value).toFixed(2)
+		$("#remainingRatio")[0].value = 100 - Number($("#ratio")[0].value);
+	}else{
+		$("#ratio")[0].value = '';
+		$("#remainingRatio")[0].value = '';
+		errorMessage(true,"请输入正确的比例数(0-100)")
+	}	
+};
+//单价
+function amt(_this){
+	if(_this.value && Number(_this.value) > 0){
+		
+	}else{
+		_this.value = ''
+		errorMessage(true,"请输入正确的单价(大于0)")
+	}
+};
+// 清算模式 change 事件
+function selectChange(){
+	var selectChangeDate;
+	if(CACHE_DATA != 2){
+		selectChangeDate=postDateObject;
+	}else{
+		selectChangeDate=GLOBAL_LIST[ArryNum];
+	}
+	if($("#typeIDDD")[0].value == '4'){
+		if(selectChangeDate && selectChangeDate.clrgAccDos && selectChangeDate.clrgAccDos.length > 2){
+			mixingList(selectChangeDate.clrgAccDos,ArryNum);
+		}else if(selectChangeDate && selectChangeDate.clrgAccDos && selectChangeDate.clrgAccDos.length == 2){
+			selectChangeDate.clrgAccDos[0] = {"accno":"","amt":"","cleartype":"1","clrgPctg":""}
+			selectChangeDate.clrgAccDos[1] = {"accno":"","amt":"","cleartype":"1","clrgPctg":""}
+			selectChangeDate.clrgAccDos.push({"accno":"","amt":"","cleartype":"1","clrgPctg":""})	
+			mixingList(selectChangeDate.clrgAccDos,ArryNum);
+		}else if(selectChangeDate && selectChangeDate.clrgAccDos && selectChangeDate.clrgAccDos.length == 1){
+			selectChangeDate.clrgAccDos[0] = {"accno":"","amt":"","cleartype":"1","clrgPctg":""}
+			for(var i = 0; i<2; i++){
+				selectChangeDate.clrgAccDos.push({"accno":"","amt":"","cleartype":"1","clrgPctg":""})
+			};
+			mixingList(selectChangeDate.clrgAccDos,ArryNum);
+		}else{
+			selectChangeDate.clrgAccDos = [];;
+			for(var i = 0; i<3; i++){
+				selectChangeDate.clrgAccDos.push({"accno":" ","amt":" ","cleartype":"1","clrgPctg":" "})
+			};
+			mixingList(selectChangeDate.clrgAccDos,ArryNum);
+		}							
+	};	
+};
+//混合模式列表循环
+function mixingList(list,ArryNum){
+	//{"accno":"收款账号","amt":"100","cleartype":"1","clrgPctg":"20%"},
+	//if($('#4n table').length !=0){
+		$('#4n').empty();
+	//}
+	var disabledText = Mnt_Mnplt_Button ? "disabled " :' ';
+	var noneText = Mnt_Mnplt_Button ? 'style="display:none" ' :' ';
+	$('#4n').append(
+			'<div style="height:40px" id="addbutton">' + 
+				'<div class="fr"><button '+ disabledText + noneText +' class="button7" onclick="addUser('+ ArryNum +')">新增账号</button></div>' + 
+			'</div>'			
+	);
+	for(var i = 0;i < list.length - 1;i++){
+			$('#4n').append('<div class="title">' + 
+	                '<h5 class="fl">账号' + (i+1) + '</h5>' + 
+	                '<div class="fr"><button '+ disabledText + noneText +' class="button7" onclick="deleteUser('+ i + ',' + ArryNum + ')">删除账号</button></div>' + 
+	            '</div>' + 
+	            '<table class="form_tab_content">' + 
+	              '<tr>' + 	                 
+	                '<th>收款账号</th>' + 
+	                '<td>' + 
+	                    '<input type="text" style="width:190px" id="'+ 'accno_'+i +'" class="text3" value="'+ $.trim(list[i].accno) + '">' + 
+	                '</td>' + 
+	              '</tr>' +
+	              '<tr>' + 
+	                '<th>收款方式</th>' + 
+	                '<td>' +                     
+	                    '<p class="mb" id="'+ 'amt_' + i+'" ><label for="c'+i+'"><input id="c'+i+'" type="radio" name="' + 'mm' + i+ '" ' + (list[i].cleartype == "1" ? 'checked="checked"' : '') +' />  固定金额</label> <input name="" type="text" onchange="amt(this)"class="text3" value="' + (list[i].cleartype == "1" ? list[i].amt : '') +'" /> 元</p>' + 
+	                    '<p class="mb" id="'+ 'clrgPctg_' + i+'" ><label for="d'+i+'"><input id="d'+i+'" type="radio" name="' + 'mm'+ i+'" ' + (list[i].cleartype == "2" ? 'checked="checked"' : '') +' /> 固定比例</label>  <input name="" type="text" onchange="InputChange(this)" class="text3" value="' + (list[i].cleartype == "2" ? list[i].clrgPctg ? ((list[i].clrgPctg)*100).toFixed(2) : '' : '') +'" />  %</p>' + 
+	               '</td>' + 
+	                '<th></th>' + 
+	                '<td></td>' + 
+	             '</tr>' + 
+	            '</table>');
+	};
+	var length_end = list.length -1;
+	$('#4n').append('<div class="title annco-end">' + 
+            '<h5 class="fl">账号' + (length_end+1) + '</h5>' + 
+            //'<div class="fr"><button class="button7" onclick="deleteUser('+ length_end + ',' + ArryNum + ')">删除账号</button></div>' + 
+        '</div>' + 
+        '<table class="form_tab_content">' + 
+          '<tr>' + 	                 
+            '<th>收款账号</th>' + 
+            '<td>' + 
+                '<input type="text" style="width:190px" id="'+ 'accno_'+ length_end +'" class="text3" value="'+ $.trim(list[length_end].accno) + '">' + 
+            '</td>' + 
+          '</tr>' +
+          '<tr>' + 
+            '<th>收款方式</th>' + 
+            '<td>' +                     
+                '<p class="mb" id="'+ 'amt_' + length_end+'" ><label for="c'+length_end+'"><input id="c'+length_end+'" type="radio" name="' + 'mm' + length_end + '" ' + (list[length_end].cleartype == "3" ? 'checked="checked"' : 'checked="checked"') +' />  剩余金额 </label> <input disabled name="" type="text" class="text3" value="' + (list[length_end].cleartype == "1" ? list[length_end].amt : '') +'" /> 元</p>' + 
+                /* '<p class="mb" id="'+ 'clrgPctg_' + i+'" ><label for="d'+i+'"><input id="d'+i+'" type="radio" name="' + 'mm'+ i+'" ' + (list[i].cleartype == "2" ? 'checked="checked"' : '') +' /> 固定比例</label>  <input name="" type="text" class="text3" value="' + (list[i].cleartype == "2" ? list[i].clrgPctg : '') +'" />  %</p>' + */ 
+           '</td>' + 
+            '<th></th>' + 
+            '<td></td>' + 
+         '</tr>' + 
+        '</table>');
+	
+	autocomplete_accno();
+};
+//新增账号
+var userNum;
+function addUser(ArryNum){
+	var selectChangeDate;
+	if(CACHE_DATA != 1){
+		selectChangeDate=postDateObject;
+	}else{
+		selectChangeDate=GLOBAL_LIST[ArryNum];
+	}
+	userNum = $('#4n table').length - 1;
+	var insertBeforeNode = '<div class="title">' + 
+    							'<h5 class="fl">账号' + (userNum+1) + '</h5>' + 
+    							'<div class="fr"><button class="button7" onclick="deleteUser('+ userNum + ',' + ArryNum +')">删除账号</button></div>' + 
+							'</div>' + 
+							'<table class="form_tab_content">' + 
+  								'<tr>' + 
+    								'<th>收款账号</th>' + 
+    								'<td>' + 
+        								'<input type="text" style="width:190px" id="'+ 'accno_'+ userNum +'" class="text3" value="">' + 
+    								'</td>' + 
+  								'</tr>' +
+  								'<tr>' + 
+    								'<th>收款方式</th>' + 
+    								'<td>    ' +                     
+        								'<p class="mb" id="'+ 'amt_' + userNum +'" ><label for="c'+userNum+'"><input id="c'+userNum+'" type="radio" name="'+'mm'+userNum+'" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>' + 
+        								'<p class="mb" id="'+ 'clrgPctg_' + userNum +'"><label for="d'+userNum+'"><input id="d'+userNum+'" type="radio" name="'+'mm'+userNum+'"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="" />  %</p>' + 
+   									'</td>' + 
+    								'<th></th>' + 
+    								'<td></td>' + 
+ 								'</tr>' + 
+							'</table>';	
+	$(insertBeforeNode).insertBefore($(".annco-end"));
+	var endText = "账号" + (userNum+2)
+	$(".annco-end h5").text(endText);
+	userNum++;
+	
+	if(selectChangeDate.clrgAccDos && selectChangeDate.clrgAccDos.length > 2){
+		var data = {"accno":"","amt":"","cleartype":"1","clrgPctg":""};
+		var length = selectChangeDate.clrgAccDos.length - 2 ;
+		selectChangeDate.clrgAccDos.splice(length,0,data)
+		mixingList(selectChangeDate.clrgAccDos,ArryNum);
+	};
+};
+//删除账号
+function deleteUser(i,ArryNum){	
+	var selectChangeDate;
+	if(CACHE_DATA != 1){
+		selectChangeDate=postDateObject;
+	}else{
+		selectChangeDate=GLOBAL_LIST[ArryNum];
+	}
+	if(selectChangeDate.clrgAccDos && selectChangeDate.clrgAccDos.length > 3){
+		var parent = document.getElementById('4n');
+		var child_table = $("#4n table")[i];
+		var child_div = $("#4n .title")[i];
+		parent.removeChild(child_table);
+		parent.removeChild(child_div);
+		selectChangeDate.clrgAccDos.splice(i,1)
+		mixingList(selectChangeDate.clrgAccDos,ArryNum)	
+	}else{
+		errorMessage(true,'必须留下三个以上账号')
+	}
+		
+};
+//AJAXpost Date
+var POSTDATE;
+function postDate(type){
+		var clrgAccDos = [];
+		if($("#typeIDDD")[0].value == 1){
+		//全额 
+			clrgAccDos.push({"accno":$("#1n input")[0].value,"cleartype":"0"})
+		}else if($("#typeIDDD")[0].value == 2){
+			//金额  账号
+			clrgAccDos.push({"accno":$("#2n tr input")[1].value,"amt":$.trim($("#2n tr input")[0].value),"cleartype":"1"})
+			//剩余金额  账号
+			clrgAccDos.push({"accno":$("#2n tr input")[3].value,"amt":$.trim($("#2n tr input")[2].value),"cleartype":"3"})
+		}else if($("#typeIDDD")[0].value == 3){
+				clrgAccDos = [
+		              // 比例 账号
+		              {"accno":$("#3n tr input")[1].value,"clrgPctg":$("#3n tr input")[0].value ? ($("#3n tr input")[0].value)/100 : '',"cleartype":"2"}, 
+		              // 剩余比例 账号
+		              {"accno":$("#3n tr input")[3].value,"clrgPctg":$("#3n tr input")[2].value ? ($("#3n tr input")[2].value)/100 : '',"cleartype":"4"}
+		             ];
+	    }else if($("#typeIDDD")[0].value == 4){
+	    	//cleartype 0:全额 1:固定金额 2:固定比例  3:剩余金额 4:剩余比例
+		    for(var i = 0; i < $("#4n table").length - 1; i++){
+			   var accno = "#accno_" + i;
+			   var amt = "#amt_" + i + " " + "input";
+			   var clrgPctg = "#clrgPctg_" + i + " "+"input";
+			   clrgAccDos.push(
+							{"accno":$(accno)[0].value,
+							"cleartype":$(amt)[0].checked ? 1 : $(clrgPctg)[0].checked ? 2 : '',
+							"amt":$.trim($(amt)[1].value),
+							"clrgPctg":$(clrgPctg)[1].value ? ($(clrgPctg)[1].value)/100 : ''
+							}
+					 	)
+		       };
+		       var lengthEnd = $("#4n table").length - 1;
+		       var accnoEnd = "#accno_" + lengthEnd;
+		       var amtEnd = "#amt_" + lengthEnd + " " + "input";
+			   clrgAccDos.push(
+							{"accno":$(accnoEnd)[0].value,
+							"cleartype":$(amtEnd)[0].checked ? 3 : '',
+							"amt":$.trim(""),
+							"clrgPctg":""
+							}
+					 	)
+	    };
+		var clrgTmPnt;
+	 	if($("#typeIDD")[0].value == 1){
+	 		clrgTmPnt = $("#1m select")[0].value ? $("#1m select")[0].value +"" : "";
+	 	}else if($("#typeIDD")[0].value == 2){
+	 		clrgTmPnt = $("#2m select")[0].value && $("#2m select")[1].value ? $("#2m select")[0].value + "|" + $("#2m select")[1].value :'';
+	 	}else if($("#typeIDD")[0].value == 3){
+	 		clrgTmPnt = $("#3m select")[0].value && $("#3m select")[1].value && $("#3m select")[2].value? $("#3m select")[0].value + "|" + $("#3m select")[1].value + "|" + $("#3m select")[2].value : '';
+	 	};    	 	
+	 	var efdtSplit = $("#efdt")[0].value ? $("#efdt")[0].value.split("-") : '';
+	 	var efdt = efdtSplit ? efdtSplit[0] + efdtSplit[1] + efdtSplit[2] : '';
+	 	var expdtSplit = $("#expdt")[0].value.split("-");
+	 	var expdt = expdtSplit[0] + expdtSplit[1] +expdtSplit[2];
+	 	var crtOprId;
+	 	if(Mnt_Mnplt_Fcn_Cd == "1"){
+	 		crtOprId = '创建操作员 ';
+	 	}else{
+	 		crtOprId = '创建操作员 ';
+	 	};
+	 	var pyfTpcd;
+	 	if($.trim($("#Fee_items input")[2].value) == "便民缴费"){
+	 		pyfTpcd = "1"
+	 	}else if($.trim($("#Fee_items input")[2].value) == "政务缴费"){
+	 		pyfTpcd = "2"
+	 	}else{
+	 		pyfTpcd = ""
+	 	}
+		var postDate = {
+	 				 mntMnpltFcnCd:Mnt_Mnplt_Fcn_Cd,							// 维护操作代码   
+	 				 crtOprId: Mnt_Mnplt_Fcn_Cd == "1" ?   '创建操作员 ' : '',		//创建操作员 
+	 				 modOpr:   Mnt_Mnplt_Fcn_Cd == "2" ?   '修改 操作员 ' : '',		//修改 操作员 
+	 				 ahnOprId : $("#modal-body-1")[0].value,  					//授权操作员 
+	            	 feeItmCd:$("#Fee_items input")[0].value,     				//费项代码
+	            	 fprjNm:$("#Fee_items input")[1].value,						//费项名称
+	            	 pyfTpcd:pyfTpcd,											//缴费类型
+	            	 insno:$("#Fee_items input")[3].value,						//机构号
+	            	 srpFeeItmCd:$("#Fee_items input")[8].value,  				//代收付费项代码	            	 	            	 
+	            	 onlnMrchcd:$("#onlnMrchcd")[0].value,						//线上商户代码'
+	            	 onlnCnterId:$("#onlnCnterId")[0].value,					//'线上柜台编号'
+	            	 oflnMrchcd:$("#oflnMrchcd")[0].value,						//'线下商户代码'
+	            	 oflnCnterid:$("#oflnCnterid")[0].value,					//'线下柜台编号'	            	
+	            	 hdcgDdcInd:$("#mm")[0].checked ? 1 : 2,      				//手续费收扣标志  1是 2否
+	            	 efdt:efdt,					 				 				//配置生效日期
+	            	 expdt:expdt,					 				 			//配置失效日期
+	            	 chrgfeeAccnoTp: $('#tra2 select')[0].value,	 			//扣费账号类型
+	            	 chrgfeeAccno:$('#tra2 input')[0].value,	     			//扣费账号
+	            	 chrgModeCd:$("#typeID")[0].value,			 				//计费模式    1按笔 2按比例
+	            	 msrUnitprc:$("#1t input")[0].value,					 	//计量单价
+	            	 pctgNval:$("#2t input")[0].value ? ($("#2t input")[0].value)/100 : '',//比例数值		    			 
+	            	 cntrzClrgInd:$("#m")[0].checked ? 1: 2,		 			//清算模式   1集中清算 2直接清算
+	            	 clrgDt:$(".liquidation-date input")[0].value, 				//清算日期
+	            	 clrgCnt:$("#typeIDD")[0].value,				 			//清算次数
+	            	 clrgTmPnt:clrgTmPnt,							 			//清算时间点
+	            	 clrgMtdcd:$("#typeIDDD")[0].value,            				//清算方式
+	            	 clrgAccDos:clrgAccDos,						 				//清算方式list2 
+	            	 prmtRfndInd:$("#e")[0].checked ? '0' : '1',		 	 	//退款标志
+	            	 rfndAvldt:$("#Refund input")[4].value,        				//退款有效期
+	            	 rfndMtdcd:$("#g")[0].checked ? '0':'1',			 			//自动原路退款
+	            	 rfndModAmtCd:$("#i").is(":checked") ? '0' :'1',		     	//退款金额方式
+	                 username:$("#modal-body-1")[0].value,  					//授权用户
+	            	 password:hex_md5($("#modal-body-2")[0].value), 			//授权密码
+	            	 appcode:"",  												//菜单位置
+	            	 modcode:""  												// 系统id
+	             };
+		//addAndUpdate(postDate);
+		if(!type){
+		POSTDATE = postDate;
+		dataDetection(postDate)
+		}else{
+			return postDate;
+		}
+				
+};
+// 修改数据控制
+function dataDetection(postDate){
+		
+		var errorMessageText = [];
+				
+		if(!postDate.feeItmCd){
+			errorMessageText.push("费项代码不能为空")			
+		};
+		if(!postDate.fprjNm){
+			errorMessageText.push("费项名称不能为空")
+		};
+		if($.trim(postDate.pyfTpcd) != "1" && $.trim(postDate.pyfTpcd) != "2"){
+			errorMessageText.push("缴费类型代码只能是1或2( 1-便民缴费,2-政务缴费)")			
+		};
+		if(!postDate.insno){
+			errorMessageText.push("机构号不能为空")				
+		};
+		if(!postDate.onlnMrchcd && !postDate.oflnMrchcd){
+			errorMessageText.push("线上商户代码和线下商户代码必须输入一项")			
+		};
+		if(postDate.onlnMrchcd || postDate.oflnMrchcd){
+			if(postDate.onlnMrchcd && !postDate.onlnCnterId){
+				errorMessageText.push("请输入线上柜台编号")				
+			};
+			if(postDate.oflnMrchcd && !postDate.oflnCnterid){
+				errorMessageText.push("请输入线下柜台编号")				
+			};
+		};
+		if(postDate.onlnCnterId || postDate.oflnCnterid){
+			if(postDate.onlnCnterId && !postDate.onlnMrchcd){
+				errorMessageText.push("请输入线上商户代码")				
+			};
+			if(postDate.oflnCnterid && !postDate.oflnMrchcd){
+				errorMessageText.push("请输入线下商户代码")				
+			};
+		};
+		/* if(!postDate.srpFeeItmCd){
+			errorMessage(true,"代收费项项代码")
+			return;
+		} */
+		if(!postDate.efdt){
+			errorMessageText.push("请输入配置生效日期")			
+		};
+		if(!postDate.expdt){
+			errorMessageText.push("请输入配置失效日期")			
+		};
+		if(postDate.hdcgDdcInd == 1){ //收取手续费
+			if(!postDate.chrgfeeAccnoTp){
+				errorMessageText.push("请选择扣费账户类型")
+			};
+			if(!postDate.chrgfeeAccno){
+				errorMessageText.push("请选择扣费账号")
+			};
+			if(accnoDetection(postDate.chrgfeeAccno) == "-1"){
+				errorMessageText.push("扣费账号未注册")
+			};
+			if(!postDate.chrgModeCd){
+				errorMessageText.push("请选择计费模式")
+			};
+			if(postDate.chrgModeCd && postDate.chrgModeCd == "1"){
+				if(!postDate.msrUnitprc){
+					errorMessageText.push("请输入计量单价")
+				}
+			};
+			if(postDate.chrgModeCd && postDate.chrgModeCd == "2"){
+				if(!postDate.pctgNval){
+					errorMessageText.push("请输入比例数值")
+				};
+				
+			};
+		};
+		if(postDate.cntrzClrgInd == "1"){
+			if(!postDate.clrgDt){
+				errorMessageText.push("请输入清算日期")
+			};
+			if(!postDate.clrgCnt){
+				errorMessageText.push("请选择清算次数")
+			};
+			if(!postDate.clrgTmPnt){
+				errorMessageText.push("请选择清算时间点")
+			};
+			if(!postDate.clrgMtdcd){
+				errorMessageText.push("请选择清算方式")
+			};
+			if(postDate.clrgMtdcd && postDate.clrgMtdcd =="1"){
+				if(postDate.clrgAccDos[0] && !postDate.clrgAccDos[0].accno){
+					errorMessageText.push("请输入全额方式下的收款账号")
+				};
+				if(postDate.clrgAccDos[0].accno && accnoDetection(postDate.clrgAccDos[0].accno) == "-1"){
+					errorMessageText.push("全额方式下的收款账号未注册")
+				}
+			};
+			if(postDate.clrgMtdcd && postDate.clrgMtdcd =="2"){
+				if(postDate.clrgAccDos[0] && !postDate.clrgAccDos[0].amt){
+					errorMessageText.push("请输入固定金额方式下的金额")
+				};
+				if(postDate.clrgAccDos[0] && !postDate.clrgAccDos[0].accno){
+					errorMessageText.push("请输入固定金额方式下的金额对应收款账号")
+				};
+				if(postDate.clrgAccDos[1] && !postDate.clrgAccDos[1].accno){
+					errorMessageText.push("请输入固定金额方式下的剩余金额对应收款账号")
+				};				
+				if(postDate.clrgAccDos[0].accno && accnoDetection(postDate.clrgAccDos[0].accno) == "-1"){
+					errorMessageText.push("固定金额方式下金额对应收款账号未注册")
+				};
+				if(postDate.clrgAccDos[1].accno && accnoDetection(postDate.clrgAccDos[1].accno) == "-1"){
+					errorMessageText.push("固定金额方式下剩余金额对应收款账号未注册")
+				};
+			};
+			if(postDate.clrgMtdcd && postDate.clrgMtdcd =="3"){
+				if(postDate.clrgAccDos[0] && !postDate.clrgAccDos[0].clrgPctg){
+					errorMessageText.push("请输入固定比例方式下的比例")
+				};
+				if(postDate.clrgAccDos[0] && !postDate.clrgAccDos[0].accno){
+					errorMessageText.push("请输入固定比例方式下的比例对应收款账号")
+				};
+				if(postDate.clrgAccDos[1] && !postDate.clrgAccDos[1].accno){
+					errorMessageText.push("请输入固定比例方式下的剩余比例对应收款账号")
+				};
+				if(postDate.clrgAccDos[0].accno && accnoDetection(postDate.clrgAccDos[0].accno) == "-1"){
+					errorMessageText.push("固定比例方式下比例对应收款账号未注册")
+				};
+				if(postDate.clrgAccDos[1].accno && accnoDetection(postDate.clrgAccDos[1].accno) == "-1"){
+					errorMessageText.push("固定比例方式下剩余比例对应收款账号未注册")
+				};
+			};
+			if(postDate.clrgMtdcd && postDate.clrgMtdcd =="4"){
+				if(postDate.clrgAccDos.length <= 2 ){
+					errorMessageText.push("混合模式下须有三个或三个以上账号")
+				};
+				if(postDate.clrgAccDos.length >= 3 ){
+					for(var i = 0; i< postDate.clrgAccDos.length; i++){
+						if(!postDate.clrgAccDos[i].accno){
+							errorMessageText.push("混合模式下请输入账号" + (i+1) + "对应的收款账号")
+						};
+						if(postDate.clrgAccDos[i].accno && accnoDetection(postDate.clrgAccDos[i].accno) == "-1"){
+							errorMessageText.push("混合模式下账号" + (i+1) + "对应的收款账号未注册")
+						};
+						if(!postDate.clrgAccDos[i].cleartype){
+							errorMessageText.push("混合模式下请选择账号" + (i+1) + "对应的收款方式")
+						};
+						if(postDate.clrgAccDos[i].cleartype && postDate.clrgAccDos[i].cleartype == "1"){  //固定金额 
+							if(!postDate.clrgAccDos[i].amt){
+								errorMessageText.push("混合模式下请输入账号" + (i+1)+ "对应的固定金额")
+							}
+						};
+						if(postDate.clrgAccDos[i].cleartype && postDate.clrgAccDos[i].cleartype == "2"){  //固定比例
+							if(!postDate.clrgAccDos[i].clrgPctg){
+								errorMessageText.push("混合模式下请输入账号" +(i+1) + "对应的固定比例")
+							}
+						}
+					}
+				};
+			};
+		};
+		if(postDate.prmtRfndInd != "0" && postDate.prmtRfndInd != "1"){			
+			errorMessageText.push("请选择是否退款")
+		};
+		if(postDate.prmtRfndInd == "0"){
+			if($.trim(postDate.rfndMtdcd) != 0 && $.trim(postDate.rfndMtdcd) != 1){
+				errorMessageText.push("请选择是否自动原路退款")
+			};
+			if(!postDate.rfndAvldt){
+				errorMessageText.push("请选择退款有效期")
+			}
+		};
+		
+		if(errorMessageText.length > 0){
+			var text = '';
+			for (var i = 0; i<errorMessageText.length; i++){
+				text += ( "<span class='must'>*</span>" + (i+1) + ":" + errorMessageText[i] + "." + "<br />")
+			}
+			errorMessage(true,text)
+		};
+		if(errorMessageText.length == 0){
+			pupopen()
+		};		
+};
+//打开授权弹窗
+function pupopen(){
+	$("#modal-body strong")[0].innerHTML = $("#Fee_items input")[0].value;   //费项代码
+	$("#modal-body strong")[1].innerHTML = $("#Fee_items input")[1].value;   //费项名称
+	document.getElementById("modal-form").style.display="block" ;
+};
+//关闭弹窗
+function pupclose(){
+	$("#modal-body-1")[0].value = '';   //费项代码
+	$("#modal-body-2")[0].value = '';   //费项名称
+	document.getElementById("modal-form").style.display="none" ;
+};
+//弹框非空检测
+function nonNullDetectionDelgo(){	
+	if(!$("#modal-body-1")[0].value || !$("#modal-body-2")[0].value){
+		if(!$("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid red";
+		}else if($("#modal-body-1")[0].value){
+			$("#modal-body-1")[0].style.border = "1px solid #AAC5D8";
+		}
+		if(!$("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid red";
+		}else if($("#modal-body-2")[0].value){
+			$("#modal-body-2")[0].style.border = "1px solid #AAC5D8";
+		}
+	}else{
+		POSTDATE.ahnOprId = $("#modal-body-1")[0].value;             		//授权操作员
+		POSTDATE.username = $("#modal-body-1")[0].value;  					//授权用户
+		POSTDATE.password = hex_md5($("#modal-body-2")[0].value);			//授权密码
+		addAndUpdate();
+	}	
+};
+//提交 数据 
+function addAndUpdate(){
+	loading(true);
+	pupclose()
+	$.ajax({
+		url :"/manage/brchexpdChangeAndAdd",
+		type : "POST",
+		dataType: 'json',
+		data :JSON.stringify(POSTDATE),
+		contentType: "application/json; charset=utf-8",
+		success : function(data) {
+						loading(false)
+						//successopen();
+						successfulMessage(true,'操作成功');
+						getAjaxDate(POSTDATE.feeItmCd);
+			   	},
+		error : function(errorDate) {
+				var message = JSON.parse(errorDate.responseText).message;
+				pupclose()
+				loading(false)
+				errorMessage(true,message)					
+			    }
+		});	
+};
+//日期格式化 
+var dateFormat = function(date,mask) {        
+    
+ var d = date;  
+ if (!date) {
+    return '';
+ }
+ if (!d.toUTCString) {
+    d = new Date(date);
+ } 
+ if (Object.prototype.toString.call(d) != '[object Date]') {
+    return '';
+ } 
+ if (d.toString() == 'Invalid Date') {
+    return '';
+ }
+ if (!mask) {
+    return '';
+ }   
+ var zeroize = function (value, length) {        
+    
+     if (!length) length = 2;        
+    
+     value = String(value);        
+    
+     for (var i = 0, zeros = ''; i < (length - value.length); i++) {        
+    
+         zeros += '0';        
+    
+     }        
+    
+     return zeros + value;        
+    
+ };   
+    
+ return mask.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|M{1,4}|yy(?:yy)?|([hHmstT])\1?|[lLZ])\b/g, function($0) {        
+    
+     switch($0) {        
+    
+         case 'd':   return d.getDate();        
+    
+         case 'dd':  return zeroize(d.getDate(),2);        
+    
+         case 'ddd': return ['Sun','Mon','Tue','Wed','Thr','Fri','Sat'][d.getDay()];        
+    
+         case 'dddd':    return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];        
+    
+         case 'M':   return d.getMonth() + 1;        
+    
+         case 'MM':  return zeroize(d.getMonth() + 1,2);        
+    
+         case 'MMM': return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];        
+    
+         case 'MMMM':    return ['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()];        
+    
+         case 'yy':  return String(d.getFullYear()).substr(2);        
+    
+         case 'yyyy':    return d.getFullYear();        
+    
+         case 'h':   return d.getHours() % 12 || 12;        
+    
+         case 'hh':  return zeroize(d.getHours() % 12 || 12,2);        
+    
+         case 'H':   return d.getHours();        
+    
+         case 'HH':  return zeroize(d.getHours(),2);        
+    
+         case 'm':   return d.getMinutes();        
+    
+         case 'mm':  return zeroize(d.getMinutes(),2);        
+    
+         case 's':   return d.getSeconds();        
+    
+         case 'ss':  return zeroize(d.getSeconds(),2);        
+    
+         case 'l':   return zeroize(d.getMilliseconds(), 3);        
+    
+         case 'L':   var m = d.getMilliseconds();        
+    
+                 if (m > 99) m = Math.round(m / 10);        
+    
+                 return zeroize(m,3);        
+    
+         case 'tt':  return d.getHours() < 12 ? 'am' : 'pm';        
+    
+         case 'TT':  return d.getHours() < 12 ? 'AM' : 'PM';        
+    
+         case 'Z':   return d.toUTCString().match(/[A-Z]+$/);        
+    
+         // Return quoted strings with the surrounding quotes removed
+    
+         default:    return $0.substr(1, $0.length - 2);        
+    
+     }        
+    
+ });           
+}; 
+
+function successopen(){
+	document.getElementById("pop-success").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};	
+function successclose(){
+	document.getElementById("pop-success").style.display="none" ;
+};	
+function failopen(){
+	document.getElementById("pop-fail").style.display="block" ;
+	document.getElementById("modal-form").style.display="none" ;
+	
+};	
+function failclose(){
+	document.getElementById("pop-fail").style.display="none" ;
+};	
+
+
+//-------------账号模糊查询逻辑--------------------
+$(function(){
+	accnoList();
+	onln_list();
+	CnterId();
+});
+//储存用户信息
+var ACCNOLIST = [];
+function accnoList(){
+	var data = {"strtLoDataval":'',"eachPaNum":''};
+	jQuery.ajax({
+		url :"/manage/acct/changepage",
+		type : "post",
+		data : data,
+		dataType : 'json',
+	        success : function(data) {
+	        	if(data.oboList && data.oboList.length > 0){
+	        		for (var i = 0; i < data.oboList.length; i++){
+	        			if($.trim(data.oboList[i].accSt) == "2"){
+	        				ACCNOLIST.push(data.oboList[i].accno)
+	        			}	        			      			
+		        	};
+	        		autocomplete_accno();
+	        	}else{
+	        		ACCNOLIST.push('没有账号信息');
+	        		autocomplete_accno(accnoList);
+	        	}	        		        				 		
+	        },
+	        error : function(errorDate) {
+	        	var message = JSON.parse(errorDate.responseText).message;				
+				errorMessage(true,message)					
+	        }
+	 });
+};
+//autocompleteAPI
+function autocomplete_accno(){
+	var elementArray = "#accno_0,";
+	for(var i = 0; i < 50; i++){
+		if(i > 0 && i<49){
+			elementArray += ("#accno_" + i + ",");
+		}else if( i >=49){
+			elementArray += ("#accno_" + i);
+		}			
+	};
+	$(elementArray).autocomplete(ACCNOLIST,{
+		width:167,
+		//max:4,
+		highlight:false,
+		multiple:false,
+		multipleSeparator:"",
+		scroll:true,
+		scrollHeight:180,
+		matchContains : false,
+		//mustMatch : true,
+		//autoFill : true,
+        minChars : 0
+    });
+};
+//账号检测
+function accnoDetection(accno){
+	var inof = $.inArray(accno,ACCNOLIST);
+	if(inof == '-1'){   //账号不存在
+		return "-1";
+	}else{
+		return "0";
+	}
+	
+}
+//-------------商户代码模糊查询逻辑--------------------
+//商户代码
+function onln_list(){
+	jQuery.ajax({
+		url :"/manage/mrchParmInfList",
+		type : "post",
+		data : "",
+		dataType : 'json',
+	        success : function(data) {
+	        	var onlnMrchcd_Arry = [];//线上
+	        	var oflnMrchcd_Arry = [];//线下
+	        	if(data.oboList && data.oboList.length > 0){
+	        		for (var i = 0; i< data.oboList.length; i ++){
+	        			if(data.oboList[i].onlnOflnIndcd == "1"){
+	        				onlnMrchcd_Arry.push(data.oboList[i].mrchcd)
+	        			}
+	        			if(data.oboList[i].onlnOflnIndcd == "2"){
+	        				oflnMrchcd_Arry.push(data.oboList[i].mrchcd)
+	        			}
+	        		}
+	        	}
+	        	onlnMrchcd(onlnMrchcd_Arry)
+	        	oflnMrchcd(oflnMrchcd_Arry)
+	        },
+	        error : function(errorDate) {
+	        	var message = JSON.parse(errorDate.responseText).message;
+				errorMessage(true,message)					
+	        }
+	 });
+}
+ 
+//线上商户代码
+function onlnMrchcd(onlnMrchcd_Arry){
+	$("#onlnMrchcd").autocomplete(onlnMrchcd_Arry,{
+		width:151,
+		//max:4,
+		highlight:false,
+		multiple:false,
+		multipleSeparator:"",
+		scroll:true,
+		scrollHeight:180,
+		matchContains : false,
+		//mustMatch : true,
+		//autoFill : true,
+		minChars : 0
+	}).result(function(even,item){
+		onlnCnterId(item[0])
+	});
+}
+//线下商户代码
+function oflnMrchcd(oflnMrchcd_Arry){
+	$("#oflnMrchcd").autocomplete(oflnMrchcd_Arry,{
+		width:151,
+		//max:4,
+		highlight:false,
+		multiple:false,
+		multipleSeparator:"",
+		scroll:true,
+		scrollHeight:180,
+		matchContains : false,
+		//mustMatch : true,
+		//autoFill : true,
+		minChars : 0
+	}).result(function(even,item){
+		oflnCnterid(item[0])
+	});
+}
+//-------------柜台号模糊查询逻辑--------------------
+var CnterId_list = [];
+function CnterId(){
+	//柜台号 
+	jQuery.ajax({
+		url :"/manage/MrchCnterList",
+		type : "post",
+		data : "",
+		dataType : 'json',
+	        success : function(data) {
+	        	CnterId_list = data.oboList
+	        },
+	        error : function(errorDate) {
+	        	var message = JSON.parse(errorDate.responseText).message;
+				errorMessage(true,message)					
+			}
+	});
+}
+//线上柜台号
+function onlnCnterId(item){
+	var onlnCnterId_arry = [];
+	for(var i = 0; i < CnterId_list.length; i++){
+		if(CnterId_list[i].mrchcd == item){
+			onlnCnterId_arry.push(CnterId_list[i].mrchCnterCd)
+		}
+	}
+	$("#onlnCnterId").autocomplete(onlnCnterId_arry,{
+		width:151,
+		//max:4,
+		highlight:false,
+		multiple:false,
+		multipleSeparator:"",
+		scroll:true,
+		scrollHeight:180,
+		matchContains : false,
+		//mustMatch : true,
+		//autoFill : true,
+		minChars : 0
+	});
+}
+//线下柜台号
+function oflnCnterid(item){
+	var oflnCnterid_arry = [];
+	for(var i = 0; i < CnterId_list.length; i++){
+		if(CnterId_list[i].mrchcd == item){
+			oflnCnterid_arry.push(CnterId_list[i].mrchCnterCd)
+		}
+	}
+	$("#oflnCnterid").autocomplete(oflnCnterid_arry,{
+		width:151,
+		//max:4,
+		highlight:false,
+		multiple:false,
+		multipleSeparator:"",
+		scroll:true,
+		scrollHeight:180,
+		matchContains : false,
+		//mustMatch : true,
+		//autoFill : true,
+		minChars : 0
+	});
+}
+
+// 离开页面确认标志
+var ONBEFOREUNLOAD = false;
+//页面离开确认
+window.onbeforeunload = function(){
+	if(ONBEFOREUNLOAD){
+		return "确认要离开此页面吗？系统不会自动保存您的修改"
+	}
+	//return "确认要离开此页面吗？系统不会自动保存您的修改"
+}
+function logOut(){
+	if(confirm("您确认要离开此费项吗？系统不会自动保留您的更改")){
+		return true;
+	}else{
+		return false;
+	}
+}
+</script>
+
+ 
+</head>
+
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >>  机构费项清算配置</td>
+  </tr>
+</table>
+<table class="table_tree">
+  <tr>
+    <td class="tree_left">
+       <div class="tree_title">
+          <p>机构费项</p>
+       </div>
+       <div class="tree_search">
+          <input name="" type="text" class="tree_text" id="findFeeItmCd"/>
+          <input name="" type="button" class="tree_btn" onclick="findFeeItmCd()"/>
+       </div>
+       <div>
+        <!-- <img src="${RootPath}static/gzf/images/jigou.png" /> -->
+       	 <ul id="zTree" class="ztree"></ul>
+       </div>
+    </td>
+    <td class="w10"></td>
+    <td class="tree_right">
+    	<div id="tree_right">   	  	
+		<h5>**请确认该费项所需的账号都已新增**</h5>
+		<div id="buttonType" style="border-bottom:1px solid #015488;width:95%;margin:10px auto 10px auto">
+			<ul style="height:30px;cursor: pointer">
+				<li onclick="buttonType(1);" style="width:100px;height:30px;float:left;text-align:center;line-height:30px;margin-right:5px;background-color:#E2ECF0">已生效数据</li>
+				<li onclick="buttonType(2);" style="width:100px;height:30px;float:left;text-align:center;line-height:30px;margin-right:5px;background-color:#E2ECF0">新增</li>
+				<li onclick="buttonType(3);" style="width:100px;height:30px;float:left;text-align:center;line-height:30px;margin-right:5px;background-color:#E2ECF0">待生效数据</li>
+			</ul>
+		</div>
+        <table class="table_submit_title">
+          <tr>
+            <td class="table_submit_title_icon"></td>
+            <td>费项基本信息</td>
+          </tr>
+		</table>
+        <table class="table_submit" id="Fee_items">
+          <tr>
+            <th>费项代码</th>
+            <td><input id="feeItmCd" name="" type="text" class="gray_text" readonly="readonly" value="" /></td>
+            <th>费项名称</th>
+            <td><input id="fprjNm" name="" type="text" class="gray_text" readonly="readonly" value="" /></td>
+          </tr>
+          <tr>
+          	<th>缴费类型</th>
+            <td>
+                <input id="pyfTpcd" name="" type="text" class="gray_text" readonly="readonly" value="" />
+            </td>
+            <th>机构号</th>
+            <td><input id="insno" name="" type="text" class="gray_text"  readonly="readonly" value="" /></td>             
+          </tr>         
+          <tr>
+            <th>线上商户代码</th>
+            <td><input id="onlnMrchcd" name="" type="text" class="gray_text disabledOrnone" value="" style="background:#fff" /></td>
+            <th>线上柜台编号</th>
+            <td><input id="onlnCnterId" name="" type="text" class="gray_text disabledOrnone" value="" style="background:#fff" /></td>           
+          </tr>
+          <tr>
+            <th>线下商户代码</th>
+            <td><input id="oflnMrchcd" name="" type="text" class="gray_text disabledOrnone"  value="" style="background:#fff" /></td>
+            <th>线下柜台编号</th> 
+            <td><input id="oflnCnterid" name="" type="text" class="gray_text disabledOrnone"  value="" style="background:#fff" /></td>           
+          </tr>
+          <tr>
+             <th>代收付费项代码</th>
+            <td><input id="srpFeeItmCd" name="" type="text" class="gray_text disabledOrnone" value="" style="background:#fff"/></td>           
+            <th>手续费收取</th>
+            <td>
+            	<label for="mm"><input id="mm" class="disabledOrnone" name="9" type="radio" onclick="poundage(false)" value="1"/> 是</label>
+                <label for="nn"><input id="nn" class="disabledOrnone" name="9" type="radio" onclick="poundage(true)" value="2"/> 否</label>
+            </td> 
+          </tr>
+          <tr>
+            <th>配置生效日期</th>
+            <td><input name="" type="text" onclick="WdatePicker();" onchange="efdtChange(this)" class="date disabledOrnone" id="efdt"></td>
+            <th>配置失效日期</th>
+            <td>
+            	<!-- <input name="" type="text" onclick="WdatePicker();" onchange="expdtChange(this)" class="date disabledOrnone" id="expdt" value="2099-12-30" /> -->
+            	<input name="" type="text" onclick="WdatePicker();" onchange="expdtChange(this)" class="date" id="expdt" value="2099-12-30" disabled/>
+            </td>
+          </tr>
+        </table>
+        <table class="table_submit_title" id="tra1" style="display:none">
+          <tr>
+            <td class="table_submit_title_icon"></td>
+            <td>计费规则设置</td>
+          </tr>
+		</table>
+        <table class="table_submit" id="tra2" style="display:none">
+          <tr >
+            <th>扣费账户类型</th>
+            <td>
+            	<select name="" class="text3 disabledOrnone">
+                    <option value="0" >请选择</option>
+                    <!--<option value="1" >收款方付费</option>-->
+                    <!--<option value="2">付款方付费</option>-->
+                    <option value="1">指定账号</option>
+                </select>
+            </td>
+            <th>扣费账号</th>
+            <td><input id="accno_30" style="width:190px" name="" type="text" class="text3 disabledOrnone" value="" onchang="accnoDetection(this)"  style="width:165px" /></td>
+          </tr>
+          <!--<tr>
+            <th>清算计费代码</th>
+            <td><input name="" type="text" class="text3" value="" /></td>
+            <th>清算计费名称</th>
+            <td><input name="" type="text" class="text3" value="" /></td>
+          </tr>-->
+          <tr>
+            <th>计费模式</th>
+            <td>
+              <select name="select" class="text3 disabledOrnone" id="typeID">
+                <option value="" >请选择</option>
+                <option dataid="#1t" value="1">按笔</option>
+                <option dataid="#2t" value="2">按比例</option>
+              </select>
+            </td>
+            <th></th>
+            <td></td>
+          </tr>
+          <tr id="tdT" style="display:none;">
+            <td colspan="4" class="hidden">
+                <!--按笔-->
+                  <table class="form_tab_content" id="1t" style="display:none;">
+                    <tr>
+                      <th>计量单价</th>
+                      <td><input name="" type="text" class="text3 disabledOrnone" value="" onchange="amt(this)"/> 元</td>
+                    </tr>
+                  </table>
+                  <!--按比例-->
+                  <table class="form_tab_content" id="2t" style="display:none;">
+                    <tr>
+                      <th>比例数值</th>
+                      <td><input name="" type="text" class="text3 disabledOrnone InputChange" value="" onchange="InputChange(this)"/> %</td>
+                    </tr>
+                  </table>
+            </td>
+          </tr>
+        </table>
+        
+        <table class="table_submit_title">
+          <tr>
+            <td class="table_submit_title_icon"></td>
+            <td>清算规则设置</td>
+          </tr>
+		</table>
+        <table class="table_submit" id="Clearing">
+          <tr>
+            <th>清算模式</th>
+            <td>
+            	<label for="m"><input id="m" class="disabledOrnone" name="7" type="radio" onclick="centralized_clearing()"/> 集中清算</label>
+                <label for="n"><input id="n" class="disabledOrnone"name="7" type="radio"  onclick="liquidation_date()"/> 直接清算</label>
+                <!--<input name="" type="text" class="gray_text" readonly="readonly" value="集中清算" />-->
+            
+            </td>
+            <th><!-- 清算归集账号 --></th>
+            <td>
+            	<!-- <input name="" type="text" class="gray_text disabledOrnone"  value="000000000"  style="background:#f1fbfa"/> -->
+            </td>
+          </tr>
+          <!--<tr>
+            <th>清算计费代码</th>
+            <td><input name="" type="text" class="text3" value="" /></td>
+            <th>清算计费名称</th>
+            <td><input name="" type="text" class="text3" value="" /></td>
+          </tr>-->
+
+          <tr class="liquidation-date">
+            <th>清算日期</th>
+            <td>T + <input name="" type="text" class="text3 clrgDt" size="16" value="1" disabled/></td>
+            <th>清算次数</th>
+            <td>
+                <select name="" class="text3 disabledOrnone" id="typeIDD">
+                    <option value="">请选择</option>
+                    <option dataid="#1m" value="1">1日1次</option>
+                    <!-- <option dataid="#2m" value="2">1日2次</option>
+                    <option dataid="#3m" value="3">1日3次</option> -->
+                    <!--<option value="4">实时</option>-->
+                </select>
+            </td>
+          </tr>
+		  <tr id="tdTT" style="display:none;">
+            <td colspan="4" class="hidden2">
+                <!--1日1次-->
+                  <table class="form_tab_content" id="1m" style="display:none;">
+                    <tr>
+                      <th>时间点</th>
+                      <td> 
+                        <select name="" class="text3 disabledOrnone">
+                            <!-- <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option> -->
+                            <option value="05:00" selected="selected">05:00</option>
+                            <!-- <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option> -->
+                        </select>
+                      </td>
+                    </tr>
+                  </table>
+                  <!--1日2次-->
+                  <table class="form_tab_content" id="2m" style="display:none;">
+                    <tr>
+                      <th>时间点1</th>
+                      <td>
+                        <select name="" class="text3 disabledOrnone">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                      </td>
+                      <th>时间点2</th>
+                      <td>
+                        <select name="" class="text3 disabledOrnone">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </table>
+                  <!--1日3次-->
+                  <table class="form_tab_content" id="3m" style="display:none;">
+                    <tr>
+                      <th>时间点1</th>
+                      <td>
+                        <select name="" class="text3 disabledOrnone">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                      </td>
+                      <th>时间点2</th>
+                      <td>
+                        <select name="" class="text3 disabledOrnone">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                      </td>
+                      <th>时间点3</th>
+                      <td>
+                        <select name="" class="text3 disabledOrnone">
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                      </td>
+                    </tr>
+                  </table>
+            </td>
+          </tr>
+          <tr class="liquidation-date">
+            <th>清算方式</th>
+            <td>
+              <select name="select" class="text3 disabledOrnone" id="typeIDDD" onchange="selectChange()">
+                  <option value="" >请选择</option>
+                  <option dataid="#1n" value="1">全额</option>
+                  <option dataid="#2n" value="2">固定金额</option>
+                  <option dataid="#3n" value="3">固定比例</option>
+                  <option dataid="#4n" value="4">混合模式</option>
+              </select>
+      
+            </td>
+            <th></th>
+            <td></td>
+          </tr>
+
+          <tr id="tdTTT" style="display:none;">
+            <td colspan="4" class="hidden2">
+                <!--全额-->
+                <table class="form_tab_content" id="1n" style="display:none;">
+                  <tr>
+                    <th>收款账号</th>
+                    <td>
+                      <input name="" id="accno_40" style="width:190px" type="text" class="text3 disabledOrnone" style="width:165px" />
+                    </td>
+                  </tr>
+                </table>
+                <!--固定金额-->
+                <table class="form_tab_content" id="2n" style="display:none;">
+                  <tr>
+                    <th>金额</th>
+                    <td><input name="" type="text" class="text3 disabledOrnone" value="" /> 元</td>
+                    <th>收款账号</th>
+                    <td>
+                      <input name="" id="accno_41" style="width:190px" type="text" class="text3 disabledOrnone" style="width:165px" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>剩余金额</th>
+                    <td><input name="" type="text" class="text3" value="" readonly="readonly"/> 元</td>
+                    <th>收款账号</th>
+                    <td>
+                      <input name="" id="accno_42" style="width:190px" type="text" class="text3 disabledOrnone" style="width:165px" />
+                    </td>
+                  </tr>
+                </table>
+                <!--固定比例-->
+                <table class="form_tab_content" id="3n" style="display:none;">
+                  <tr>
+                    <th>比例</th>
+                    <td><input id="ratio" name="" type="text" class="text3 disabledOrnone" value="" onchange="cleartype()"/> %</td>
+                    <th>收款账号</th>
+                    <td>
+                      <input name="" id="accno_43" style="width:190px" type="text" class="text3 disabledOrnone" style="width:165px" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>剩余比例</th>
+                    <td><input name="" type="text" class="text3" value="" readonly="readonly" id="remainingRatio"/> %</td>
+                    <th>收款账号</th>
+                    <td>
+                      <input name="" id="accno_44" style="width:190px" type="text" class="text3 disabledOrnone" style="width:165px" />
+                    </td>
+                  </tr>
+                </table>
+                <!--混合模式-->
+               <!--  <div style="height:40px" id="addbutton">
+						<div class="fr"><button class="button7" onclick="addUser()">新增账号</button></div>
+					</div> -->
+                <div id="4n" style="display:none;">					               	
+<!--   
+                  <div class="title">
+                      <h5 class="fl">账号1</h5>
+                      <div class="fr"><input name="" type="button" value="删除账号" class="button7" /></div>
+                  </div>
+                  <table class="form_tab_content">
+                    <tr>
+                      <th>收款银行</th>
+                      <td>
+                          <select name="select" class="text3">
+                            <option value="1" selected="selected">中国建设银行</option>
+                            <option value="2">000</option>
+                            <option value="3">000</option>
+                          </select>
+                      </td>
+                      <th>收款账号</th>
+                      <td>
+                          <input type="text" class="text3" value="6226 **** **** ****">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>收款方式</th>
+                      <td>
+                          <p class="mb"><label for="a"><input id="a" type="radio" name="1" /> 全额</label></p>
+                          <p class="mb"><label for="b"><input id="b" type="radio" name="1" />  剩余全额</label></p>
+                          <p class="mb"><label for="c"><input id="c" type="radio" name="1" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                          <p class="mb"><label for="d"><input id="d" type="radio" name="1"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="10" />  %</p>
+                      </td>
+                      <th></th>
+                      <td></td>
+                    </tr>
+                  </table>
+                  <div class="title">
+                      <h5 class="fl">账号2</h5>
+                      <div class="fr"><input name="" type="button" value="删除账号" class="button7" /></div>
+                  </div>
+                  <table class="form_tab_content">
+                    <tr>
+                      <th>收款银行</th>
+                      <td>
+                          <select name="select" class="text3">
+                            <option value="1" selected="selected">中国建设银行</option>
+                            <option value="2">000</option>
+                            <option value="3">000</option>
+                          </select>
+                      </td>
+                      <th>收款账号</th>
+                      <td>
+                          <input type="text" class="text3" value="6226 **** **** ****">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>收款方式</th>
+                      <td>
+                          <p class="mb"><label for="a"><input id="a" type="radio" name="2" /> 全额</label></p>
+                          <p class="mb"><label for="b"><input id="b" type="radio" name="2" />  剩余金额</label></p>
+                          <p class="mb"><label for="c"><input id="c" type="radio" name="2" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                          <p class="mb"><label for="d"><input id="d" type="radio" name="2"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="" />  %</p>
+                      </td>
+                      <th></th>
+                      <td></td>
+                    </tr>
+                  </table>
+                  <div class="title">
+                      <h5 class="fl">账号3</h5>
+                      <div class="fr"><input name="" type="button" value="删除账号" class="button7" /></div>
+                  </div>
+                  <table class="form_tab_content">
+                    <tr>
+                      <th>收款银行</th>
+                      <td>
+                          <select name="select" class="text3">
+                            <option value="1" selected="selected">中国建设银行</option>
+                            <option value="2">000</option>
+                            <option value="3">000</option>
+                          </select>
+                      </td>
+                      <th>收款账号</th>
+                      <td>
+                          <input type="text" class="text3" value="6226 **** **** ****">
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>收款方式</th>
+                      <td>
+                          <p class="mb"><label for="a"><input id="a" type="radio" name="2" /> 全额</label></p>
+                          <p class="mb"><label for="b"><input id="b" type="radio" name="2" />  剩余金额</label></p>
+                          <p class="mb"><label for="c"><input id="c" type="radio" name="2" />  固定金额</label> <input name="" type="text" class="text3" value="" /> 元</p>
+                          <p class="mb"><label for="d"><input id="d" type="radio" name="2"  checked="checked" /> 固定比例</label>  <input name="" type="text" class="text3" value="" />  %</p>
+                      </td>
+                      <th></th>
+                      <td></td>
+                    </tr>
+                  </table> -->
+          		</div>
+            </td>
+          </tr>
+        </table>
+        
+        <table class="table_submit_title">
+          <tr>
+            <td class="table_submit_title_icon"></td>
+            <td>退款设置</td>
+          </tr>
+		</table>
+        <table class="table_submit" id="Refund">
+          <tr>
+            <th>退款</th>
+            <td colspan="3">
+            	<label for="e"><input id="e" class="disabledOrnone" name="3" type="radio" onclick="backmoney(false)" /> 是</label>
+                <label for="f"><input id="f" class="disabledOrnone" name="3" type="radio" onclick="backmoney(true)" checked="checked" /> 否</label>
+            </td>
+          </tr>
+          <tr id="trb1" style="display:none">
+            <th>自动原路退款</th>
+            <td>
+            	<label for="g"><input id="g" class="disabledOrnone" name="4" type="radio" checked="checked" /> 是</label>
+                <label for="h"><input id="h" class="disabledOrnone" name="4" type="radio"  /> 否</label>
+            </td>
+            <th>退款有效期</th>
+            <td><input name="" type="text" class="text3 disabledOrnone" value="" /> 天</td>
+          </tr>
+          <tr id="trb2" style="display:none">
+            <th>退款金额方式</th>
+            <td>
+            	<label for="i"><input id="i" class="disabledOrnone" name="5" type="checkbox"  /> 全额</label>
+                <!-- <label for="j"><input id="j" name="5" type="radio"  /> 部分</label> -->
+            </td>
+            <th></th>
+            <td></td>
+          </tr>
+        </table>
+        
+        <table class="table_noline">
+          <tr>
+            <td>
+            <input id="buttonOK" type="button" value="确定" class="button3" onclick="postDate()" />
+            <input name="" type="button" value="关闭" class="button3" onclick="none_right()" />
+            </td>
+          </tr>
+        </table>
+        </div>
+    </td>
+  </tr>
+</table>
+
+<div id="modal-form" class="modal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header header-color-blue">
+                <button type="button" class="modal-close white" onclick="pupclose()">&times;</button>
+                <h5>复核授权</h5>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <p>费项代码：<strong>1000001</strong> &nbsp;&nbsp;  费项名称：<strong>北京自来水公司</strong></p>
+                <p>授权编号 <input name="Input2" type="text" class="text3"   id="modal-body-1"/></p>
+                <p>授权密码 <input name="Input2" type="password" class="text3"   id="modal-body-2"/></p>
+            </div>
+            <div class="modal-footer">
+                <button class="button5" onclick="nonNullDetectionDelgo()">
+                   	 确定
+                </button>
+                <button class="button5" onclick="pupclose()">
+                	取消
+                </button>
+            </div><!--/.modal-footer-->
+        </div><!--/.modal-content-->
+    </div><!--/.modal-dialog-->
+</div><!--/.modal-->
+
+<div class="pop-success" id="pop-success">
+	<a href="javascript:void(0);" class="pop-close" onclick="successclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-ok.png" /></p>
+    <h3>操作成功</h3>
+</div>
+
+<div class="pop-success" id="pop-fail">
+	<a href="javascript:void(0);" class="pop-close" onclick="failclose()"></a>
+    <p><img src="${RootPath}static/gzf/images/icon-error.png" /></p>
+    <h3>操作失败</h3>
+</div>
+
+
+
+	</div>	
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+</body>
+</html>

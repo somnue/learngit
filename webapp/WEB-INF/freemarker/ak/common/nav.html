@@ -1,0 +1,23 @@
+<div class="navTop" id="navTop">
+    <div class="btn-group btn-group-justified nav_temBox" role="group" id="navTemBox"></div>
+</div>
+<script type="text/html" id="navTem">
+    <div class="btn-group" role="group">
+        <a href="/ak/index" id="nav_index" class="nav_item btn btn-default dropdown-toggle" role="button">
+              	首页</span>
+        </a>
+    </div>
+    {{each navList value i}}
+    	<div class="btn-group" role="group">
+            <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-haspopup="true" aria-expanded="false">
+               {{value.name}} <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+    			{{each value.children child y}}
+                <li><a class="nav_item" href="{{child.url}}">{{child.name}}</a></li>
+    			{{/each}}
+            </ul>
+        </div>
+    {{/each}}
+</script>

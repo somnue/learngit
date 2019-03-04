@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.min.css"/>
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/jquery.datetimepicker.full.min.js"></script>
+    <script src="/static/js/logs.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>查询操作日志</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="startDate">日期:</label>
+                        <div class = "date_clearPa">
+                        	<input readonly class="form-control" type="text" id="startDate" autocomplete="off">
+            				<i class="glyphicon glyphicon-remove date_clearBtn"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="operatorID">操作员编号:</label>
+                        <input type="text" class="form-control" id="operatorID">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+            </div>
+            <div class="infTable noButtons">
+                <table id="printContent" class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>日期</th>
+                        <th>机构编号</th>
+                        <th>机构名称</th>
+                        <th>操作员编号</th>
+                        <th>操作员名称</th>
+                        <th>操作功能</th>
+                        <th>操作状态</th>
+                        <th>交易流水号</th>
+                        <th>登陆IP</th>
+                        <th>操作时间</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide noteOfProblem_pages" id="pages_pageHide">
+                <#include "./common/pages.html">
+                <button id="print" class="btn btn-primary">打印</button>
+                <a id="downloadBtn" target=_blank class="btn btn-info" href="#">下载</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td>{{pageSize*(pageNum-1)+i+1}}</td>
+        <td>{{value.mnpltTm}}</td>
+        <td>{{value.insId}}</td>
+        <td>{{value.insNm}}</td>
+        <td>{{value.oprId}}</td>
+        <td>{{value.oprNm}}</td>
+        <td>{{value.mnpltFcn}}</td>
+        <td>{{value.mnpltState}}</td>
+        <td>{{value.bsnJmlNo}}</td>
+        <td>{{value.oprIp}}</td>
+        <td>{{value.mnpltTm}}</td>
+        <td>{{value.remark}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/addSettAcc.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./settlementAccountMaintain">结算账号维护</a></li>
+                <li>添加结算账号</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="operateBox clearfix">
+                <div class="form-group">
+                    <label for="affiliation">所属机构: 
+	                    <span style="font-weight: 100;" id="checkOrgTip">(点击左侧选择机构)</span>
+	                    <span class="mustIcon">*</span>
+                    </label>
+                    <input readonly type="text" class="form-control" id="affiliation">
+                </div>
+                <div class="form-group">
+                    <label for="settlementPrincipalAccount">结算本金账号: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="settlementPrincipalAccount">
+                </div>
+                <div class="form-group">
+                    <label for="settlementPrincipalAccountName">结算本金账号名称: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="settlementPrincipalAccountName">
+                </div>
+                <div class="form-group">
+                    <label for="settlementInterestAccount">结算利息账号: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="settlementInterestAccount">
+                </div>
+                <div class="form-group">
+                    <label for="settlementInterestAccountName">结算利息账号名称: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="settlementInterestAccountName">
+                </div>
+                <div class="form-group">
+                    <label for="currency">币种: <span class="mustIcon">*</span></label>
+                    <input type="text" class="form-control" id="currency" value = "人民币" readonly = "readonly">
+                </div>
+                <div class="form-group">
+                    <label for="desc">备注:</label>
+                    <input type="text" class="form-control" id="desc">
+                </div>
+                <div id="anKuanAlert" class="anKuanAlert" >
+                    <div id="anKuanAlertInf" class="anKuanAlertInf alert-danger" style="width: 100%;">
+                        <strong id="anKuanAlertContent"></strong>
+                    </div>
+                    <div id="anKuanAlertBtns" class="anKuanAlertBtns">
+                        <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                    </div>
+                </div>
+                <div class="anKuanButtons" id="anKuanButtons">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">确认</button>
+                    <span class="btn btn-info" onclick="window.history.back(-1);">返回</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+</body>
+</html>

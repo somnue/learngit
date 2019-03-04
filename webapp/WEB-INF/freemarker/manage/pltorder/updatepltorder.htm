@@ -1,0 +1,169 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm"> <#include
+"/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet"
+	href="${RootPath}static/gzf/css/form.css" />
+
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/localdata.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successfulMessage.js"></script> 
+<script language="javascript" type="text/javascript">
+/* updatepltcom */
+ $(document).ready(function(){
+	 var state = ${obos.stmStcd?default('')};
+	
+
+	 $("#istmStCd").val(state);
+ })
+ 
+ 
+function update(){
+	var stmStCd = $("#istmStCd").val();
+	var stmCd = $("#istmCd").val();
+	
+	$.ajax({
+		url : '/manage/pltorder/updatepltcom.html',
+		type : "post",
+		data : {
+			"stmStcd" : stmStCd,
+			"stmCd" : stmCd
+		},
+		dataType : 'json',
+		success : function(data) {
+			successfulMessage(true,'操作成功');
+			window.location.href="/manage/pltorder/queryplt.html";
+
+		},
+		error : function(data) {
+
+			if(data.responseText != null || data.responseText != "") {
+			
+				var message = JSON.parse(data.responseText).message;
+				errorMessage(true,message);
+			}
+		}
+	});
+}
+</script>
+</head>
+<body>
+	<#include "/common/admin/headinfo.htm">
+	<div class="cm-wrapper">
+		<div class="cm-center">
+			<!--
+			<div class="cm-sitemap">
+				<div class="fl navinfo">
+					<span>您现在的位置：</span> <span><a href="${SysSite}">我的管理首页</a></span> <span>&nbsp;&gt;&nbsp;</span>
+					<span>系统管理平台</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			-->
+			<div class="cm-center">
+				<div class="cm-pagebody">
+					<div class="fl leftbody">
+						<div class="titlediv">
+							<div class="tname">功能菜单</div>
+						</div>
+						<div class="menusdiv">
+							<div class="menus padding">${MenuHtml!}</div>
+						</div>
+					</div>
+					<div class="rightbody">
+						
+						<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 公共平台参数</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>修改</td>
+  </tr>
+</table>
+						<table class="table_submit">
+    <tr>
+      <th>系统代码</th>
+      <td><input disabled id="istmCd" name="" type="text" class=" gray_text" readonly="readonly" value="${obos.stmCd?default('')}" /></td>
+      <th>系统名称</th>
+      <td><input disabled  name="" type="text" class="text3" value="${obos.stmNm?default('')}" /></td>
+    </tr>
+    <tr>
+      <th>系统日期</th>
+      <td><input disabled name="" type="text" onClick="WdatePicker();" class="date" value="${obos.pltfrmDt?default('')}" /></td>
+      <th>系统状态</th>
+      <td >
+      	<select id="istmStCd" name="select" class="text3">
+          <option value="1" >正常</option>
+          <option value="2" >关闭</option>
+          <option value="3" >日终处理</option>
+          <option value="4" >维护</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+    
+      <th>账务日期</th>
+      <td><input disabled name="" type="text" onClick="WdatePicker();" class="date" value="${obos.acgDt?default('')}" /></td>
+      <th>清算日期</th>
+      <td><input disabled name="" type="text" onClick="WdatePicker();" class="date" value="${obos.clrgDt?default('')}" /></td>
+    </tr>
+    <tr>
+      <th>上一工作日</th>
+      <td><input disabled name="" type="text" onClick="WdatePicker();" class="date" value="${obos.prevWkDyPrd?default('')}" /></td>
+      <th>下一工作日</th>
+      <td><input disabled name="" type="text" onClick="WdatePicker();" class="date" value="${obos.nextWkDyPrd?default('')}" /></td>
+    </tr>
+    <tr>
+      <th>日终步骤号</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.eodStepIdString?default('')}" /></td>
+      <th>管理机构</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.mtlt?default('')}" /></td>
+    </tr>
+   <!--  <tr>
+      <th>清算总账号</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.clrgGnlLdgrNo?default('')}" /></td>
+      <th>商户代码</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.mrchCd?default('')}" /></td>
+    </tr>
+    <tr> -->
+      <th>分行代码</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.instCd?default('')}" /></td>
+      <th>备注</th>
+      <td><input disabled name="" type="text" class="text3" value="${obos.rmrk?default('')}" /></td>
+    </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="确定" class="button3" onclick="update()" />
+    <input name="" type="button" value="取消" class="button3" onclick="javascript:history.go(-1);return false;" />
+    </td>
+  </tr>
+</table>
+
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "/common/admin/bottom.htm">
+</body>
+</html>

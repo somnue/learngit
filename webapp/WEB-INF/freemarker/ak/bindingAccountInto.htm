@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.min.css"/>
+    <script src="/static/js/jquery.datetimepicker.full.min.js"></script>
+    <script src="/static/js/bindAccInto.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>绑定账号导入</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="account">账号:</label>
+                        <input type="text" class="form-control" id="account">
+                    </div>
+                    <div class="form-group">
+                        <label for="intoDate">导入日期:</label>
+                        <div class = "date_clearPa">
+                        	<input readonly type="text" class="form-control" id="intoDate" autocomplete="off">
+            				<i class="glyphicon glyphicon-remove date_clearBtn"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+                <div class="btn-group operateBtns" role="group" aria-label="Basic example">
+                    <a href="./intoAccountExecel" class="btn btn-info">导入</a>
+                </div>
+                <div class="btn-group operateBtns" role="group" aria-label="Basic example">
+                    <a href="/static/acc.xlsx" class="btn btn-info">下载模板</a>
+                </div>
+            </div>
+            <div class="infTable noButtons">
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>所属机构</th>
+                        <th>账号</th>
+                        <th>账号名称</th>
+                        <th>账号别名</th>
+                        <th>币种</th>
+                        <th>是否分配</th>
+                        <th>导入日期</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide" id="pages_pageHide">
+            	<#include "./common/pages.html">
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td>{{(pageNum-1) * pageSize + i + 1}}</td>
+        <td>{{value.insFullname}}</td>
+        <td>{{value.accno}}</td>
+        <td>{{value.accNm}}</td>
+        <td>{{value.accAls}}</td>
+        <td>{{value.ccy}}</td>
+        {{if value.bndgSt === '0'}}
+        <td>已分配</td>
+        {{else if value.bndgSt==='1'}}
+        <td>未分配</td>
+        {{else if value.bndgSt==='2'}}
+        <td>绑定中</td>
+        {{else if value.bndgSt==='3'}}
+        <td>解绑中</td>
+		{{else if value.bndgSt==='4'}}
+        <td>已退回</td>
+        {{else if value.bndgSt==='5'}}
+        <td>已销户</td>
+        {{/if}}
+        <td>{{value.imptDate}}</td>
+        <td>{{value.remark}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

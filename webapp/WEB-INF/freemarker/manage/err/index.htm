@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<!-- <link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/laypage.css"/> -->
+
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script> 
+
+<script language="javascript" type="text/javascript">
+
+</script>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 对账管理 >> 对账差错明细</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>对账差错明细查询</td>
+  </tr>
+</table>
+<form action="" method="post">
+<table class="table_search">
+  <tr>
+    <td>
+	<table>
+      <tr>
+        <td>订单号</td>
+        <td><input name="" id="ordrNo" type="text" class="text4" /></td>
+        <td>对账起始日期</td>
+        <td>
+          <input name="" id="txnStDt" type="text" onClick="WdatePicker();" class="date" />
+        <td>对账结束日期</td>
+        <td>
+          <input name="" id="txnEdDt" type="text" onClick="WdatePicker();" class="date" />
+        </td>
+        <td>对账结果</td>
+        <td>
+        	<select name="select" id="rcnclRsltStcd" class="select4">
+              <option value="">请选择</option>
+              <option value="01">初始化</option>
+              <option value="02">平</option>
+              <option value="03">不平</option>
+              <option value="04">交易信息不一致</option>
+            </select>
+        </td>
+        <td><input name="" type="button" value="查询" class="search" onclick="find(1,5)"/></td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+</form>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>对账差错明细列表</td><td>对账差错明细列表</td>
+  </tr>
+</table>
+ <table class="table_list">
+    <tr>
+      <th>商户代码</th>
+      <th>对账批次号</th>
+      <th>记账日期</th>
+      <th>订单号</th>
+      <th>订单金额</th>
+      <th>结算金额</th>
+      <th>对账结果</th>
+      <th>操作</th>
+    </tr>
+    <tbody id="tbody">
+    
+    </tbody>
+</table>
+<!-- 空数据展示 -->
+<div id="none-data"></div>
+<!-- 分页 -->
+<table class="page">
+  <tr>
+    <td>
+    	每页显示记录
+        <select name="select" class="text1">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+        </select>
+        &nbsp;&nbsp;共<span id="allNum"> -- </span>条
+    </td>
+    <td class="tr">
+    	<a href="javascript:void(0)" class="button8" onclick="firstPage()" id="firstPage">首页</a>
+        <a href="javascript:void(0)" class="button8" onclick="oncePage()" id="oncePage">上一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="afterPage()" id="afterPage">下一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="endPage()" id="endPage">末页</a>  
+    	到第
+        <input name="" type="text" class="text1" size="2" id="pageCause"/> 页
+        &nbsp;&nbsp;共<span id="allPage">--</span>页&nbsp;&nbsp;
+        <input name="input3" type="submit" value="转到" class="button8" onclick="pageUpdate()"/>
+    </td>
+  </tr>
+</table>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	pageDate(1,5);	
+});
+
+//全局数据列表
+var GLOBLE_LIST;
+//全局请求方式
+var TYPE;
+//获取分页数据
+function pageDate(curr,eachPaNum){
+	var data = {"strtLoDataval":curr,"eachPaNum":eachPaNum};
+	jQuery.ajax({
+		url :"/manage/err/listPage",
+		type : "post",
+		data : data,
+		dataType : 'json',
+	        success : function(data) {
+	 		if(data.code== '0'){
+	 			TYPE = "pageDate";
+	 			GLOBLE_LIST = data.oboList;
+	 			RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 			pageChange(data.oboList);
+	 			pageStart(data.obo.rcrdTotNum,'all');		
+	 		}else{
+	 			alert("查询失败")
+	 		    }
+	        },
+	        error : function(q) {
+	            alert("error")
+	        }
+	 }); 
+};
+
+	// 分页数据返回修改
+	function pageChange (oboList){
+	jQuery("#tbody").empty();
+		var data=oboList;
+		for(var i=0;i<data.length;i++){
+					var tr='<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '">';
+					      tr+='<td>'+isNull(data[i].mrchcd)+'</td>';
+					      tr+='<td>'+isNull(data[i].rcnclBtno)+'</td>';
+					      tr+='<td>'+isNull(data[i].txnStDt)+'</td>';
+					      tr+='<td>'+isNull(data[i].txnEdDt)+'</td>';
+					      tr+='<td>'+isNull(data[i].ordrNo)+'</td>';
+					      tr+='<td>'+isNull(data[i].ordrAmt)+'</td>';
+					      tr+='<td>'+isNull(data[i].setamt)+'</td>';
+					      tr+='<td>'+statCh(isNull(data[i].rcnclRsltStcd))+'</td>';
+			      		  tr+='<td><a href="javascript:;" class="blue" onclick="data('+data[i].ordrNo+')">查看详情</a></td>';
+			              tr+='</tr>';
+			              jQuery("#tbody").append(tr);
+				}
+	}
+	
+	//分页逻辑 
+	var pageNum = 1;
+	var RCRD_TOT_NUM;
+	function pageStart (rcrdTotNum){
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5; 
+		//总条数
+		$("#allNum")[0].innerHTML = rcrdTotNum;
+		//总页数
+		$("#allPage")[0].innerHTML = Math.ceil(rcrdTotNum/eachPaNum);
+		//首页按钮控制
+		if(pageNum == 1){
+			$("#firstPage")[0].setAttribute("onclick","return false;");
+			$("#firstPage")[0].style.cursor = 'default';
+		}else{
+			$("#firstPage")[0].setAttribute("onclick","oncePage()");
+			$("#firstPage")[0].style.cursor = 'pointer';
+		};
+		//上一页按钮控制
+		if(pageNum == 1){
+			$("#oncePage")[0].setAttribute("onclick","return false;");
+			$("#oncePage")[0].style.cursor = 'default';
+		}else{
+			$("#oncePage")[0].setAttribute("onclick","oncePage()");
+			$("#oncePage")[0].style.cursor = 'pointer';
+		};
+		//下一页按钮控制
+		if(pageNum == Math.ceil(rcrdTotNum/eachPaNum)){
+			$("#afterPage")[0].setAttribute("onclick","return false;");
+			$("#afterPage")[0].style.cursor = 'default';
+		}else{
+			$("#afterPage")[0].setAttribute("onclick","afterPage()");
+			$("#afterPage")[0].style.cursor = 'pointer';
+		};
+		//末页按钮状态控制
+		if(pageNum == Math.ceil(rcrdTotNum/eachPaNum)){
+			$("#endPage")[0].setAttribute("onclick","return false;");
+			$("#endPage")[0].style.cursor = 'default';
+		}else{
+			$("#endPage")[0].setAttribute("onclick","afterPage()");
+			$("#endPage")[0].style.cursor = 'pointer';
+		};
+	};
+	//首页
+	function firstPage(){	
+		var curr = 1;
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum);
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			return false;
+		}
+		$("#pageCause")[0].value = "";
+	};
+	//上一页
+	function oncePage(){
+			var curr = pageNum - 1;
+			var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5;		
+			if(TYPE == "pageDate"){
+				pageDate(curr,eachPaNum);
+			}else if(TYPE == "find"){
+				find(curr,eachPaNum)
+			}else{
+				return false;
+			}
+			pageNum--;	
+			$("#pageCause")[0].value = "";
+	};
+	//下一页
+	function afterPage(){
+		var curr = pageNum + 1;
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum);
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			return false;
+		}	
+		pageNum++;	
+		$("#pageCause")[0].value = "";
+	};
+	//末页
+	function endPage(){
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5;
+		var curr = Math.ceil(RCRD_TOT_NUM/eachPaNum);
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum);
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			return false;
+		}			
+		$("#pageCause")[0].value = "";
+	};
+	
+	
+	//转到
+function pageUpdate(){
+	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5;
+	var curr = $("#pageCause")[0].value ?$("#pageCause")[0].value : 1;
+	pageNum = curr;
+	if(TYPE == "pageDate"){
+		pageDate(curr,eachPaNum)
+	}else if(TYPE == "find"){
+		find(curr,eachPaNum)
+	}else{
+		return false;
+	}	
+	
+};
+	
+	//空数据展示
+function none_data(text){	
+	var div = document.createElement("div");
+	if(document.getElementById("none-data").childNodes.length == 0){
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}else{
+		deleate_none_data();
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}
+};
+// 消除非空数据提示
+function deleate_none_data(){
+	if(document.getElementById("none-data").childNodes.length != 0){
+		//var parent = document.getElementById("none-data");
+		//parent.removeChild(parent.childNodes[0]);
+		$("#none-data").empty();
+	}else{
+		return;
+	}	
+};
+
+//跳转查看详情
+function data (ordrNo){
+	window.location.href = "/manage/expdClrgDet/modify.html?ordrNo="+ordrNo;
+}
+
+
+//按条件查询
+function find(curr,eachPaNum){
+	var txnStDt=jQuery("#txnStDt").val();
+	var txnEdDt=jQuery("#txnEdDt").val();
+	var ordrNo=jQuery("#ordrNo").val();
+	var rcnclRsltStcd=jQuery("#rcnclRsltStcd option:checked").val();
+	var stmDt=jQuery("#stmDt").val();
+	var data = {"txnStDt":txnStDt,"txnEdDt":txnEdDt,"ordrNo":ordrNo,"rcnclRsltStcd":rcnclRsltStcd,"strtLoDataval":curr,"eachPaNum":eachPaNum};
+	if(data){
+		jQuery.ajax({
+			url :"/manage/err/querySubmit",
+			type : "post",
+			data : data,
+			dataType : 'json',
+	         success : function(data) {
+	 			if(data.code== '0'){
+	 				TYPE = "find";
+	 				//数据列表
+	 				GLOBLE_LIST = data.oboList;
+	 				//数据总数
+	 				RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 				pageChange(data.oboList);	 				
+		 			pageStart(data.obo.rcrdTotNum);
+	 			}else{
+	 				alert("查询失败")
+	 			}
+	         },
+	         error : function(q) {
+	             alert("error")
+	         }
+	     });
+	}else{
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 5; 
+		pageDate(1,eachPaNum);
+	}
+	}
+
+		//跳转查看详情
+function data (mrchcd){
+	window.location.href = "/manage/err/modify.html?ordrNo="+mrchcd;
+}
+
+  function isNull(value){
+        if(value){
+            return value;
+        }else{
+            return "";
+        }
+    }
+    
+    function statCh(value){
+ 		var stat='';
+        if(value=='01'){
+         stat='初始化';
+        }else if(value=='02'){
+           stat='平';
+        }else if(value=='03'){
+           stat='不平';
+        }else if(value=='04'){
+           stat='交易信息不一致';
+        }else{
+           stat='数据库状态有误';
+        }
+        return stat;
+    }   
+    
+</script>
+
+
+</body>
+</html>
+

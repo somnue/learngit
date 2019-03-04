@@ -1,0 +1,22 @@
+
+
+.cm-footer {border-top: 3px solid #5789C9; height: 140px; background: #e8e8e8;}
+.cm-footer .cm-center{width:1200px;margin:0 auto;}
+.cm-footer .images { width: 200px; padding-top: 38px;margin-left: 60px; }
+.cm-footer .images .img { width: 100px; }
+.cm-footer .content { width: 500px; padding-top: 30px; }
+.cm-footer .content .left { width:410px; margin:0 auto;}
+.cm-footer .content .left .coderow { line-height:24px; text-align:center; font-size:12px; color:#000; }
+.cm-footer .content .left .coderow a { font-size:12px; color:#000; }
+.cm-footer .content .right { width: 250px; }
+.cm-footer .content .right p { line-height: 25px; }
+.cm-footer .line { width: 60px; height: 100px; background: url(../../../img/common/bottom/line.png) no-repeat center center; padding-top: 40px; }
+.cm-footer .about { width:250px;padding-top: 30px;padding-left:30px;font-size: 12px; }
+.cm-footer .about .left .code {width:80px; vertical-align: middle; font-size:12px; color:#999; cursor:pointer;}
+.cm-footer .about .left .code:hover {color:#000;}
+.cm-footer .about .left .code-img {vertical-align: middle;padding-top: -2px;display: none;}
+.cm-footer .about .left .follow { font-weight: bold; font-size: 18px; padding-bottom: 10px; }
+.cm-footer .about .left .coderow {width:120px; line-height: 24px; vertical-align: middle; font-size: 12px; }
+.cm-footer .about .left .coderow img { vertical-align: middle; }
+.cm-footer .about .right { padding-left:30px; text-align: center;padding-top: 0;}
+.cm-footer .about .right { font-size: 12px; }

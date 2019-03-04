@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <script src="/static/js/returnDetails.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li><a href="./return">已退回</a></li>
+                <li>退回详情</li>
+            </ol>
+        </div>
+        <div class="infListBox row">
+            <form class="form-horizontal" id="infFrom">
+                <div class="operatorInf">
+                    <div class="col5 form-group">
+                        <label for="goodsNum">涉案资金编号</label>
+                        <input readonly type="text" class="form-control" id="goodsNum">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="caseName">案件名称</label>
+                        <input readonly type="text" class="form-control" id="caseName">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="dtnNtcId">扣押通知书编号</label>
+                        <input readonly type="text" class="form-control" id="dtnNtcId">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="caseNum">案件编号</label>
+                        <input readonly type="text" class="form-control" id="caseNum">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="name">涉案人员姓名</label>
+                        <input readonly type="text" class="form-control" id="name">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="caseTime">扣押日期</label>
+                        <input readonly type="text" class="form-control" id="caseTime">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="IDcardType">证件类别</label>
+                        <input readonly type="text" class="form-control" id="IDcardType">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="doneTime">到期日</label>
+                        <input readonly type="text" class="form-control" id="doneTime">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="IDcard">证件号码</label>
+                        <input readonly type="text" class="form-control" id="IDcard">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="desc">备注</label>
+                        <input readonly type="text" class="form-control" id="desc">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="payMoney">应扣金额</label>
+                        <input readonly type="text" class="form-control" id="payMoney">
+                    </div>
+                    <div class="col5 form-group">
+                        <label for="returnDate">退回时间</label>
+                        <input readonly type="text" class="form-control" id="returnDate">
+                    </div>
+                </div>
+                <div class="anKuanButtons">
+                    <div style="text-align: center;margin-bottom: 40px;">
+                        <a  href="#" data-akhref='./scanningPics' class="btn btn-info" id="seePics">查看扫描件</a>
+                    </div>
+                    <span class="btn btn-primary" onclick="window.history.back(-1);">关闭</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+</body>
+</html>

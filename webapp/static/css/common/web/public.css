@@ -1,0 +1,131 @@
+﻿/* CSS Document */
+.form { padding: 10px 0px 30px 0px; }
+.form .rows { padding: 5px 10px; }
+.form .row { margin-top: 20px; }
+.form .row .row-title {font-size: 14px; height: 25px; line-height: 25px; vertical-align: middle; display: inline-block; text-align: right; color: #666; }
+.form .row .t-width { width: 140px; display: inline-block; }
+.form .row .control { height: 35px; line-height: 35px; vertical-align: middle; }
+.form .row .control .uplink { padding: 0px 30px; line-height: 26px; text-align: center; display: inline-block; color: #666; background: #e4e5e5; border: 1px solid #ccc; }
+
+.form .row .tips { color: #666; height: 35px; line-height: 35px; vertical-align: middle; }
+.form .row .tips .noempty { color: #f00; padding-left: 3px; padding-right: 5px; padding-top: 3px; height: 25px; line-height: 25px; vertical-align: middle; }
+.form .input { border: 1px solid #ddd; height: 35px; line-height: 35px; padding: 0px 5px; width: 220px; }
+
+/*找回密码方式*/
+.cm-pagebody .pwdbody{background: #fff;}
+.cm-pagebody .pwdbody .pwd-wid{width:1100px;margin: 0 auto;}
+.cm-pagebody .pwdbody .pwd-wid .bg-title{font-size: 20px;color: #f60;}
+.cm-pagebody .pwdbody .pwd-wid .sma-title{font-size:12px;color: #999;}
+.cm-pagebody .pwdbody .pwd-wid .findpwd{width: 1000px;margin: 0 auto;}
+
+/*找回密码步骤*/
+.cm-pagebody .pwdbody .pwd-wid .pwd-step{margin: 0 auto;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step {text-align:center; margin-left:200px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step1{margin-left:120px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step2{margin-left:300px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-no { background:url(../../img/web/findpwd/step1.png) no-repeat 50% -102px; font-size: 14px; height: 34px; color: #fff; line-height: 34px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-now { background: url(../../img/web/findpwd/step1.png) no-repeat 50% -170px; font-size: 14px; height: 34px; color: #fff; line-height: 34px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-no-last { background: url(../../img/web/findpwd/step1.png) no-repeat 50% -346px; font-size: 14px; height: 34px; color: #fff; line-height: 34px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step ol{ overflow: hidden; zoom: 1;  width: 840px; margin-left: -30px; list-style: none; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step ol li{ float: left; text-align: center;width: 210px; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-name { color: #666; padding-bottom:4px;font-size: 14px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-last .step-no { background-position: 50% -136px; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-first .step-done .step-no { background-position: 50% -204px; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .step .step-time { color: #999;  padding:8px 0;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form{margin-left:200px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row .control .input{ border:1px solid #ccc; width:305px; height:35px; line-height:35px; vertical-align:middle;padding:0 5px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row .control .input1{width:190px;margin-right:5px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row .control .input2{width:100px;}
+
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row  .p_strength{ font-size:12px; line-height:19px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row  .p_strength a { width: 102px; display: block; background: #afe4fa; display: inline-block; text-align: center; color: #fff; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row  .p_strength a.on { background: #07acf0; cursor: default; }
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row  .p_strength a.rule { border-left: 1px solid #fff; border-right: 1px solid #fff; cursor: default; }
+
+/*人工服务*/
+.findpwd .services{}
+.findpwd .services .title1{ font-size:16px; line-height:30px;}
+.findpwd .services .input{ border:1px solid #ccc; width:900px; height:20px; line-height:20px; vertical-align:middle; margin:10px 0 0 10px; padding:5px; font-size:14px;}
+.findpwd .services .control{margin:10px 0 0 10px;}
+.findpwd .services .textarea{ border:1px solid #ccc; width:900px; height:80px; vertical-align:middle; margin:10px 0 0 10px; padding:5px; font-size:14px;}
+
+.findpwd .services .but{display: block; width: 100px;height: 35px;background:#06acef;border-radius: 5px; text-align: center;line-height: 35px;}
+.findpwd .services .but a{color: #fff;font-size: 14px;}
+
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .rows .finish{margin-left:120px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .rows .finish img{}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .rows .finish .title{font-size: 40px;color: #f60;font-weight:500;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .rows .finish .success{font-size: 16px;color: #333;}
+
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row .but{display: block; width: 100px;height: 35px;background:#06acef;border-radius: 5px; text-align: center;line-height: 35px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .form .row .but a{color: #fff;font-size: 14px;}
+
+/*网银盾--提示页面*/
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .prompt{width:500px;margin:0 auto;color: #333;font-size: 16px;}
+.cm-pagebody .pwdbody .pwd-wid .pwd-step .prompt .title{font-size: 40px;color: #f60;font-weight:500;}
+
+
+
+/*用户注册公共样式*/
+.height{ height: 10px;}
+.height20{ height: 20px;}
+.height30{ height: 40px;}
+.height40{ height: 40px;}
+.cm-pagebody{ background: #fff;}
+.cm-pagebody .cm-content{ width: 1100px; margin: 0 auto;}
+.cm-pagebody .cm-content .titles{}
+.cm-pagebody .cm-content .titles .title{color: #ff6926; font-size:20px;}
+.cm-pagebody .cm-content .titles .rule{ border-bottom: 1px solid #ccc; padding-bottom:15px; margin-bottom:10px;}
+.cm-pagebody .cm-content .titles .tips{ color: #999; font-size: 14px;}
+
+/*注册页面*/
+.cm-pagebody .cm-content .contents{}
+.cm-pagebody .cm-content .contents .f_content{ width: 650px;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow{}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox{ color: #666;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox .ftitle{ width:150px; text-align: right;font-size: 14px;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox .control{ margin-right:10px;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox .control .finput{height: 30px; border: 1px solid #ccc;padding-left: 5px;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox .comment{ font-size: 12px; color: #999;}
+.cm-content .contents .f_content .InfoNameRow .textbox .comments{ font-size: 14px;}
+.cm-pagebody .cm-content .contents .f_content .InfoNameRow .textbox .comment a{ font-size: 18px; background: #07acf0; width: 150px;height: 35px; display: block; line-height: 35px; text-align: center; color: #fff;}
+.cm-pagebody .cm-content .contents .r_contents{width: 448px;}
+.cm-pagebody .cm-content .contents .r_contents .r_content{border: 1px solid #ccc; width: 360px;}
+.cm-pagebody .cm-content .contents .r_contents .r_content .help{ width: 320px; margin: 0 auto;}
+.cm-pagebody .cm-content .contents .r_contents .r_content .help .help_icon{ font-size: 18px; color: #666;text-align: center; line-height: 30px;border-bottom: 1px solid #ccc; padding-bottom:8px;}
+.cm-pagebody .cm-content .contents .r_contents .r_content .help .help_icon img{ vertical-align: middle;}
+.cm-pagebody .cm-content .contents .r_contents .r_content .help .help_conter{ line-height: 30px; font-size: 12px;}
+.cm-pagebody .cm-content .contents .r_contents .r_content .help .help_conter .pic img{ vertical-align: middle; margin-right:10px;}
+
+/*用户注册协议页面*/
+.cm-pagebody .cm-content .accepts{ width: 1080px; margin: 0 auto;}
+.cm-pagebody .cm-content .accepts .accept{ color: #666;}
+.cm-pagebody .cm-content .accepts .accept .accept_title{ font-size: 15px; font-weight: 800;}
+.cm-pagebody .cm-content .accepts .accept .accept_content{font-size: 14px; line-height:25px;}
+
+/*用户注册成功页面*/
+.cm-pagebody .cm-content .success{width: 1080px; margin: 0 auto;}
+.cm-pagebody .cm-content .success .success_contents{ width: 850px; margin: 0 auto;}
+.cm-pagebody .cm-content .success .success_contents .pic{ margin: 0 auto; width: 450px;}
+.cm-pagebody .cm-content .success .success_contents .success_content{}
+.cm-pagebody .cm-content .success .success_contents .success_content .note{font-size: 14px; color: #666;}
+.cm-pagebody .cm-content .success .success_contents .success_content .note .contents{}
+.cm-pagebody .cm-content .success .success_contents .success_content .contents .title{ font-size: 18px;color: #666;background: url(../../img/web/register/arrow-right.png) no-repeat left center; height: 20px; line-height: 20px; padding-left: 30px;}
+.cm-pagebody .cm-content .success .success_contents .success_content .contents .content{ padding: 0 30px;color: #666; font-size: 14px; line-height: 25px;}
+.cm-pagebody .cm-content .success .success_contents .success_content .contents .content a{width: 160px; height: 35px; display: block; background: #fc6b02; color: #fff; line-height: 35px; text-align: center; font-size: 16px;}
+
+
+
+/*用户注册帮助*/
+.cm-pagebody .cm-content .helps{width: 1080px; margin: 0 auto;}
+.cm-pagebody .cm-content .helps .help{ width: 1040px; margin: 0 auto; color: #666;}
+.cm-pagebody .cm-content .helps .help .help_title{ font-size: 18px; font-weight: 800; }
+.cm-pagebody .cm-content .helps .help .help_ftitle{font-size: 16px; font-weight: 800;}
+.cm-pagebody .cm-content .helps .help .help_content{font-size: 14px; line-height:25px;}
+
+
+
+
+
+
+

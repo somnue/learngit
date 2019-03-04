@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<#include "../common/layer/head.htm">
+<#include "../common/layer/headfilend.htm">
+${TreeScript}
+<link rel='stylesheet' href="${RootPath}static/js/common/ztree/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/js/common/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${RootPath}static/js/common/jquery.page.js"></script>
+<script type="text/javascript">	
+	function selectOrg(orgtype,orgcode,orgname){
+		//d.filename,d.filepath,d.oldfilename
+		RootElement.selectorgCallBack(orgtype,orgcode,orgname);
+		RootElement.JsCore.FrameLayerClose('selectOrg');
+	}
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+.cm-pagebody .rightbody{width:880px;}
+.cm-pagebody .splitpage{width:600px;}
+</style>
+</head>
+<body >
+<div class="cm-sitemap">
+	<div class="fl search">
+		<form action="${RootPath}system/selectorg.html" method="post">
+		<!-- <#if orgtype=='3'>
+			<span>应用范围：
+			<select id="area" name="area">
+				<option value="">全部</option>
+				<option value="istel" <#if area == 'istel'>selected = "selected"</#if>>市长热线</option>
+				<option value="isemail" <#if area == 'isemail'>selected = "selected"</#if>>市长信箱</option>
+				<option value="islink" <#if area == 'islink'>selected = "selected"</#if>>连线政府</option>
+				<option value="ismsg" <#if area == 'ismsg'>selected = "selected"</#if>>人民网留言</option>
+			</select>
+		</span>
+		&nbsp;&nbsp;
+		</#if> -->
+		<span>部门名称：<input id="searchkey" type="text" name="key" class="sinput" value="${key}" /></span>
+		<span><input type="submit" class="sbtn" value="搜索" /></span>
+		<input type="hidden" name="orgtype" value="${orgtype}" />
+		</form>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<div class="cm-pagebody">
+	<div class="rightbody">
+		<div class="tabpage2">
+			<#if (orgtype='0')>
+			<div class="fl ctab">
+			<#else>
+			<div class="fl tab">
+			</#if>
+				<div class="fl left"></div>
+				<div class="fl center"><div class="text"><a href="${RootPath}system/selectorg.html?orgtype=0">市民之家</a></div></div>
+				<div class="fl right"></div>
+				<div class="clear"></div>
+			</div>
+			<div class="fl tabsplit">&nbsp;</div>
+			<#if (orgtype='1')>
+			<div class="fl ctab">
+			<#else>
+			<div class="fl tab">
+			</#if>
+				<div class="fl left"></div>
+				<div class="fl center"><div class="text"><a href="${RootPath}system/selectorg.html?orgtype=1">局委机构</a></div></div>
+				<div class="fl right"></div>
+				<div class="clear"></div>
+			</div>
+			<div class="fl tabsplit">&nbsp;</div>
+			<#if (orgtype='2')>
+			<div class="fl ctab">
+			<#else>
+			<div class="fl tab">
+			</#if>
+				<div class="fl left"></div>
+				<div class="fl center"><div class="text"><a href="${RootPath}system/selectorg.html?orgtype=2">银行部门</a></div></div>
+				<div class="fl right"></div>
+				<div class="clear"></div>
+			</div>
+			<div class="fl tabsplit">&nbsp;</div>
+			<#if (orgtype='3')>
+			<div class="fl ctab">
+			<#else>
+			<div class="fl tab">
+			</#if>
+				<div class="fl left"></div>
+				<div class="fl center"><div class="text"><a href="${RootPath}system/selectorg.html?orgtype=3">政民互动</a></div></div>
+				<div class="fl right"></div>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="hsplit">&nbsp;</div>
+		<div class="bothdiv">
+			<div class="fl" style="width:240px;">
+				<div class="bodydiv2">
+					<div class="padding">
+						<div class="dtree" style="height:580px;overflow-y:auto;">
+							<ul id="treeDemo" class="ztree" style=""></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="fl" style="width:20px;">&nbsp;</div>
+			<div class="fl">
+				<table class="listtable" align="center" cellpadding="0" cellspacing="1" border="0"  style="width:600px">
+				<tr class="header">
+					<td width="30" class="center">No</td>
+					<td class="center">部门名称</td>
+					<td width="40" class="center" >选择</td>
+				</tr>
+				<!-- loop begin -->
+				<#list pageList as org>
+				<tr class="trow">
+					<td class="center tno">${org_index + 1 +pageinfo.pageSize*(pageinfo.pageNum-1)}</td>
+					<td class="left ttitle">${org.orgname}</td>
+					<td class="center tlink"><a href="javascript:selectOrg('${org.orgtype}','${org.orgcode}','${org.orgname}');" title="点击进行选择">选择</a></td>
+				</tr>
+				</#list>
+				<!-- loop end -->
+				</table>
+				${PageHtml}
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+
+	<form id="eform" action="" method="post" target="HiddenFrame">
+		<input type="hidden" id="subflag" name="subflag" value="${subflag}"/>
+		<input type="hidden" id="orgtype" name="orgtype" value="${orgtype}" />
+		<input type="hidden" id="orgcode" name="orgcode"/>
+		<input type="hidden" id="isdel" name="isdel" />
+		<input type="hidden" id="tag" name="tag" />
+		<input type="hidden" name="parentcode" value="${orgcode}"/>
+		<input type="hidden" name="pageNum" value="${pageNum}"/>
+		<input type="hidden" name="pageSize" value="${pageSize}"/>
+		<input type="hidden" name="key" value="${key}"/>
+	</form>
+</div>
+</div>
+</div>
+</body>
+</html>

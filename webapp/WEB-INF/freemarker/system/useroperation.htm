@@ -1,0 +1,264 @@
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<link rel='stylesheet' href="${RootPath}static/js/common/ztree/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/js/common/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${RootPath}static/js/common/jquery.page.js"></script>
+<script type="text/javascript">
+	function selectOrg(){
+		var layer = RootElement.JsCore.FrameLayer('selectOrg');
+		layer.TipMode = false;
+		layer.ShowClose = true;  // 是否显示关闭按钮
+		//layer.LayerUrl = '${RootPath}formflow/user.html?layerid=selectUser&flowCode='+flowCode+'&nodeCode='+nodeCode; // 弹出层URL
+		layer.LayerUrl = '${RootPath}system/selectorg.html?orgtype=${sysUser1.orgtype}&orgcode=${sysUser1.orgcode?if_exists}'; // 弹出层URL
+		layer.Scrolling = 'auto'; // 滚动条
+		layer.Width = 900; // 弹出层宽度
+		layer.Height = 500; // 弹出层高度
+		layer.open();
+		layer = null;
+	}
+	function selectorgCallBack(orgtype,orgcode,orgname){
+		$("#orgtype").val(orgtype);
+		$("#orgcode").val(orgcode);
+		$("#orgname").val(orgname);
+	}
+	
+	function subForm(){
+		var isOk=JsCore.Valitor.ChkForm('subform', 1);
+		if(isOk){
+			$.ajax({
+				url : '${RootPath}system/saveUserOperation.html',
+				type : "post",
+				data : $("#subform").serialize(),
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag ="-1";
+						layer.TipTitle ='';
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){};
+						layer.open();
+						layer = null;
+					}else if(d.code=="1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag = d.code;
+						layer.TipTitle = d.title;
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){RootElement.location.href=d.url};
+						layer.open();
+						layer = null;
+					}
+				},
+				error: function(d) {
+					RootElement.errorMessage(d);
+				}
+			});
+		  }
+	}
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+	</style>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-fullpage">
+<div class="cm-center">
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${MainSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span><a href="${SysSite}admin.html">系统管理平台</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span><a href="${SysSite}system/user.html">操作员管理</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>添加操作员</span>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">系统管理平台</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="fr rightbody">
+		<div class="titlediv"><div class="tname">操作员管理</div></div>
+		<div class="bodydiv">
+			<div class="padding">
+				<div class="bigtitle">添加操作员：</div>
+				<div class="dotline1"></div>
+				<form id="subform" class="pageform" action="${RootPath}system/saveUserOperation.html" method="post" target="HiddenFrame">
+				<input type="hidden" name="subflag" value="${subflag}"/>
+				<input type="hidden" name="userid" value="${sysUser1.userid?if_exists}"/>
+				<input type="hidden" id="orgcode" name="orgcode" value="${sysUser1.orgcode?if_exists}"/>
+				<input type="hidden" id="orgtype" name="orgtype" value="${sysUser1.orgtype}"/>
+				<input type="hidden" name="isDel" value="${sysUser1.isDel}"/>
+				<input type="hidden" name="isDrop" value="${sysUser1.isDrop}"/>
+				<input type="hidden" name="flag" value="${(flag)!}"/>
+				
+				<#if !isAdd>
+				<div id="UserNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">所属部门：</div>
+						<div class="fl control">
+							<input type="text" id="orgname" name="orgname" title="所属部门" class="finput" required="true"  datatitle="所属部门" msg="提示：请选择所属部门" style="width:200px;text-align:left;" maxlength="128" value="${orgname?if_exists}" readonly=readonly/>
+							<a href="javascript:selectOrg();">选择</a>
+						</div>
+						<div class="fl isempty">[<span>*</span>]</div>
+						<div class="fl comment">请选择所属部门</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				</#if>
+				<div id="UserNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">登录账号：</div>
+						<div class="fl control">
+							<input type="text" id="username" name="username" title="登录账号" class="finput" required="true" datatype="Char,Chinese" datatitle="登录账号" msg="提示：登录账号只允许填写请填写中文、英文、数字或下划线的组合
+						" style="width:200px;text-align:left;" maxlength="128" value="${sysUser1.username?if_exists}" <#if sysUser1.userid??>readonly=readonly</#if>/>
+						</div>
+						<div class="fl isempty">[<span>*</span>]</div>
+						<div class="fl comment">请填写中文、英文、数字或下划线的组合</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="TrueNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">真实姓名：</div>
+						<div class="fl control">
+							<input type="text" id="trueName" name="truename" title="真实姓名" required="true" datatype="Chinese" datatitle="真实姓名" msg="提示：真实姓名只允许输入汉字" class="finput" style="width:100px;text-align:left;" maxlength="64" value="${sysUser1.truename?if_exists}"/>
+						</div>
+						<div class="fl isempty">[<span>*</span>]</div>
+						<div class="fl comment">操作员的真实姓名</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="TrueNameRow">
+					<div class="textbox">
+						<div class="fl ftitle">主管领导：</div>
+						<div class="fl control">
+							<input type="text" id="leader" name="leader" title="主管领导" datatype="Chinese" datatitle="主管领导" msg="提示：主管领导只允许输入汉字" class="finput" style="width:100px;text-align:left;" maxlength="64" value="${sysUser1.leader?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<#if (isAdd)>
+					<div id="UserPasswordRow">
+						<div class="textbox">
+							<div class="fl ftitle">登录密码：</div>
+							<div class="fl control">
+								<input type="password" id="userpassword" name="userpassword" title="登录密码" required="true" datatype="" datatitle="登录密码" class="finput" style="width:180px;text-align:left;" maxlength="32" value="${sysUser1.userpassword?if_exists}"/>
+							</div>
+							<div class="fl isempty">[<span>*</span>]</div>
+							<div class="fl comment">密码长度为6-16个字符</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div id="SecPasswordRow">
+						<div class="textbox">
+							<div class="fl ftitle">重复密码：</div>
+							<div class="fl control">
+								<input type="password" id="secpassword" name="secpassword" title="重复密码" required="true" datatype="Repeat" msg="提示：两次输入的密码不一致" to="userpassword" datatitle="重复密码" class="finput" style="width:180px;text-align:left;" maxlength="32" value="${secpassword?if_exists}"/>
+							</div>
+							<div class="fl isempty">[<span>*</span>]</div>
+							<div class="fl comment">再次输入登录密码</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+				</#if>
+				<div id="TelRow">
+					<div class="textbox">
+						<div class="fl ftitle">联系电话：</div>
+						<div class="fl control">
+							<input type="text" id="tel" name="tel" title="联系电话" datatype="Phone" datatitle="联系电话" msg="提示：请填写正确格式的电话号码" class="finput" style="width:250px;text-align:left;" maxlength="32" value="${sysUser1.tel?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="FaxRow">
+					<div class="textbox">
+						<div class="fl ftitle">传真号码：</div>
+						<div class="fl control">
+							<input type="text" id="fax" name="fax" title="传真号码" datatype="Phone" datatitle="传真号码" msg="提示：请填写正确格式的传真号码" class="finput" style="width:250px;text-align:left;" maxlength="32" value="${sysUser1.fax?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="AddressRow">
+					<div class="textbox">
+						<div class="fl ftitle">联系地址：</div>
+						<div class="fl control">
+							<input type="text" id="address" name="address" title="联系地址"  datatitle="联系地址" class="finput" style="width:500px;text-align:left;" maxlength="256" value="${sysUser1.address?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="ZipRow">
+					<div class="textbox">
+						<div class="fl ftitle">邮政编码：</div>
+						<div class="fl control">
+							<input type="text" id="zip" name="zip" title="邮政编码" datatitle="邮政编码" datatype="Zip" class="finput" style="width:100px;text-align:left;" maxlength="6" value="${sysUser1.zip?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="MobileRow">
+					<div class="textbox">
+						<div class="fl ftitle">手机号码：</div>
+						<div class="fl control">
+							<input type="text" id="mobile" name="mobile" title="手机号码" datatitle="手机号码" datatype="Mobile" msg="提示：请填写正确格式的手机号码" class="finput" style="width:200px;text-align:left;" maxlength="32" value="${sysUser1.mobile?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="QQRow">
+					<div class="textbox">
+						<div class="fl ftitle">ＱＱ号码：</div>
+						<div class="fl control">
+							<input type="text" id="qq" name="qq" title="QQ号码" class="finput" datatitle="QQ号码" datatype="Numeral" msg="提示：QQ号码为纯数字" style="width:200px;text-align:left;" maxlength="32" value="${sysUser1.qq?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="EmailRow">
+					<div class="textbox">
+						<div class="fl ftitle">电子邮箱：</div>
+						<div class="fl control">
+							<input type="text" id="email" name="email" title="电子邮箱" datatitle="电子邮箱" datatype="Email" class="finput" style="width:350px;text-align:left;" maxlength="64" value="${sysUser1.email?if_exists}"/>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+
+				<div class="buttons">
+					<input type="button" onclick="javascript:subForm();" class="formbtn" value="确定" />
+				</div>
+				<span id="error" style="color:#f00;"></span>
+				<div class="msgrow">
+					<div id="Comment_Msg" class="redcomment"></div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>
+

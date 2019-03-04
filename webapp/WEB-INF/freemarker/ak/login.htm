@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cn" class="loginWeb">
+<head>
+    <meta charset="utf-8"/><title>天津市公安局案款管理系统</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+	<link href="/favicon.ico" rel="shortcut icon"/>
+	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css"/>	
+	<link rel="stylesheet" type="text/css" href="/static/css/ankuan.css"/>
+	<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${RootPath}static/gzf/js/md5.js"></script>
+    <script src="/static/js/login.js"></script>
+</head>
+<body>
+<div class="">
+    <div class="loginBox">
+        <div class="loginH">
+            <img src="/static/images/logo.png" class="logo">
+            <h2>天津市公安局案款管理系统</h2>
+        </div>
+        <div class="loginItems">
+            <div class="loginContent">
+                <form id="loginForm" action="login.html">
+                    <div class="form-group">
+                        <label for="account">操作员编号:</label>
+                        <input type="text" class="form-control col5" id="account" name="account">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">操作员密码:</label>
+                        <input type="password" class="form-control col5" id="password" name="password" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <p class="loginTips" id="loginTips"></p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary loginBtn btn-lg" id="loginBtn">登陆</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

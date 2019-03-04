@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.min.css"/>
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/jquery.datetimepicker.full.min.js"></script>
+    <script src="/static/js/closed_summarizing.js"></script>
+    <style>
+    	.xdsoft_calendar,.xdsoft_today_button{
+    		display:none!important;
+    	}
+    </style>	
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>已结清汇总信息</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="startDate">年月:</label>
+                        <div class = "date_clearPa">
+                        	<input readonly class="form-control" type="text" id="startDate" autocomplete="off">
+            				<i class="glyphicon glyphicon-remove date_clearBtn"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+            </div>
+            <div class="infTable noButtons">
+                <table id="printContent" class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>所属机构</th>
+                        <th>所属部门</th>
+                        <th class="all_moneyTR">账户数量</th>
+                        <th class="all_moneyTR">本金合计</th>
+                        <th class="all_moneyTR">利息合计</th>
+                        <th class="all_moneyTR">本息合计</th>
+                        <th class="all_moneyTR">预估利息</th>
+                        <th class="all_moneyTR">支取利息</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                    <!-- <tfoot id="tableFoot">
+                    <tr>
+                        <td colspan="2" style="text-align: center">合计</td>
+                        <td id="accountNumTotal">账户数量合计</td>
+                        <td class="all_moneyTR" id="principalTotal">本金合计</td>
+                        <td class="all_moneyTR" id="interestTotal">利息合计</td>
+                        <td class="all_moneyTR" id="priAndIntTotal">本息合计</td>
+                        <td class="all_moneyTR" id="wIntAmt">预估利息</td>
+                    </tr>
+                    </tfoot> -->
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide noteOfProblem_pages" id="pages_pageHide">
+            	<#include "./common/pages.html">
+                <button id="print" class="btn btn-primary">打印</button>
+                <a id="downloadBtn" target=_blank class="btn btn-info" href="#">下载</a>
+            </div>
+        </div>
+    </div>
+</div>
+<#include "./common/footer.htm">
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td>{{value.blngIns}}</td>
+        <td>{{value.caseDept}}</td>
+        <td class="all_moneyTR">{{value.accNum}}</td>
+        <td class="all_moneyTR">{{value.invlvAmtTot}}</td>
+        <td class="all_moneyTR">{{value.intAmtTot}}</td>
+        <td class="all_moneyTR">{{value.allTot}}</td>
+        <td class="all_moneyTR">{{value.wIntAmt}}</td>
+        <td class="all_moneyTR">{{value.wIntCpt}}</td>
+    </tr>
+    {{/each}}
+	{{if pageNum == gMaxPage}}
+    <tr>
+        <td colspan="2" style="text-align: center">合计</td>
+        <td class="all_moneyTR" id="accountNumTotal">{{sum.accNum}}</td>
+        <td class="all_moneyTR" id="principalTotal">{{sum.invlvAmtTot}}</td>
+        <td class="all_moneyTR" id="interestTotal">{{sum.intAmtTot}}</td>
+        <td class="all_moneyTR" id="priAndIntTotal">{{sum.priAndIntTotal}}</td>
+        <td class="all_moneyTR" id="wIntAmt">{{sum.wIntAmt}}</td>
+    </tr>
+	{{/if}}
+</script>
+</body>
+</html>

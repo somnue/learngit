@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<!-- <link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/laypage.css"/> -->
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script> 
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+	<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 清算查询 >> 清算明细查询</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>清算明细详情</td>
+  </tr>
+</table>
+<table class="table_submit">
+  <tr>
+    <th>清算批次编号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="clrgBtnoId" /></td>
+    <th>商户号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="mrchNo"/></td>
+  </tr>
+  <tr>
+    <th>支付订单号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="ordrNo"/></td>
+    <th>支付子订单号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="pySubOrdrNo"/></td>
+  </tr>
+  <tr>
+    <th>商户流水号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="mrchJrnlNo"/></td>
+       <th>订单类型</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="ordrTpcd"/></td>
+  </tr>
+    <tr>
+	<th> 付款账号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="pymAccno" /></td>
+    <th> 收款账号</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="rcvpymtAccno" /></td>
+  </tr>
+  <tr>
+	 <th> 支付渠道代码</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="pyChnlCd" /></td>
+    <th> 支付方式代码</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="pymdCd" /></td>
+  </tr>
+  <tr>
+     <th> 费项项目名称</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="feeItmPrjNm" /></td>
+    <th> 费项代码</th>
+    <td><input name="" type="text" size="38" class="gray_text" readonly="readonly" id="feeItmCd" /></td>
+  </tr>
+  <tr>
+    <th>币种</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="ccy"/></td>
+    <th>手续费金额</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="hdcgAmt"/></td>
+  </tr>
+  <tr>
+    <th>费项项目序号</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="feeItmPrjSn"/></td>
+    <th>费项项目名称</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="feeItmPrjNm"/></td>
+  </tr>
+  <tr>
+    <th>收款单位代码</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="rvpyuntCd" /></td>
+    <th>收款单位名称</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="rvpyuntNm"/></td>
+  </tr>
+  <tr>
+    <th>费项项目金额</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="feeItmPrjAmt"/></td>
+    <th>清算状态</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" value="" id="J_clrgStcd"/></td>
+  </tr>
+  <tr>
+    <th>交易时间</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="stmDt" /></td>
+    <th>清算日期</th>
+    <td><input type="text" size="38" class="gray_text" readonly="readonly" id="clrgDt" /></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="返回" class="button3" onclick="callback()" />
+    </td>
+  </tr>
+</table>
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+
+<script type="text/javascript">
+function getParam(){      // 获取 hash值
+	if(typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if(str){
+		str = str.slice(1);
+		
+	}else if(!str){
+		return '';
+	}else{
+		str = decodeURIComponent(str);
+	}
+	
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+ 	arr1 = str.split("&");
+	if(arr1.length){
+		for (var i = 0; i < arr1.length; i ++){
+			arr2 = arr1[i].split("=")
+			if(arr2.length == 2){
+				result[arr2[0]] = arr2[1]
+			}
+			
+		}
+	}
+	return result;	
+};
+function callback(){
+	var urlData = getParam();
+	window.location.href = "/manage/expdClrgDet/index.html?global_data=" + urlData.global_data
+};
+jQuery(function(){
+	var sn=${sn};
+	jQuery.ajax({
+			url :"/manage/expdClrgDet/expdClrgDetModify",
+			type : "post",
+			data :{"sn":sn},
+			dataType : 'json',
+	         success : function(data) {
+	         var items=data.oboList;
+	         jQuery("#clrgBtnoId").val(items.clrgBtnoId);
+	         jQuery("#mrchNo").val(items.mrchNo);
+	         jQuery("#ordrNo").val(items.ordrNo);
+	         jQuery("#mrchJrnlNo").val(items.mrchJrnlNo);
+	         jQuery("#ordrTpcd").val(statDD(items.ordrTpcd));
+	         jQuery("#feeItmCd").val(items.feeItmCd);
+	         jQuery("#ccy").val(statEE(items.ccy));
+	         jQuery("#hdcgAmt").val(items.hdcgAmt);
+	         jQuery("#feeItmPrjSn").val(items.feeItmPrjSn);
+	         jQuery("#feeItmPrjNm").val(items.feeItmPrjNm);
+	         jQuery("#rvpyuntCd").val(items.rvpyuntCd);
+	         jQuery("#rvpyuntNm").val(items.rvpyuntNm);
+	         jQuery("#feeItmPrjAmt").val(items.feeItmPrjAmt);
+	         jQuery("#J_clrgStcd").val(statCh(items.clrgStcd));
+	         jQuery("#stmDt").val(items.stmDt);
+	 		 jQuery("#pySubOrdrNo").val(items.pySubOrdrNo);
+	 		 jQuery("#pymAccno").val(items.pymAccno);
+	 		 jQuery("#rcvpymtAccno").val(items.rcvpymtAccno);
+	 		 jQuery("#pyChnlCd").val(statCC(items.pyChnlCd));
+	 		 jQuery("#pymdCd").val(statFF(items.pymdCd));
+	 		 jQuery("#feeItmPrjNm").val(items.feeItmPrjNm);
+	 		 jQuery("#clrgDt").val(items.clrgDt);
+	         },
+	         error : function(q) {
+	            
+	         }
+	     }); 
+})
+
+function statCh(value){
+ 		var stat='';
+        if(value=='0'){
+         stat='初始';
+         
+        }else if(value=='1'){
+           stat='未清算';
+        }else if(value=='2'){
+           stat='已清算';
+          
+        }else if(value=='3'){
+           stat='无需清算';
+        }else if(value=='4'){
+           stat='清算异常';
+        }else if(value=='5'){
+           stat='清算已发送';
+        }else if(value=='6'){
+           stat='清算中';
+        }else{
+           stat='';
+        }
+        return stat;
+    } 
+    
+    
+    
+function statDD(value){
+ 		var stat='';
+        if(value=='1'){
+         stat='支付';
+         
+        }else if(value=='2'){
+           stat='退款';
+        }else{
+           stat='';
+        }
+        return stat;
+    } 
+    
+function statCC(value){
+ 		var stat='';
+     	 if(value=='1'){
+           stat='网站';
+        }else if(value=='2'){
+           stat='APP';
+        }else if(value=='3'){
+           stat='微信';
+        }else if(value=='4'){
+           stat='大厅收银台';
+        }else if(value=='5'){
+           stat='自助终端';
+        }else{
+           stat='';
+        }
+        return stat;
+    }   
+
+    
+    function statFF(value){
+ 		var stat='';
+     	 if(value=='1'){
+           stat='龙支付';
+        }else if(value=='2'){
+           stat='银联（网银）';
+        }else if(value=='3'){
+           stat='银联（快捷付）';
+        }else if(value=='4'){
+           stat='微信';
+        }else if(value=='5'){
+           stat='支付宝';
+        }else if(value=='6'){
+           stat='他行APP';
+        }else if(value=='7'){
+           stat='扫脸支付';
+        }else if(value=='8'){
+           stat='POS';
+        }else if(value=='9'){
+           stat='现金';
+        }else{
+           stat='';
+        }
+        return stat;
+    }   
+    
+    
+    function statEE(value){
+ 		var stat='';
+     	 if(value=='156'){
+           stat='人民币';
+        }else{
+           stat='';
+        }
+        return stat;
+    }      
+    
+//返回
+function returns(){
+	window.location.href = "/manage/expdClrgDet/index.html";
+}
+</script>
+</body>
+</html>

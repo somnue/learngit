@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/form.css"/>
+<!-- <link type="text/css" rel="stylesheet" href="${RootPath}static/gzf/css/laypage.css"/> -->
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/localdata.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/laypage/laypage.js"></script> 
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>系统管理平台</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">功能菜单</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+	<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 清算查询 >> 清算明细查询</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>清算明细查询</td>
+  </tr>
+</table>
+<form action="" method="post">
+<table class="table_search">
+  <tr>
+    <td>
+	<table>
+	<tr>  
+	<th>清算开始日期</th>
+    <td>
+      <input name=""  id="txnStDt" type="text"  onClick="WdatePicker();" class="date" />
+    </td>
+    <th>清算结束日期</th>
+    <td>
+    <input name=""  id="txnEdDt" type="text"  onClick="WdatePicker();" class="date" />
+       <th>订单类型</th>
+      <td>
+         <select name="ordrTpcd" id="ordrTpcd" class="select4">
+            <option value="">请选择</option>
+            <option value="1">支付</option>
+            <option value="2">退款</option>
+          </select>
+      </td>
+    </tr>
+      <tr>
+      <th>费项名称</th>
+      <td>
+         <input name="" id="feeItmPrjNm" type="text"  class="date_two"/>
+      </td>
+      <th>费项金额</th>
+      <td>
+         <input name="" id="feeItmPrjAmt" type="text" class="date_two"/>
+      </td>
+      <th>清算订单号</th>
+      <td>
+         <input name="" id="ordrNo" type="text"  class="data_two"/>
+      </td>
+        <td><input name="" type="button" value="查询" onclick="finddate()" class="search" /></td>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+</form>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>清算明细列表<span><a href="javascript:void(0)" class="blue" id="J_download">下载全部</a></span></td>
+  </tr>
+</table>
+<table class="table_list">
+    <tr>
+      <tr>
+      <th>清算批次编号</th>
+      <th>商户代码</th>
+      <th>订单号</th>
+      <th>商户流水号</th>
+      <th>费项项目名称</th>
+      <th>收款单位名称</th>
+      <th>手续费金额</th>
+      <th>费项项目金额</th>
+      <th>清算状态</th>
+      <th>清算日期</th>
+      <th>订单类型</th>
+      <th>操作</th>
+    </tr>
+    <tbody id="tbody">
+        </tbody>
+</table>
+<!-- 空数据展示 -->
+<div id="none-data"></div>
+<!-- 分页 -->
+<table class="page">
+  <tr>
+    <td>
+    	每页显示记录
+        <select name="select" class="text1" onchange="pageNumChange(this)">
+         
+          <option value="15" selected="selected">15</option>
+          <option value="30">30</option>
+           <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        &nbsp;&nbsp;共<span id="allNum"> -- </span>条
+    </td>
+    <td class="tr">
+    	<a href="javascript:void(0)" class="button8" onclick="firstPage()" id="firstPage">首页</a>
+        <a href="javascript:void(0)" class="button8" onclick="oncePage()" id="oncePage">上一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="afterPage()" id="afterPage">下一页</a>
+        <a href="javascript:void(0)" class="button8" onclick="endPage()" id="endPage">末页</a>  
+    	到第
+        <input name="" type="text" class="text1" size="2" id="pageCause"/> 页
+        &nbsp;&nbsp;当前第<span id="numPage">--</span>页&nbsp;&nbsp;共<span id="allPage">--</span>页&nbsp;&nbsp;
+        <input name="input3" type="submit" value="转到" class="button8" onclick="pageUpdate()"/>
+    </td>
+  </tr>
+</table>
+<input type="hidden" id="J_input_txnStDt"/>		
+	</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+
+
+
+<script type="text/javascript">
+
+jQuery('#J_download').click(function(){
+	  if(jQuery('#txnStDt').val()=="" || jQuery('#txnEdDt').val()==""){
+         alert("请输入查询日期");
+      }else{
+         download();
+      }
+})
+
+//下载
+function download(){
+	  var J_ordrTpcd= jQuery('#ordrTpcd').val();
+	  console.log(J_ordrTpcd);
+	  var J_txnStDt=jQuery('#J_input_txnStDt').val().replace(/-/g,"");
+	  var J_ordrNo=jQuery("#ordrNo").val();
+	  var J_txnStDt=jQuery("#txnStDt").val();
+	  var J_txnEdDt=jQuery("#txnEdDt").val();
+	  var J_feeItmPrjNm=jQuery("#feeItmPrjNm").val();
+	  var J_feeItmPrjAmt=jQuery("#feeItmPrjAmt").val();
+	  var params="ordrNo="+J_ordrNo+"&txnStDt="+J_txnStDt+"&txnEdDt="+J_txnEdDt+"&feeItmPrjNm="+J_feeItmPrjNm+"&feeItmPrjAmt="+J_feeItmPrjAmt+"&ordrTpcd="+J_ordrTpcd;
+	  window.location.href="${RootPath}manage/expdclrgdet/download?"+params;
+}
+
+$(document).ready(function(){
+	var urlData = getParam();
+	if(urlData){
+		
+		pageNum = JSON.parse(decodeURIComponent(urlData.global_data)).strtLoDataval;
+		EACH_PA_NUM = JSON.parse(decodeURIComponent(urlData.global_data)).eachPaNum;
+		//$("#numPage")[0].innerHTML = JSON.parse(decodeURIComponent(urlData.global_data)).strtLoDataval;
+		$(".page select")[0].value = JSON.parse(decodeURIComponent(urlData.global_data)).eachPaNum;
+		if(JSON.parse(decodeURIComponent(urlData.global_data)).txnStDt || JSON.parse(decodeURIComponent(urlData.global_data)).feeItmPrjNm
+				|| JSON.parse(decodeURIComponent(urlData.global_data)).feeItmPrjAmt 
+				|| JSON.parse(decodeURIComponent(urlData.global_data)).ordrNo || JSON.parse(decodeURIComponent(urlData.global_data)).txnEdDt ){
+			var txnStDt = JSON.parse(decodeURIComponent(urlData.global_data)).txnStDt;
+			var feeItmPrjNm = JSON.parse(decodeURIComponent(urlData.global_data)).feeItmPrjNm;
+			var ordrNo = JSON.parse(decodeURIComponent(urlData.global_data)).ordrNo;
+			var feeItmPrjAmt = JSON.parse(decodeURIComponent(urlData.global_data)).feeItmPrjAmt;
+			var txnEdDt = JSON.parse(decodeURIComponent(urlData.global_data)).txnEdDt;
+			$("#txnStDt").val(txnStDt)
+			$("#txnEdDt").val(txnEdDt)
+			$("#ordrNo").val(ordrNo)
+			$("#feeItmPrjNm").val(feeItmPrjNm)
+			$("#feeItmPrjAmt").val(feeItmPrjAmt)
+			find(pageNum,EACH_PA_NUM);
+		}
+	}else{
+		pageDate(1,15);	
+	}
+	
+});
+function getParam(){      // 获取 hash值
+	if(typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if(str){
+		str = str.slice(1);
+		
+	}else if(!str){
+		return '';
+	}else{
+		str = decodeURIComponent(str);
+	}
+	
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+ 	arr1 = str.split("&");
+	if(arr1.length){
+		for (var i = 0; i < arr1.length; i ++){
+			arr2 = arr1[i].split("=")
+			if(arr2.length == 2){
+				result[arr2[0]] = arr2[1]
+			}
+			
+		}
+	}
+	return result;	
+};
+//全局数据列表
+var GLOBLE_LIST;
+//全局请求方式
+var TYPE;
+//获取分页数据
+function pageDate(curr,eachPaNum){
+	var data = {"strtLoDataval":curr,"eachPaNum":eachPaNum};
+	jQuery.ajax({
+		url :"/manage/expdClrgDetList/listPage",
+		type : "post",
+		data : data,
+		dataType : 'json',
+	        success : function(data) {
+	 		if(data.code== '0'){
+	 			TYPE = "pageDate";
+	 			GLOBLE_LIST = data.oboList;
+	 			RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 			pageChange(data);
+	 			pageStart(data.obo.rcrdTotNum,'all');	
+	 		}else{
+	 			
+	 		    }
+	        },
+	        error : function(q) {
+	            
+	        }
+	 }); 
+};
+
+	// 分页数据返回修改
+	function pageChange (datas){
+	deleate_none_data();
+	jQuery("#tbody").empty();
+		var data=datas.oboList;
+		if(datas.date){
+		jQuery("#txnStDt,#txnEdDt").val(datas.date);
+		}
+		if(data.length>0){
+		for(var i=0;i<data.length;i++){
+					var tr='<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '">';
+					      tr+='<td>'+isNull(data[i].clrgBtnoId)+'</td>';
+					      tr+='<td>'+isNull(data[i].mrchNo)+'</td>';
+					      tr+='<td>'+isNull(data[i].ordrNo)+'</td>';
+					      tr+='<td>'+isNull(data[i].mrchJrnlNo)+'</td>';
+					      tr+='<td>'+isNull(data[i].feeItmPrjNm)+'</td>';
+					      tr+='<td>'+isNull(data[i].rvpyuntNm)+'</td>';
+					      tr+='<td>'+isNull(data[i].hdcgAmt)+'</td>';
+					      tr+='<td>'+isNull(data[i].feeItmPrjAmt)+'</td>';
+					      tr+='<td>'+statCh(isNull(data[i].clrgStcd))+'</td>';
+					      tr+='<td>'+isNull(data[i].clrgDt)+'</td>';
+					      tr+='<td>'+isTypee(isNull(data[i].ordrTpcd))+'</td>'; /*添加项订单类型*/
+			      		  tr+='<td><a href="javascript:;" class="blue" onclick="data('+data[i].sn+','+i+')">查看详情</a></td>';
+			              tr+='</tr>';
+			              jQuery("#tbody").append(tr);
+			          
+				}
+			}else{
+				var text = "未查询到符合条件的记录";
+				none_data(text);
+			}
+	}
+	
+//分页逻辑 
+	var pageNum = 1;
+	var RCRD_TOT_NUM;
+	var EACH_PA_NUM = 15; //每页显示条数
+	function pageStart (rcrdTotNum){
+	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+	//总条数
+	$("#allNum")[0].innerHTML = rcrdTotNum;
+	//总页数
+	$("#allPage")[0].innerHTML = Math.ceil(rcrdTotNum/eachPaNum);
+	//当前页数
+	$("#numPage")[0].innerHTML = pageNum;	
+	//首页按钮控制
+	if(pageNum == 1){
+		$("#firstPage")[0].setAttribute("onclick","return false;");
+		$("#firstPage")[0].style.cursor = 'default';
+	}else{
+		$("#firstPage")[0].setAttribute("onclick","firstPage()");
+		$("#firstPage")[0].style.cursor = 'pointer';
+	};
+		//上一页按钮控制
+		if(pageNum == 1){
+			$("#oncePage")[0].setAttribute("onclick","return false;");
+			$("#oncePage")[0].style.cursor = 'default';
+		}else{
+			$("#oncePage")[0].setAttribute("onclick","oncePage()");
+			$("#oncePage")[0].style.cursor = 'pointer';
+		};
+		//下一页按钮控制
+		if(pageNum == Math.ceil(rcrdTotNum/EACH_PA_NUM)){
+			$("#afterPage")[0].setAttribute("onclick","return false;");
+			$("#afterPage")[0].style.cursor = 'default';
+		}else{
+			$("#afterPage")[0].setAttribute("onclick","afterPage()");
+			$("#afterPage")[0].style.cursor = 'pointer';
+		};
+		//末页按钮状态控制
+		if(pageNum == Math.ceil(rcrdTotNum/EACH_PA_NUM)){
+			$("#endPage")[0].setAttribute("onclick","return false;");
+			$("#endPage")[0].style.cursor = 'default';
+		}else{
+			$("#endPage")[0].setAttribute("onclick","endPage()");
+			$("#endPage")[0].style.cursor = 'pointer';
+		};
+	};
+	//首页
+function firstPage(){	
+	var curr = 1;
+	pageNum = 1
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}
+	$("#pageCause")[0].value = "";
+};
+//上一页
+function oncePage(){
+		var curr = Number(pageNum) - 1;
+		//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;	
+		$(".page select")[0].value = EACH_PA_NUM
+		if(TYPE == "pageDate"){
+			pageDate(curr,EACH_PA_NUM);
+		}else if(TYPE == "find"){
+			find(curr,EACH_PA_NUM)
+		}else{
+			return false;
+		}
+		pageNum--;	
+		$("#pageCause")[0].value = "";
+};
+//下一页
+function afterPage(){
+	var curr = Number(pageNum) + 1;
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}	
+	pageNum++;	
+	$("#pageCause")[0].value = "";
+};
+//末页
+function endPage(){
+	//var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	$(".page select")[0].value = EACH_PA_NUM
+	var curr = Math.ceil(RCRD_TOT_NUM/EACH_PA_NUM);	
+	pageNum = curr;
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}		
+	$("#pageCause")[0].value = "";
+};
+//转到
+function pageUpdate(){
+	var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15;
+	var curr = $("#pageCause")[0].value ?$("#pageCause")[0].value : 1;
+	EACH_PA_NUM = eachPaNum;
+	if(curr>0 && curr <= Math.ceil(RCRD_TOT_NUM/eachPaNum)){
+		pageNum = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else if(Number(curr) <= 0){
+		curr = 1;
+		pageNum = curr;
+		$("#pageCause")[0].value = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else if(curr > Math.ceil(RCRD_TOT_NUM/eachPaNum)){
+		curr = Math.ceil(RCRD_TOT_NUM/eachPaNum);
+		pageNum = curr;
+		$("#pageCause")[0].value = curr;
+		if(TYPE == "pageDate"){
+			pageDate(curr,eachPaNum)
+		}else if(TYPE == "find"){
+			find(curr,eachPaNum)
+		}else{
+			alert('TYPE错误')
+			return false;
+		}
+	}else{
+		$("#pageCause")[0].value = "";
+		alert('请输入一个正确的页数')
+		return false;
+	}			
+};
+// 每页条数改变
+function pageNumChange(_this){
+	var curr = 1;
+	pageNum = 1
+	var eachPaNum = _this.value ? _this.value: 15;
+	EACH_PA_NUM = eachPaNum;	
+	if(TYPE == "pageDate"){
+		pageDate(curr,EACH_PA_NUM);
+	}else if(TYPE == "find"){
+		find(curr,EACH_PA_NUM)
+	}else{
+		return false;
+	}
+	$("#pageCause")[0].value = "";
+}
+	
+	
+	//空数据展示
+function none_data(text){	
+	var div = document.createElement("div");
+	if(document.getElementById("none-data").childNodes.length == 0){
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}else{
+		deleate_none_data();
+		div.setAttribute("style","width:95%;height:20px;text-align:center;line-height:20px;margin: 0 auto;border-bottom: 1px solid #A8C3D6");
+		div.innerHTML = text;
+		document.getElementById("none-data").appendChild(div);
+	}
+};
+// 消除非空数据提示
+function deleate_none_data(){
+	if(document.getElementById("none-data").childNodes.length != 0){
+		//var parent = document.getElementById("none-data");
+		//parent.removeChild(parent.childNodes[0]);
+		$("#none-data").empty();
+	}else{
+		return;
+	}	
+};
+
+function finddate(){
+	 var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+	$("#pageCause")[0].value = "";
+	pageNum = 1;
+	EACH_PA_NUM = eachPaNum;
+	//$(".page select")[0].value = EACH_PA_NUM;
+	find(1,eachPaNum);
+};
+
+//跳转查看详情
+function data (sn,detail){
+	var global_data = {"txnStDt":$("#txnStDt").val(),"txnEdDt":$("#txnEdDt").val(),"ordrNo":$("#ordrNo").val(),
+			"feeItmPrjNm":$("#feeItmPrjNm").val(),"feeItmPrjAmt":$("#feeItmPrjAmt").val(),
+			"strtLoDataval":$("#numPage").text(),"eachPaNum":$(".page select")[0].value};
+	var url_hash = GLOBLE_LIST[detail];
+	window.location.href = "/manage/expdClrgDet/modify.html?sn="+sn  +"&&global_data=" + encodeURIComponent(JSON.stringify(global_data))+"#/manage/expdClrgDet/index.html";
+}
+
+
+//按条件查询
+function find(curr,eachPaNum){
+	if($("#txnStDt").val()=="" || $("#txnEdDt").val()==""){
+		alert("请输入查询日期范围");
+	}else{
+	var ordrTpcd= jQuery('#ordrTpcd').val();
+	jQuery('#J_input_txnStDt').val($("#txnStDt").val());
+	var data = {"txnStDt":$("#txnStDt").val(),"txnEdDt":$("#txnEdDt").val(),"ordrNo":$("#ordrNo").val(),
+			"feeItmPrjNm":$("#feeItmPrjNm").val(),"feeItmPrjAmt":$("#feeItmPrjAmt").val(),
+			"strtLoDataval":curr,"eachPaNum":eachPaNum,"ordrTpcd":ordrTpcd};
+	if(data){
+		jQuery.ajax({
+			url :"/manage/expdClrgDet/querySubmit",
+			type : "post",
+			data : data,
+			dataType : 'json',
+	         success : function(data) {
+	 			if(data.code== '0'){
+	 				TYPE = "find";
+	 				//数据列表
+	 				GLOBLE_LIST = data.oboList;
+	 				//数据总数
+	 				RCRD_TOT_NUM = data.obo.rcrdTotNum;
+	 				pageChange(data);	 				
+		 			pageStart(data.obo.rcrdTotNum);
+	 			}else{
+	 				alert("查询失败")
+	 			}
+	         },
+	         error : function(q) {
+	           
+	         }
+	     });
+		
+	}else{
+		var eachPaNum = $(".page select")[0].value ? $(".page select")[0].value: 15; 
+		pageDate(1,eachPaNum);
+	}
+	}
+}
+
+
+
+//提交
+function submits(){
+	var txnStDt=jQuery("#txnStDt").val();
+	var txnEdDt=jquery("#txnEdDt").val();
+		jQuery.ajax({
+		url :"/manage/expdClrgDet/querySubmit.html",
+		type : "post",
+		data :{"txnStDt":txnStDt,"txnEdDt":txnEdDt},
+		dataType : 'json',
+		success:function(data){		
+			jQuery("#tbody").empty();
+			var datas=data.oboList;
+			if(datas.length>0){
+				for(var i=0;i<datas.length;i++){
+					var tr='<tr style="background-color: ' + (i%2 == 0 ?'#fff':'rgb(226, 236, 240)') + '">';
+					      tr+='<td>'+isNull(datas[i].clrgBtnoId)+'</td>';
+					      tr+='<td>'+isNull(datas[i].mrchNo)+'</td>';
+					      tr+='<td>'+isNull(datas[i].ordrNo)+'</td>';
+					      tr+='<td>'+isNull(datas[i].mrchJrnlNo)+'</td>';
+					      tr+='<td>'+isNull(datas[i].feeItmPrjNm)+'</td>';
+					      tr+='<td>'+isNull(datas[i].rvpyuntNm)+'</td>';
+					      tr+='<td>'+isNull(datas[i].hdcgAmt)+'</td>';
+					      tr+='<td>'+isNull(datas[i].feeItmPrjAmt)+'</td>';
+					      tr+='<td>'+statCh(isNull(datas[i].clrgStcd))+'</td>';
+					      tr+='<td>'+isNull(datas[i].txnStDt)+'</td>'; 
+					      tr+='<td>'+isNull(data[i].oprgdayPrd)+'</td>'; 
+					      tr+='<td>'+isTypee(isNull(data[i].ordrTpcd))+'</td>'; /*添加项订单类型*/
+			      		  tr+='<td><a href="javascript:;" class="blue" onclick="data('+datas[i].ordrNo+')">查看详情</a></td>';
+			              tr+='</tr>';
+			              jQuery("#tbody").append(tr);
+				}
+			}
+		}	
+	});
+}
+
+  function isNull(value){
+        if(value){
+            return value;
+        }else{
+            return "";
+        }
+    }
+  /*添加项订单类型*/
+  function isTypee(value){
+	  var isType="";
+      if(value=='1'){
+    	  isType= "支付"
+      }else{
+    	  isType= "退款"
+      }
+      return isType;
+          
+  }
+  
+  function isNull(value){
+      if(value){
+          return value;
+      }else{
+          return "";
+      }
+  }
+    
+     function statCh(value){
+ 		var stat='';
+        if(value=='0'){
+         stat='初始';
+         
+        }else if(value=='1'){
+           stat='未清算';
+        }else if(value=='2'){
+           stat='已清算';
+          
+        }else if(value=='3'){
+           stat='无需清算';
+        }else if(value=='4'){
+           stat='清算异常';
+        }else if(value=='5'){
+           stat='清算已发送';
+        }else if(value=='6'){
+           stat='清算中';
+        }else{
+           stat='';
+        }
+        return stat;
+    }   
+    
+</script>
+
+</body>
+</html>

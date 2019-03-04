@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>政融支付-电费</title>
+<link href="${RootPath}static/payment/css/reset.css" rel="stylesheet" type="text/css" />
+<link href="${RootPath}static/payment/css/style.css" rel="stylesheet" type="text/css" />
+<script src="${RootPath}static/payment/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script src="${RootPath}static/payment/js/jquery.zoombie.js" type="text/javascript"></script>
+<script src="${RootPath}static/payment/js/jf_public.js" type="text/javascript"></script>
+<script src="${RootPath}static/payment/js/pop.js" type="text/javascript"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script type="text/javascript">
+    $(function(){
+    	
+        $(".btn_select").click(function(){
+            $(this).parents(".pbd_selectCtrl").find(".cur_select").text($(this).find('option:selected').text());
+        });
+        
+        $("#OPUN_COD").bind("change",function(_this){
+        	unit(_this.target.value)
+        });
+        function unit(city){
+        	if(city == "1"){
+        		$("#MERCHANT").html(
+        			'<option value="">请选择</option>' +
+        			'<option value="1">长沙电费</option>'
+        		)
+        	}else if(city == "2"){
+        		$("#MERCHANT").html(
+        			'<option value="">请选择</option>' +
+        			'<option value="1">常德电费</option>'
+        		)
+        	}else{
+        		$("#MERCHANT").html("")
+        	}
+        };
+    });
+            //ajax
+        function searchAjax(){
+			var searchData = {
+			//机构号
+			"insno":"zw614005001",
+			//费项代码
+			"feeItmCd":"430100000001",
+			//费项项目用户号    客户编号
+			"feeItmPrjUsrNo":$("#COMM").val(),
+			//费项用户证件类型代码
+			"feeItmUsrCrdtTpcd":"1",
+			//费项用户证件号码
+			"feeItmUsrCrdtNo":"1",
+			//费项用户名称
+			"feeItmUsrNm":"1"
+			};
+			if(!$("#OPUN_COD").val()){
+				failopen()
+				$(".modal-right h3").text("请选择城市")
+				$(".modal-right p").text('参考代码：00')
+				return;
+			};
+			if(!$("#MERCHANT").val()){
+				failopen()
+				$(".modal-right h3").text("请选择缴费单位")
+				$(".modal-right p").text('参考代码：00')
+				return;
+			};
+			if(!$("#COMM").val()){
+				failopen()
+				$(".modal-right h3").text("请输入客户编号")
+				$(".modal-right p").text('参考代码：00')
+				return;
+			}
+			loading(true)
+			jQuery.ajax({
+				url :"/manage/payment/search",
+				type : "post",
+				data : searchData,
+				dataType : 'json',
+	        	success : function(data) {
+	        		var search = { 	
+	        						"usrId":"",
+									"ccy":"156",
+									"gfcRetUrlAdr":"/manage/payment/paymentType.html",
+									"feeItmCd":searchData.feeItmCd,
+									"rvPyUntCd":searchData.insno,
+									"feeItmPrjUsrNo":searchData.feeItmPrjUsrNo,
+									 "feeItmPrjAmt":data.obo.feeItmPrjAmt,
+									 "udfFldCntnt":data.oboList[0].udfFldCntnt
+	        		}
+	        		window.location.href ="/manage/payment/electricityFeeInformation.html?search=" + encodeURIComponent(JSON.stringify(search));
+	        		loading(false);
+	        	},
+	        	error : function(errorDate) {
+	        		loading(false);
+					var message = JSON.parse(errorDate.responseText).message;
+					failopen()
+					$(".modal-right h3").text(message)
+					$(".modal-right p").text('参考代码：' + JSON.parse(errorDate.responseText).errCode)
+					//errorMessage(true,message);
+	        	}
+	 		}); 
+        }
+</script>
+</head>
+
+<body>
+<div class="header-top-box">
+</div><!--/.header-top-box-->
+
+<div class="header-box-little">
+	<div class="container">
+    	<div class="logo-little">
+        	<a href="index.html"><img src="${RootPath}static/payment/images/logo.png" ></a>
+        </div>
+        <div class="chengshixuanze">
+        	<div class="select-city">
+            	<a href="javascript:void(0)" class="toggle_btn pointer">湖南省</a>
+            </div>
+        </div><!--/.chengshixuanze-->
+    </div><!--/.container-->
+</div><!--/.header-box-little-->
+<div class="shadow-bg"></div>
+
+<div class="pay_mylife">
+    <div class="mylife_right_title"><h3><img src="${RootPath}static/payment/images/20160116234834965665.png" width="34px" height="34px">电费</h3></div>
+    <div class="step">
+        <ul class="pbd_step clearfix">
+            <li class="pbd_step_item pbd_step_1 on"><em></em><span>填写缴费信息</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_2"><em></em><span>确认缴费信息</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_3"><em></em><span>收银台</span><i class="arrow"></i></li>
+            <li class="pbd_step_item pbd_step_4"><em></em><span>缴费成功</span></li>
+        </ul>
+    </div>
+    <form id="jhform" name="jhform" method="post" action="">
+    <div class="form_box">
+        <table class="shuifeitable">
+            <tbody class="list_tb_no">
+                <tr>
+                  <th width="150">城市</th>
+                  <td width="302">
+                    <div class="pbd_selectCtrl" style="width:208px;background-position-x:180px;">
+                      <div class="cur_select" style="width:180px;">请选择</div>
+                      <select class="btn_select" style="width:208px;" name="OPUN_COD" id="OPUN_COD" >
+                          <option value="">请选择</option>
+                          <option value="1">长沙市</option>
+                          <option value="2">常德市</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td width="263"></td>
+                </tr>
+                <tr>
+                  <th width="150">缴费单位</th>
+                  <td width="302">
+                    <div class="pbd_selectCtrl" style="width:208px;background-position-x:180px;">
+                      <div class="cur_select" style="width:180px;">请选择</div>
+                      <select class="btn_select" style="width:208px;" name="MERCHANT" id="MERCHANT" >
+						<!-- js生成 -->
+                      </select>
+                    </div>
+                  </td>
+                  <td width="263"></td>
+                </tr>
+                <tr>
+                  <th>客户编号</th>
+                  <td>
+                    <input type="text" id="COMM" name="COMM" class="inputText_h30 w_t200" value="" >
+                  </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                  <td></td>
+                  <td><a href="javascript:;" class="btn_blue" onclick="searchAjax()">查询</a></td>
+                  <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    </form>
+</div><!--/.pay_mylife-->
+
+<div class="footer">
+</div><!--/.footer-->
+<div class="copyright-box">
+</div><!--/.copyright-box-->
+
+<div id="pop-fail" class="modal" >
+    <div class="modal-dialog" style="width:420px;margin-left:-210px;">
+        <div class="modal-content">
+            <div class="modal-header header-color-blue">
+                <button type="button" class="modal-close" onclick="failclose()"></button>
+                <h5>提示</h5>
+            </div>
+            <div class="modal-body">
+                <div class="modal-left">
+                	<img src="${RootPath}static/payment/images/icon-alert.png" />
+                </div>
+                <div class="modal-right">
+                	<h3></h3>
+                    <p></p>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0)" class="btn_blue" onclick="failclose()">确定</a></td>
+            </div><!--/.modal-footer-->
+        </div><!--/.modal-content-->
+    </div><!--/.modal-dialog-->
+</div><!--/.modal-->
+</body>
+</html>

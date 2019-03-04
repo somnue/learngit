@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<link rel="stylesheet" href="${RootPath}static/gzf/css/form.css" type="text/css">
+<script src="${RootPath}static/gzf/js/jquery.js" type="text/javascript"></script>
+<script src="${RootPath}static/gzf/js/jquery.table.js" type="text/javascript"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/json2.js"></script>
+<script src="${RootPath}static/gzf/js/WdatePicker.js"   type="text/javascript" ></script> 
+<script src="${RootPath}static/gzf/js/grid.js" type="text/javascript"></script>
+</head> 
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-wrapper">
+<div class="cm-center">
+<!--
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${SysSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>功能菜单</span>
+	</div>
+	<div class="clear"></div>
+</div>
+-->
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">系统管理平台</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml!}</div>
+		</div>
+	</div>
+	<div class="rightbody">
+<table class="path">
+  <tr>
+    <td class="path_icon">&nbsp;</td>
+    <td>您的位置: 首页 >> 清算查询 >> 清算汇总查询</td>
+  </tr>
+</table>
+<table class="table_submit_title">
+  <tr>
+    <td class="table_submit_title_icon"></td>
+    <td>清算汇总详情</td>
+  </tr>
+</table>
+<table class="table_submit">
+  <tr>
+    <th>商户代码</th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_mrchNo" size="38"/></td>
+    <th>清算批次编号</th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_clrgBtnoId" size="38"/></td>
+  </tr>
+  <tr>
+    <th>付款账号</th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_pymAccno" size="38"/></td>
+    <th>总金额 </th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_tamt" size="38"/></td>
+  </tr>
+  <tr>
+    <th>总笔数</th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_tdnum" size="38"/></td>
+    <th>总成功金额</th>
+    <td><input name="" type="text" class="gray_text" readonly="readonly" id="J_totScssAmt" size="38"/></td>
+  </tr>
+  <tr>
+    <th>总成功笔数 </th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_totScssDnum" size="38"/></td>
+    <th>总失败金额</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_totFailAmt"  size="38"/></td>
+  </tr>
+  <tr>
+    <th>总失败笔数 </th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_totFailDnum" size="38"/></td>
+    <th>清算前余额</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_clrgBfrBal" size="38"/></td>
+  </tr>
+  <tr>
+    <th>清算后余额</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_crgafBal" size="38"/></td>
+    <th>清算汇总状态</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_clrgStcd" size="38"/></td>
+  </tr>
+  <tr>
+    <th>清算完成日期</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_stmDt" size="38"/></td>
+    <th>清算完成时间</th>
+    <td><input type="text" class="gray_text" readonly="readonly" id="J_stmTm" size="38"/></td>
+  </tr>
+  <tr>
+    <th>响应信息</th>
+    <td><input type="text" class="gray_text" readonly="readonly" value="" id="J_rspInf" size="38"/></td>
+    <th>响应码</th>
+    <td><input type="text" class="gray_text" readonly="readonly" value="" id="J_sysRespCode" size="38"/></td>
+  </tr>
+</table>
+<table class="table_submit_button">
+  <tr>
+    <td>
+    <input type="button" value="返回" class="button3" onclick="callback();" />
+    </td>
+  </tr>
+</table>
+</div>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+//返回
+function callback(){
+	var urlData = getParam();
+	window.location.href = "${RootPath}manage/clrgBtnoSmy/index.html?global_data=" + urlData.global_data
+};
+function getParam() {
+	if (typeof window == 'undefined') {
+		return "";
+	}
+	var str = window.location.search;
+	if (str) {
+		str = str.slice(1);
+	} else if (!str) {
+		return '';
+	} else {
+		str = decodeURIComponent(str);
+	};
+	var result = {};
+	var arr1 = [];
+	var arr2 = [];
+	arr1 = str.split("&");
+	if (arr1.length) {
+		for (var i = 0; i < arr1.length; i++) {
+			arr2 = arr1[i].split("=")
+			if (arr2.length == 2) {
+				result[arr2[0]] = arr2[1]
+			}
+		}
+	};
+	return result;
+};
+   jQuery(function(){
+        var urlData = getParam();
+	    inputValue(JSON.parse(decodeURIComponent(urlData.data)));
+   });
+    
+function inputValue(data) {
+	$("#J_mrchNo")[0].value = data.mrchNo ? data.mrchNo : "";
+	$("#J_clrgBtnoId")[0].value = data.clrgBtnoId ? data.clrgBtnoId: "";
+	$("#J_pymAccno")[0].value = data.pymAccno ? data.pymAccno: "";
+	$("#J_tamt")[0].value = data.tamt ? data.tamt: "";
+	$("#J_tdnum")[0].value = data.tdnum ? data.tdnum: "";
+	$("#J_totScssAmt")[0].value = data.totScssAmt ? data.totScssAmt: "";
+	$("#J_totScssDnum")[0].value = data.totScssDnum ? data.totScssDnum: ""; 
+	$("#J_totFailAmt")[0].value = data.totFailAmt ? data.totFailAmt: "";
+	$("#J_totFailDnum")[0].value = data.totFailDnum ? data.totFailDnum: "";
+	$("#J_clrgBfrBal")[0].value = data.clrgBfrBal ? data.clrgBfrBal: "";
+	$("#J_crgafBal")[0].value = data.crgafBal ? data.crgafBal: "";
+	$("#J_stmDt")[0].value = data.stmDt ? data.stmDt: "";
+	$("#J_stmTm")[0].value = data.stmTm ? data.stmTm: "";
+	$("#J_rspInf")[0].value = data.rspInf ? data.rspInf: "";
+	$("#J_sysRespCode")[0].value = data.sysRespCode ? data.sysRespCode: "";
+	if(data.clrgStcd==0){
+    		jQuery('#J_clrgStcd').val("初始");
+    	}else if(data.clrgStcd==1){
+    		jQuery('#J_clrgStcd').val("未清算");
+    	}else if(data.clrgStcd==2){
+    		jQuery('#J_clrgStcd').val("已清算");
+    	}else if(data.clrgStcd==3){
+    		jQuery('#J_clrgStcd').val("无需清算");
+    	}else if(data.clrgStcd==4){
+    		jQuery('#J_clrgStcd').val("清算异常");
+    	}else if(data.clrgStcd==5){
+    		jQuery('#J_clrgStcd').val("清算已发送");
+    	}else if(data.clrgStcd==6){
+    		jQuery('#J_clrgStcd').val("清算中");
+    	}else{
+    		jQuery('#J_clrgStcd').val("无此状态");
+    	}
+};
+</script>
+</body>
+</html>

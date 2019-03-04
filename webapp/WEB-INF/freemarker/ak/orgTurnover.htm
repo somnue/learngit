@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <#include "./common/commonImport.html">
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.min.css"/>
+    <script src="/static/js/jQuery.print.min.js"></script>
+    <script src="/static/js/jquery.datetimepicker.full.min.js"></script>
+    <script src="/static/js/orgTurnover.js"></script>
+</head>
+<body>
+<#include "./common/head.htm">
+<#include "./common/nav.html">
+
+<div class="anKuanContent">
+    <div class="fl leftbody"><#include "./common/menuList.html"></div>
+    <div class="rightbody">
+        <div class="bread">
+            <ol class="breadcrumb">
+                <li><a href="/ak/index">首页</a></li>
+                <li>查询机构同步流水</li>
+            </ol>
+        </div>
+        <div class="infListBox">
+            <div class="infSearchBox">
+                <form class="form-inline" id="infSearchForm">
+                    <div class="form-group">
+                        <label for="startDate">起始日期:</label>
+                        <div class = "date_clearPa">
+                        	<input readonly class="form-control" type="text" id="startDate" autocomplete="off">
+            				<i class="glyphicon glyphicon-remove date_clearBtn"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">结束日期:</label>
+                        <div class = "date_clearPa">
+                        	<input readonly type="text" class="form-control" id="endDate" autocomplete="off">
+            				<i class="glyphicon glyphicon-remove date_clearBtn"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="infSearchSubmit">查询</button>
+                </form>
+            </div>
+            <div class="infTable noButtons">
+                <table id="printContent" class="table table-striped table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>日期</th>
+                        <th>机构编号</th>
+                        <th>机构名称</th>
+                        <th>同步前机构名称</th>
+                        <th>同步操作类型</th>
+                        <th>同步状态</th>
+                        <th>同步时间</th>
+                    </tr>
+                    </thead>
+                    <tbody id="templateBox"></tbody>
+                </table>
+                <div class="noData" id="noData">暂无数据</div>
+            </div>
+            <div class="pages_pageHide noteOfProblem_pages" id="pages_pageHide">
+            	<#include "./common/pages.html">
+                <button id="print" class="btn btn-primary">打印</button>
+                <a id="downloadBtn" target=_blank class="btn btn-info" href="#">下载</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#include "./common/footer.htm">
+
+<script type="text/html" id="tabelTem">
+    {{each list value i}}
+    <tr>
+        <td>{{pageSize*(pageNum-1)+i+1}}</td>
+        <td>{{value.zjgxsj}}</td>
+        <td>{{value.deptId}}</td>
+        <td>{{value.deptName}}</td>
+        <td>{{value.updateName}}</td>
+
+        {{if value.deptState=='1'}}
+        	<td>删除</td>
+        {{else if value.deptState!='1'}}
+        	{{if value.updateOrSave=='0'}}
+        		<td>修改</td>
+        	{{else if value.updateOrSave=='1'}}
+        		<td>新增</td>
+			{else}
+				<td>无操作</td>
+        	{{/if}}
+		{{else}}
+			<td>无操作</td>
+        {{/if}}
+		
+		{{if value.syncState==''}}
+        	<td>无同步</td>
+        {{else if value.syncState=='1'}}
+        	<td>失败</td>
+        {{else if value.syncState=='0'}}
+        	<td>正常</td>
+        {{/if}}
+		
+        <td>{{value.deptSynctm}}</td>
+    </tr>
+    {{/each}}
+</script>
+</body>
+</html>

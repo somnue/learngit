@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head><#include "/common/admin/head.htm"> 
+<#include "/common/admin/headfile.htm">
+ <#include "/common/manager/manager.htm">
+
+<link type="text/css" rel="stylesheet"
+	href="${RootPath}static/gzf/css/form.css" />
+<script src="${RootPath}static/gzf/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.table.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/WdatePicker.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/grid.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/select.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.bankselect.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/jquery.autocomplete.js"></script>
+<script type="text/javascript"
+	src="${RootPath}static/gzf/js/localdata.js"></script>
+<script type="text/javascript" src="${RootPath}static/gzf/js/loading1.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/errorMessage.js"></script> 
+<script type="text/javascript" src="${RootPath}static/gzf/js/successfulMessage.js"></script> 
+
+</head>
+<body>
+	<#include "/common/admin/headinfo.htm">
+	
+<script language="javascript" type="text/javascript">
+function ajaxDate(){
+	//event.preventDefault();
+	var data = {
+			//insno:$("#insno")[0].value,
+			txnMo:$("#txnMo")[0].value,
+			statMtdcd:$("#statMtdcd")[0].value,
+			oprId:"当前用户",
+			ahnOprId:"授权操作员"
+			};
+	var errorMessageText = [];
+	/* if(!data.insno){
+		errorMessageText.push("请填写机构号")
+	}; */
+	if(!data.txnMo){
+		errorMessageText.push("请选择月份")
+	};
+	if(!data.statMtdcd){
+		errorMessageText.push("请选择统计方式代码")
+	};
+	if(errorMessageText.length > 0){
+		var text = '';
+		for (var i = 0; i<errorMessageText.length; i++){
+			text += ( "<span class='must'>*</span>" + (i+1) + ":" + errorMessageText[i] + "." + "<br />")
+		}
+		errorMessage(true,text)
+	};
+	if(errorMessageText.length == 0){
+		//data.txnMo = data.txnMo.split("-")[0] + data.txnMo.split("-")[1];
+		//data.txnMo = "20180409"
+		//tracomonthSearch(data);
+		window.location.href="${RootPath}manage/createclmonth?txnMo="+data.txnMo+"&statMtdcd="+data.statMtdcd;
+
+	};
+	
+}
+/* function tracomonthSearch(data){
+	loading(true)	
+	$.ajax({
+		url :"/manage/createclmonth",
+		type : "post",
+		data : data,
+		dataType : 'json',
+	    success : function(data) {
+	        loading(false);
+	        successfulMessage(true,'报表生成成功');
+	        //tableHTML(data.obo);
+	        },
+	    error : function(errorDate) {
+	        loading(false)
+			var message = JSON.parse(errorDate.responseText).message;
+	        errorMessage(true,message);
+	        }
+	 });
+}; */
+</script>
+	<div class="cm-wrapper">
+		<div class="cm-center">
+			<!--
+			<div class="cm-sitemap">
+				<div class="fl navinfo">
+					<span>您现在的位置：</span> <span><a href="${SysSite}">我的管理首页</a></span> <span>&nbsp;&gt;&nbsp;</span>
+					<span>系统管理平台</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			-->
+			<div class="cm-center">
+				<div class="cm-pagebody">
+					<div class="fl leftbody">
+						<div class="titlediv">
+							<div class="tname">功能菜单</div>
+						</div>
+						<div class="menusdiv">
+							<div class="menus padding">${MenuHtml!}</div>
+						</div>
+					</div>
+					<div class="rightbody">
+						<table class="path">
+							<tr>
+								<td class="path_icon">&nbsp;</td>
+								<td>您的位置: 首页 >> 查询统计 >> 清算统计月报</td>
+							</tr>
+						</table>
+						<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>清算统计月报查询</td>
+							</tr>
+						</table>
+
+						<table class="table_search">
+							<tr>
+								<td>
+									<table class="table_search_form">
+										<tr>
+											
+											<td>选择月份</td>
+											<td><input class="date" id="txnMo"
+												onfocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM',maxDate:'%y-{%M-1}'})"
+												type="text"></td>
+											<td><select name="statMtdcd" id="statMtdcd"
+												class="select4">
+													<option value="">请选择</option>
+													<option value="1">费项</option>
+													<option value="2">渠道</option>
+											</select></td>
+											<td><input name="" type="submit" value="报表下载"
+												class="button9" onclick="ajaxDate()" /></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+
+						
+						<!--<table class="table_submit_title">
+							<tr>
+								<td class="table_submit_title_icon"></td>
+								<td>交易统计日报列表</td>
+							</tr>
+						</table>  <table class="table_list" id="tabN">
+						<thead>
+							<tr>
+								<th>文件名</th>
+								<th>日期</th>
+								<th>种类</th>
+								<th>操作</th>
+							</tr>
+                        </thead>
+                        <tbody id="J_tbody">
+                        </tbody>
+						</table>-->
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<#include "/common/admin/bottom.htm">
+</body>
+</html>

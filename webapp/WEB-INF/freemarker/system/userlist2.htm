@@ -1,0 +1,237 @@
+<html>
+<head>
+<#include "/common/admin/head.htm">
+<#include "/common/admin/headfile.htm">
+${TreeScript}
+<link rel='stylesheet' href="${RootPath}static/js/common/ztree/zTreeStyle/zTreeStyle.css"/>
+<script type="text/javascript" src="${RootPath}static/js/common/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="${RootPath}static/js/common/jquery.page.js"></script>
+<script language="javascript" type="text/javascript">
+function a_click(url,userid,isdel,flag){
+    var cftitle = null;
+    if(url == '/system/enableOrDisableUser2.html'){
+	    if(isdel == 0){
+		    cftitle = '禁用员工请确认该操作员没有被使用。确认禁用该操作员吗？';
+		    }else{
+		    cftitle = '启用员工请确认该操作员没有被使用。确认启用该操作员吗？';
+		    }
+		    }else{
+		    cftitle = '删除员工请确认该操作员没有被使用。确认删除该操作员吗？';
+	    }
+		if(confirm(cftitle)){
+			if(isdel == ''){
+				$('#subflag').val(2);
+				$('#flag').val(flag);
+			}
+			$('#eform').attr('action',url);
+			$('#userid').val(userid);
+			$('#isdel').val(isdel);
+			$('#flag').val(flag);
+			$.ajax({
+				url : url,
+				type : "post",
+				data : $("#eform").serialize(),
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag ="-1";
+						layer.TipTitle ='';
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){};
+						layer.open();
+						layer = null;
+					}else if(d.code=="1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag = d.code;
+						layer.TipTitle = d.title;
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){RootElement.location.href=d.url};
+						layer.open();
+						layer = null;
+					}
+				},
+				error: function(d) {
+					RootElement.errorMessage(d);
+				}
+			});
+		}
+	}
+
+function a_click2(url,userid,isdel,flag){
+	var cftitle = null;
+    if(url == '/system/enableOrDisableUser.html'){
+	    if(isdel == 0){
+	    	cftitle = '禁用员工请确认该操作员没有被使用。确认禁用该操作员吗？';
+	    }else{
+	   	 	cftitle = '启用员工请确认该操作员没有被使用。确认启用该操作员吗？';
+	    }
+	    }else{
+	    	cftitle = '删除员工请确认该操作员没有被使用。确认删除该操作员吗？';
+	    }
+		if(confirm(cftitle)){
+			if(isdel == ''){
+				$('#subflag').val(2);
+				$('#flag').val(flag);
+			}
+			$('#eform').attr('action',url);
+			$('#userid').val(userid);
+			$('#isdel').val(isdel);
+			$('#flag').val(flag);
+			$.ajax({
+				url : url,
+				type : "post",
+				data : $("#eform").serialize(),
+				dataType: 'json',
+				async: false,
+				success : function(d) {
+					if(d.code=="-1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag ="-1";
+						layer.TipTitle ='';
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){};
+						layer.open();
+						layer = null;
+					}else if(d.code=="1"){
+						var layer = RootElement.JsCore.FrameLayer('Infomation');
+						layer.TipMode = true;
+						layer.TipFlag = d.code;
+						layer.TipTitle = d.title;
+						layer.TipText = d.msg;
+						layer.CloseFun = function (){RootElement.location.href=d.url};
+						layer.open();
+						layer = null;
+					}
+				},
+				error: function(d) {
+					RootElement.errorMessage(d);
+				}
+			});
+	  }
+   }
+</script>
+<style type="text/css">
+.ztree li button.switch {visibility:hidden; width:1px;}
+.ztree li button.switch.roots_docu {visibility:visible; width:16px;}
+.ztree li button.switch.center_docu {visibility:visible; width:16px;}
+.ztree li button.switch.bottom_docu {visibility:visible; width:16px;}
+	</style>
+</head>
+<body>
+<#include "/common/admin/headinfo.htm">
+<div class="cm-fullpage">
+<div class="cm-center">
+<div class="cm-sitemap">
+	<div class="fl navinfo">
+		<span>您现在的位置：</span>
+		<span><a href="${MainSite}">我的管理首页</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span><a href="${OaSite!}comm/admin/gov/admin.html">政民互动</a></span>
+		<span>&nbsp;&gt;&nbsp;</span>
+		<span>操作员管理</span>
+	</div>
+	<div class="fr search">
+		<form action="${RootPath}system/userlist2.html" method="post">
+		&nbsp;&nbsp;
+		<span>真实姓名/登录账号：<input id="searchkey" type="text" name="truename" class="sinput" value="${truename?default('')}"/></span>
+		<span><input type="submit" class="sbtn" value="搜索" /></span>
+		<input type="hidden" name="orgtype" value="${orgtype}" />
+		<input type="hidden" name="search" value="1" />
+		<input type="hidden" name="flag" value="${(flag)!}" />
+		</form>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="cm-center">
+<div class="cm-pagebody">
+	<div class="fl leftbody">
+		<div class="titlediv"><div class="tname">政民互动</div></div>
+		<div class="menusdiv">
+			<div class="menus padding">${MenuHtml}</div>
+		</div>
+	</div>
+	<div class="fr rightbody">
+		<div class="titlediv">
+			<div class="fl tname">操作员管理</div>
+			<div class="fr tlink"><a href="${RootPath}system/useroperation2.html?orgtype=${(orgtype)!}&orgcode=${(orgcode)!}&flag=${(flag)!}">添加操作员</a></div>
+			<div class="clear"></div>
+		</div>
+		<div class="hsplit3"></div>
+		<div class="bothdiv">
+				<div class="fl" style="width:245px;">
+					<div class="bodydiv2">
+						<div class="padding">
+							<div class="dtree" style="height:580px;overflow-y:auto;">
+								<ul id="treeDemo" class="ztree"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			<div class="fr" style="width:700px;">
+				<table class="listtable" align="center" cellpadding="0" cellspacing="1" border="0" style="width:700px;">
+					<tr class="header">
+						<td width="30" class="center">No</td>
+						<td width="80" class="center">真实姓名</td>
+						<td class="center">登录账号</td>
+						<td width="50" class="center">状态</td>
+						<!--<td width="40" class="center">授权</td>-->
+						<td width="60" class="center">重置密码</td>
+						<td width="40" class="center">编辑</td>
+						<td width="40" class="center">删除</td>
+					</tr>
+					<!-- loop begin -->
+					<#list pageList as user>
+					<tr class="trow">
+						<td class="center tno">${user_index+1+pageinfo.pageSize*(pageinfo.pageNum-1)}</td>
+						<td class="center ttext">${user.truename}</td>
+						<td class="left ttext">
+							${user.username}<br/>
+							<#if (user.orgname)??>
+								所属机构：${(user.orgname)!}
+							</#if>
+						</td>
+						<td class="center tlink">
+						<#if (user.isDel=0)>
+						<a href="javascript:a_click2('/system/enableOrDisableUser2.html','${user.userid}','0','${(flag)!}')" title="点击进行禁用">已启用</a>
+						<#else>
+						<a href="javascript:a_click2('/system/enableOrDisableUser2.html','${user.userid}','1','${(flag)!}')" title="点击进行启用">已禁用</a>
+						</#if>
+						</td>
+						<!--<td class="center tlink"><a href="${RootPath}system/userpermit.html?orgtype=${orgtype!}&userid=${user.userid}&flag=2">授权</a></td>-->
+						<td class="center tlink"><a href="${RootPath}system/userpass2.html?userid=${user.userid}&orgtype=${orgtype}&flag=${(flag)!}">重置密码</a></td>
+						<td class="center tlink"><a href="${RootPath}system/useroperation2.html?orgtype=${orgtype!}&orgcode=${(user.orgcode)!}&userid=${user.userid}&flag=${(flag)!}">编辑</a></td>
+						<td class="center tlink"><a href="javascript:a_click2('/system/deleteUser2.html','${user.userid}','','${(flag)!}')" title="点击进行删除">删除</a></td>
+					</tr>
+					</#list>
+					<!-- loop end -->
+					</table>
+				${PageHtml}
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<form id="eform" action="" method="post" target="HiddenFrame">
+		<input type="hidden" id="subflag" name="subflag" value="1"/>
+		<input type="hidden" id="orgtype" name="orgtype" value="${orgtype}" />
+		<input type="hidden" id="userid" name="userid"/>
+		<input type="hidden" id="isdel" name="isdel" />
+		<input type="hidden" id="flag" name="flag" />
+		<input type="hidden" name="orgcode" value="${(orgcode)!}"/>
+		<input type="hidden" name="pageNum" value="${pageNum}"/>
+		<input type="hidden" name="pageSize" value="${pageSize}"/>
+		<input type="hidden" name="truename" value="${truename?default('')}"/>
+		<input type="hidden" name="search" value="${search?default('')}"/>
+	</form>
+	<div class="clear"></div>
+</div>
+</div>
+</div>
+</div>
+<#include "/common/admin/bottom.htm">
+</body>
+</html>
